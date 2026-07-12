@@ -1,0 +1,62 @@
+flowchart TD
+    subgraph TRIGGER["🎯 Trigger"]
+        A["1. Prompt"]
+    end
+
+    subgraph COGNITION["🧠 Cognitive Core"]
+        B["2. Context"]
+        C["3. Plan"]
+        D["4. Reason"]
+    end
+
+    subgraph COORD["🤝 Coordinator — multi-agent only"]
+        direction LR
+        SA1["Sub-Agent A"]
+        SA2["Sub-Agent B"]
+        SAn["Sub-Agent N"]
+    end
+
+    subgraph GATE["🛂 Guardrail"]
+        E{"5. Permission Gate<br/><small>in scope? authorized?</small>"}
+        HITL["Human-in-the-loop<br/><small>approval</small>"]
+    end
+
+    subgraph EXEC["⚙️ Execution Loop"]
+        F["6. Act"]
+        G["7. Observe"]
+        RETRY["Retry<br/><small>tool/transient error</small>"]
+    end
+
+    subgraph CHECK["✅ Goal Check"]
+        H{"8. Done?"}
+    end
+
+    subgraph PERSIST["💾 Persistence Layer"]
+        I["9. Storage"]
+        J["Memory"]
+    end
+
+    A --> B --> C --> D --> E
+    C -.dispatch sub-tasks.-> COORD
+    COORD -.results merge.-> D
+    E -- allowed --> F
+    E -- high-stakes / out of policy --> HITL
+    HITL -- approved --> F
+    HITL -- rejected --> C
+    F --> G
+    G -- tool/transient error --> RETRY
+    RETRY --> F
+    G -- plan was wrong --> C
+    G -- success --> H
+    H -- not done --> I
+    H -- done --> I
+    I --> J
+    J -.next cycle, if not done.-> B
+
+    style TRIGGER fill:#1a1a2e,color:#fff,stroke:#e94560
+    style COGNITION fill:#16213e,color:#fff,stroke:#0f3460
+    style COORD fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
+    style GATE fill:#3d0000,color:#fff,stroke:#e94560
+    style EXEC fill:#0f3460,color:#fff,stroke:#e94560
+    style CHECK fill:#16213e,color:#fff,stroke:#0f3460
+    style PERSIST fill:#1a1a2e,color:#fff,stroke:#0f3460

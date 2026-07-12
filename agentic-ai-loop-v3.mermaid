@@ -1,0 +1,80 @@
+flowchart TD
+    subgraph TRIGGER["🎯 Trigger"]
+        A["1. Prompt"]
+    end
+
+    subgraph COGNITION["🧠 Cognitive Core"]
+        B["2. Context<br/><small>+ cross-session memory</small>"]
+        C{"3. Adaptive Plan<br/><small>+ learned strategies</small>"}
+        D["4. Reason<br/><small>+ cost-optimized model</small>"}
+    end
+
+    subgraph GATE["🛂 Guardrail + Verification"]
+        E{"5. Permission Gate<br/><small>scope? authorized?</small>"}
+        HITL["6. Human-in-the-loop<br/><small>approval</small>"]
+        V{"Verify<br/><small>will this work?</small>"}
+    end
+
+    subgraph EXEC["⚙️ Execution Loop"]
+        F["7. Act"]
+        G{"8. Observe"}
+        SH["Self-Heal<br/><small>diagnose + fix</small>"]
+        RETRY["Retry<br/><small>transient error</small>"]
+    end
+
+    subgraph CHECK["✅ Goal Check + Budget"]
+        H{"9. Done?<br/><small>+ budget check</small>"}
+    end
+
+    subgraph PERSIST["💾 Persistence Layer"]
+        I["10. Store"]
+        J["Memory<br/><small>+ relevance scoring</small>"]
+        PM["Persistent Memory Store<br/><small>cross-session</small>"]
+    end
+
+    subgraph LEARN["🔄 Feedback + Learning"]
+        FL["Feedback Loop<br/><small>learns from outcomes</small>"]
+        CO["Cost Optimizer<br/><small>model selection + caching</small>"]
+    end
+
+    subgraph DEGRAD["🛡️ Graceful Degradation"]
+        GD["Fallback paths<br/><small>when components fail</small>"]
+    end
+
+    A --> B --> C --> D --> E
+    E -- allowed --> V
+    E -- high-stakes / out of policy --> HITL
+    HITL -- approved --> V
+    HITL -- rejected --> C
+    V -- passes --> F
+    V -- fails --> C
+    F --> G
+    G -- transient error --> RETRY
+    RETRY --> F
+    G -- plan wrong --> C
+    G -- self-healable --> SH
+    SH --> F
+    G -- success --> H
+    H -- not done --> I
+    H -- done --> I
+    I --> J
+    J --> PM
+    PM -.next session.-> B
+    J -.next cycle.-> C
+
+    FL -.learns from.-> G
+    FL -.updates.-> C
+    CO -.selects model.-> D
+    CO -.monitors budget.-> H
+    GD -.fallback for.-> E
+    GD -.fallback for.-> G
+    GD -.fallback for.-> PM
+
+    style TRIGGER fill:#1a1a2e,color:#fff,stroke:#e94560
+    style COGNITION fill:#16213e,color:#fff,stroke:#0f3460
+    style GATE fill:#3d0000,color:#fff,stroke:#e94560
+    style EXEC fill:#0f3460,color:#fff,stroke:#e94560
+    style CHECK fill:#16213e,color:#fff,stroke:#0f3460
+    style PERSIST fill:#1a1a2e,color:#fff,stroke:#0f3460
+    style LEARN fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
+    style DEGRAD fill:#1a1a2e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5

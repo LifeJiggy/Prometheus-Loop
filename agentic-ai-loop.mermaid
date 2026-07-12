@@ -1,0 +1,31 @@
+flowchart LR
+    subgraph INPUT["🎯 Trigger"]
+        A["1. Prompt<br/><small>goal + system rules + tool defs</small>"]
+    end
+
+    subgraph COGNITION["🧠 Cognitive Core"]
+        B["2. Context<br/><small>retrieved data, history, live inputs</small>"]
+        C["3. Plan<br/><small>decompose goal → sub-tasks / sub-agents</small>"]
+        D["4. Reason<br/><small>chain-of-thought, decide next move</small>"]
+    end
+
+    subgraph EXECUTION["⚙️ Execution Loop"]
+        E["5. Act<br/><small>call tool / API / run code</small>"]
+        F["6. Observe<br/><small>capture result, success or failure</small>"]
+    end
+
+    subgraph PERSIST["💾 Persistence Layer"]
+        G["7. Storage<br/><small>raw logs, artifacts, DB</small>"]
+        H["Memory<br/><small>curated, retrievable state</small>"]
+    end
+
+    A --> B --> C --> D --> E --> F
+    F --> G
+    G --> H
+    H -.next cycle.-> B
+    F -.replan if failed.-> C
+
+    style INPUT fill:#1a1a2e,color:#fff,stroke:#e94560
+    style COGNITION fill:#16213e,color:#fff,stroke:#0f3460
+    style EXECUTION fill:#0f3460,color:#fff,stroke:#e94560
+    style PERSIST fill:#1a1a2e,color:#fff,stroke:#0f3460
