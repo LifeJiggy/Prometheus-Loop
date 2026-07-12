@@ -16,9 +16,10 @@ flowchart TD
         SAn["Sub-Agent N"]
     end
 
-    subgraph GATE["🛂 Guardrail"]
+    subgraph GATE["🛂 Guardrail + Security"]
         E{"5. Permission Gate<br/><small>in scope? authorized?</small>"}
         HITL["Human-in-the-loop<br/><small>approval</small>"]
+        SEC["Security<br/><small>injection detection, tool validation,<br/>memory integrity, exfil prevention</small>"]
     end
 
     subgraph EXEC["⚙️ Execution Loop"]
@@ -34,6 +35,56 @@ flowchart TD
     subgraph PERSIST["💾 Persistence Layer"]
         I["9. Storage"]
         J["Memory"]
+    end
+
+    subgraph TESTING["🧪 Testing"]
+        T1["Unit tests<br/><small>gate, retry, goal check</small>"]
+        T2["Integration tests<br/><small>full loop e2e</small>"]
+        T3["Chaos engineering<br/><small>inject failures</small>"]
+        T4["Regression tests<br/><small>compare to baseline</small>"]
+    end
+
+    subgraph EXPLAIN["🔍 Explainability"]
+        X1["Decision traces<br/><small>why this action?</small>"]
+        X2["Audit logs<br/><small>every action logged</small>"]
+        X3["Compliance<br/><small>SOC2, GDPR, HIPAA, PCI</small>"]
+    end
+
+    subgraph RESOURCES["📦 Resource Management"]
+        R1["Concurrency<br/><small>N parallel tasks</small>"]
+        R2["Priority scheduling<br/><small>P0-P3</small>"]
+        R3["Backpressure<br/><small>load shedding</small>"]
+        R4["Dead letter queue<br/><small>failed tasks</small>"]
+    end
+
+    subgraph LIFECYCLE["🚀 Lifecycle"]
+        L1["Deployment<br/><small>blue-green, canary, rolling</small>"]
+        L2["Monitoring<br/><small>alerts + metrics</small>"]
+        L3["Incident response<br/><small>detect → contain → fix</small>"]
+    end
+
+    subgraph UX_DESIGN["👤 User Experience"]
+        U1["Progress visibility<br/><small>what's happening</small>"]
+        U2["Transparency<br/><small>why this action</small>"]
+        U3["Correction<br/><small>undo, redirect, pause</small>"]
+        U4["Trust calibration<br/><small>capabilities + confidence</small>"]
+    end
+
+    subgraph STREAM["📡 Streaming Basics"]
+        ST1["Progress reporting<br/><small>step updates</small>"]
+        ST2["Status messages<br/><small>start, middle, end, fail</small>"]
+    end
+
+    subgraph COMPOSE["🔗 Composition Basics"]
+        CP1["Tool integration<br/><small>APIs, DBs, files</small>"]
+        CP2["Webhook triggers<br/><small>external events</small>"]
+        CP3["Output consumers<br/><small>CI/CD, dashboards</small>"]
+    end
+
+    subgraph ETHICS["⚖️ Ethics Basics"]
+        ETH1["Transparency<br/><small>label agent output</small>"]
+        ETH2["Harm prevention<br/><small>don't act alone on high-stakes</small>"]
+        ETH3["Oversight<br/><small>human can intervene</small>"]
     end
 
     A --> B --> C --> D --> E
@@ -53,6 +104,16 @@ flowchart TD
     I --> J
     J -.next cycle, if not done.-> B
 
+    SEC -.validates.-> E
+    TESTING -.tests.-> G
+    EXPLAIN -.traces.-> D
+    RESOURCES -.manages.-> F
+    LIFECYCLE -.deploys.-> A
+    UX_DESIGN -.presents.-> G
+    STREAM -.reports.-> F
+    COMPOSE -.integrates.-> F
+    ETHICS -.governs.-> E
+
     style TRIGGER fill:#1a1a2e,color:#fff,stroke:#e94560
     style COGNITION fill:#16213e,color:#fff,stroke:#0f3460
     style COORD fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
@@ -60,3 +121,11 @@ flowchart TD
     style EXEC fill:#0f3460,color:#fff,stroke:#e94560
     style CHECK fill:#16213e,color:#fff,stroke:#0f3460
     style PERSIST fill:#1a1a2e,color:#fff,stroke:#0f3460
+    style TESTING fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
+    style EXPLAIN fill:#16213e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
+    style RESOURCES fill:#1a1a2e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
+    style LIFECYCLE fill:#0f3460,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
+    style UX_DESIGN fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
+    style STREAM fill:#16213e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
+    style COMPOSE fill:#1a1a2e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
+    style ETHICS fill:#3d0000,color:#fff,stroke:#e94560,stroke-dasharray: 5 5

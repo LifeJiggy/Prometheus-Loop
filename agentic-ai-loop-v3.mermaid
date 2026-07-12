@@ -9,14 +9,15 @@ flowchart TD
         D["4. Reason<br/><small>+ cost-optimized model</small>"}
     end
 
-    subgraph GATE["🛂 Guardrail + Verification"]
+    subgraph GATE["🛂 Guardrail + Verification + Security"]
         E{"5. Permission Gate<br/><small>scope? authorized?</small>"}
         HITL["6. Human-in-the-loop<br/><small>approval</small>"]
         V{"Verify<br/><small>will this work?</small>"}
+        SEC["4-Layer Defense<br/><small>injection, hierarchy,<br/>output validation, monitoring</small>"]
     end
 
     subgraph EXEC["⚙️ Execution Loop"]
-        F["7. Act"]
+        F["7. Act<br/><small>sandboxed</small>"]
         G{"8. Observe"}
         SH["Self-Heal<br/><small>diagnose + fix</small>"]
         RETRY["Retry<br/><small>transient error</small>"]
@@ -28,7 +29,7 @@ flowchart TD
 
     subgraph PERSIST["💾 Persistence Layer"]
         I["10. Store"]
-        J["Memory<br/><small>+ relevance scoring</small>"]
+        J["Memory<br/><small>+ relevance scoring + integrity</small>"]
         PM["Persistent Memory Store<br/><small>cross-session</small>"]
     end
 
@@ -38,7 +39,80 @@ flowchart TD
     end
 
     subgraph DEGRAD["🛡️ Graceful Degradation"]
-        GD["Fallback paths<br/><small>when components fail</small>"]
+        GD["Fallback paths<br/><small>L1-L7 when components fail</small>"]
+    end
+
+    subgraph SECURITY["🔒 Full Adversarial Robustness"]
+        S1["Threat model<br/><small>5 attacker types</small>"]
+        S2["Memory integrity<br/><small>signed, audited</small>"]
+        S3["Sandboxing<br/><small>process, container, VM, network</small>"]
+        S4["Red team testing<br/><small>injection, tool abuse, exfil, boundary</small>"]
+    end
+
+    subgraph EVAL["📊 Evaluation Framework"]
+        EV1["Task suites<br/><small>50-100 tasks</small>"]
+        EV2["8 metrics<br/><small>completion, accuracy, cost...</small>"]
+        EV3["A/B comparison<br/><small>baseline vs candidate</small>"]
+        EV4["Regression gate<br/><small>block if >5% regress</small>"]
+    end
+
+    subgraph TESTING["🧪 Testing Framework"]
+        TP["Test pyramid<br/><small>unit → integration → E2E</small>"]
+        CH["Chaos engineering<br/><small>8 failure scenarios</small>"]
+        LD["Load testing<br/><small>concurrency + breaking point</small>"]
+        PB["Property-based<br/><small>safety invariants</small>"]
+    end
+
+    subgraph EXPLAIN["🔍 Explainability + Compliance"]
+        X1["Decision traces<br/><small>reasoning + context + memories</small>"]
+        X2["Audit logs<br/><small>complete action history</small>"]
+        X3["7 regulations<br/><small>GDPR, SOC2, HIPAA, PCI, AI Act...</small>"]
+        X4["Impact assessment<br/><small>pre-deployment review</small>"]
+    end
+
+    subgraph RESOURCES["📦 Resource Management"]
+        R1["Concurrency<br/><small>N parallel tasks</small>"]
+        R2["Priority scheduling<br/><small>P0-P3 + SLAs</small>"]
+        R3["Backpressure<br/><small>load shedding</small>"]
+        R4["Dead letter queue<br/><small>failed task handling</small>"]
+    end
+
+    subgraph LIFECYCLE["🚀 Lifecycle"]
+        L1["4 deployment strategies<br/><small>blue-green, canary, rolling, shadow</small>"]
+        L2["Monitoring + alerting<br/><small>5 metric thresholds</small>"]
+        L3["Incident response<br/><small>detect → contain → fix → review</small>"]
+    end
+
+    subgraph UX_DESIGN["👤 User Experience"]
+        U1["Progress visibility<br/><small>real-time updates</small>"]
+        U2["Transparency<br/><small>action log + reasoning</small>"]
+        U3["Correction<br/><small>undo, redirect, pause, cancel</small>"]
+        U4["Trust calibration<br/><small>capabilities + confidence + risk</small>"]
+    end
+
+    subgraph STREAM["📡 Streaming + Real-Time"]
+        ST1["Event-driven architecture<br/><small>event bus + workers</small>"]
+        ST2["Streaming responses<br/><small>SSE/WebSocket</small>"]
+        ST3["Interrupt handling<br/><small>graceful cancel + state save</small>"]
+        ST4["Long-running tasks<br/><small>heartbeat, checkpoint, timeout</small>"]
+    end
+
+    subgraph COMPOSE["🔗 Agent Composition"]
+        CP1["5 communication patterns<br/><small>req-res, pub-sub, queue, shared, blackboard</small>"]
+        CP2["DAG orchestration<br/><small>workflow graphs</small>"]
+        CP3["Shared state<br/><small>optimistic locking + conflict resolution</small>"]
+    end
+
+    subgraph ETHICS["⚖️ Ethics + Compliance"]
+        ETH1["5 principles<br/><small>transparency, accountability, fairness, privacy, safety</small>"]
+        ETH2["Bias testing<br/><small>demographics, phrasings, edge cases</small>"]
+        ETH3["Compliance checklist<br/><small>7 regulations documented</small>"]
+    end
+
+    subgraph API["🌐 Agent-as-a-Service"]
+        AP1["REST API<br/><small>CRUD tasks</small>"]
+        AP2["Auth + rate limiting<br/><small>API keys, tiers</small>"]
+        AP3["SLA guarantees<br/><small>uptime + latency</small>"]
     end
 
     A --> B --> C --> D --> E
@@ -70,6 +144,18 @@ flowchart TD
     GD -.fallback for.-> G
     GD -.fallback for.-> PM
 
+    SEC -.defends.-> E
+    EVAL -.measures.-> G
+    TESTING -.validates.-> F
+    EXPLAIN -.traces.-> D
+    RESOURCES -.manages.-> F
+    LIFECYCLE -.deploys.-> A
+    UX_DESIGN -.presents.-> G
+    STREAM -.streams.-> F
+    COMPOSE -.orchestrates.-> C
+    ETHICS -.governs.-> E
+    API -.exposes.-> F
+
     style TRIGGER fill:#1a1a2e,color:#fff,stroke:#e94560
     style COGNITION fill:#16213e,color:#fff,stroke:#0f3460
     style GATE fill:#3d0000,color:#fff,stroke:#e94560
@@ -78,3 +164,14 @@ flowchart TD
     style PERSIST fill:#1a1a2e,color:#fff,stroke:#0f3460
     style LEARN fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
     style DEGRAD fill:#1a1a2e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
+    style SECURITY fill:#3d0000,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
+    style EVAL fill:#16213e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
+    style TESTING fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
+    style EXPLAIN fill:#1a1a2e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
+    style RESOURCES fill:#0f3460,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
+    style LIFECYCLE fill:#16213e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
+    style UX_DESIGN fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
+    style STREAM fill:#1a1a2e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
+    style COMPOSE fill:#3d0000,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
+    style ETHICS fill:#0f3460,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
+    style API fill:#16213e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5

@@ -8,12 +8,12 @@ This is the reference for building, teaching, or reasoning about agentic AI syst
 
 | File | What it is |
 |---|---|
-| `agentic-ai-loop-guide.md` | **v1** — the core 7-step loop plus security awareness and basic evaluation. Start here if you're new to agentic AI. |
-| `agentic-ai-loop.mermaid` | Diagram source for v1. |
-| `agentic-ai-loop-v2-guide.md` | **v2** — adds safety layers (Permission Gate, HITL, Retry/Replan, Goal Check, Coordinator) plus operational gaps: security at the gate level, testing methodology, explainability, resource management, lifecycle, and UX design. |
-| `agentic-ai-loop-v2.mermaid` | Diagram source for v2. |
-| `agentic-ai-loop-v3-guide.md` | **v3** — 70% autonomous operation. Adds Self-Healing, Adaptive Planning, Cost Optimization, Cross-Session Memory, Verification, Multi-Tenant Orchestration, Feedback Loops, Graceful Degradation, plus the full adversarial robustness framework, evaluation & benchmarking, testing framework (unit/integration/chaos/load), streaming & real-time, agent composition, ethics & compliance, and agent-as-a-service patterns. |
-| `agentic-ai-loop-v3.mermaid` | Diagram source for v3. |
+| `agentic-ai-loop-guide.md` | **v1** — the core 7-step loop plus security awareness, basic evaluation, smoke tests, explainability basics, and ethics basics. Start here if you're new to agentic AI. |
+| `agentic-ai-loop.mermaid` | Diagram for v1 — 7-step loop with 3 cross-cutting subgraphs: Security Awareness, Evaluation, Testing + Ethics. |
+| `agentic-ai-loop-v2-guide.md` | **v2** — adds safety layers (Permission Gate, HITL, Retry/Replan, Goal Check, Coordinator) plus operational gaps: security at the gate level, testing methodology, explainability, resource management, lifecycle, UX, streaming basics, composition basics, and ethics basics. |
+| `agentic-ai-loop-v2.mermaid` | Diagram for v2 — full safety system with 9 cross-cutting subgraphs: Security, Testing, Explainability, Resources, Lifecycle, UX, Streaming, Composition, Ethics. |
+| `agentic-ai-loop-v3-guide.md` | **v3** — 70% autonomous operation. Adds Self-Healing, Adaptive Planning, Cost Optimization, Cross-Session Memory, Verification, Multi-Tenant Orchestration, Feedback Loops, Graceful Degradation, plus full adversarial robustness, evaluation framework, testing framework, streaming, agent composition, ethics & compliance, and agent-as-a-service. |
+| `agentic-ai-loop-v3.mermaid` | Diagram for v3 — full autonomous system with 11 cross-cutting subgraphs: Security, Evaluation, Testing, Explainability, Resources, Lifecycle, UX, Streaming, Composition, Ethics, API. |
 
 ## How to view the diagrams
 

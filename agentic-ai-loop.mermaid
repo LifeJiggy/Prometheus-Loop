@@ -5,7 +5,7 @@ flowchart LR
 
     subgraph COGNITION["🧠 Cognitive Core"]
         B["2. Context<br/><small>retrieved data, history, live inputs</small>"]
-        C["3. Plan<br/><small>decompose goal → sub-tasks / sub-agents</small>"]
+        C["3. Plan<br/><small>decompose goal → sub-tasks</small>"]
         D["4. Reason<br/><small>chain-of-thought, decide next move</small>"]
     end
 
@@ -19,13 +19,38 @@ flowchart LR
         H["Memory<br/><small>curated, retrievable state</small>"]
     end
 
+    subgraph SECURITY["🔒 Security Awareness"]
+        S1["Prompt injection<br/><small>user input hijack</small>"]
+        S2["Indirect injection<br/><small>adversarial RAG content</small>"]
+        S3["Tool abuse<br/><small>unintended tool calls</small>"]
+    end
+
+    subgraph EVAL["📊 Evaluation"]
+        E1["Completion rate<br/><small>% tasks finished</small>"]
+        E2["Accuracy<br/><small>% correct results</small>"]
+        E3["Cycle count<br/><small>avg loops per task</small>"]
+    end
+
+    subgraph QUALITY["🧪 Testing + Ethics"]
+        T1["Smoke tests<br/><small>3 patterns</small>"]
+        T2["Health signals<br/><small>cycle, token, output</small>"]
+        ETH["Ethics<br/><small>transparency, harm, oversight</small>"]
+    end
+
     A --> B --> C --> D --> E --> F
     F --> G
     G --> H
     H -.next cycle.-> B
     F -.replan if failed.-> C
 
+    SECURITY -.defends.-> E
+    EVAL -.measures.-> F
+    QUALITY -.validates.-> D
+
     style INPUT fill:#1a1a2e,color:#fff,stroke:#e94560
     style COGNITION fill:#16213e,color:#fff,stroke:#0f3460
     style EXECUTION fill:#0f3460,color:#fff,stroke:#e94560
     style PERSIST fill:#1a1a2e,color:#fff,stroke:#0f3460
+    style SECURITY fill:#3d0000,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
+    style EVAL fill:#16213e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
+    style QUALITY fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
