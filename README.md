@@ -23,46 +23,46 @@ The diagrams are embedded below and render automatically on GitHub, Notion, Obsi
 
 ## v1 — Core Loop
 
-The 7-step agentic loop: Prompt → Context → Plan → Reason → Act → Observe → Store/Memory, with foundational security awareness, evaluation metrics, and ethical considerations.
+The 7-step agentic loop: Prompt, Context, Plan, Reason, Act, Observe, Store/Memory, with foundational security awareness, evaluation metrics, and ethical considerations.
 
 ```mermaid
 flowchart LR
-    subgraph INPUT["🎯 Trigger"]
-        A["1. Prompt<br/><small>goal + system rules + tool defs</small>"]
+    subgraph INPUT["Trigger"]
+        A["1. Prompt: goal + system rules + tool defs"]
     end
 
-    subgraph COGNITION["🧠 Cognitive Core"]
-        B["2. Context<br/><small>retrieved data, history, live inputs</small>"]
-        C["3. Plan<br/><small>decompose goal → sub-tasks</small>"]
-        D["4. Reason<br/><small>chain-of-thought, decide next move</small>"]
+    subgraph COGNITION["Cognitive Core"]
+        B["2. Context: retrieved data, history, live inputs"]
+        C["3. Plan: decompose goal to sub-tasks"]
+        D["4. Reason: chain-of-thought, decide next move"]
     end
 
-    subgraph EXECUTION["⚙️ Execution Loop"]
-        E["5. Act<br/><small>call tool / API / run code</small>"]
-        F["6. Observe<br/><small>capture result, success or failure</small>"]
+    subgraph EXECUTION["Execution Loop"]
+        E["5. Act: call tool / API / run code"]
+        F["6. Observe: capture result, success or failure"]
     end
 
-    subgraph PERSIST["💾 Persistence Layer"]
-        G["7. Storage<br/><small>raw logs, artifacts, DB</small>"]
-        H["Memory<br/><small>curated, retrievable state</small>"]
+    subgraph PERSIST["Persistence Layer"]
+        G["7. Storage: raw logs, artifacts, DB"]
+        H["Memory: curated, retrievable state"]
     end
 
-    subgraph SECURITY["🔒 Security Awareness"]
-        S1["Prompt injection<br/><small>user input hijack</small>"]
-        S2["Indirect injection<br/><small>adversarial RAG content</small>"]
-        S3["Tool abuse<br/><small>unintended tool calls</small>"]
+    subgraph SECURITY["Security Awareness"]
+        S1["Prompt injection: user input hijack"]
+        S2["Indirect injection: adversarial RAG content"]
+        S3["Tool abuse: unintended tool calls"]
     end
 
-    subgraph EVAL["📊 Evaluation"]
-        E1["Completion rate<br/><small>% tasks finished</small>"]
-        E2["Accuracy<br/><small>% correct results</small>"]
-        E3["Cycle count<br/><small>avg loops per task</small>"]
+    subgraph EVAL["Evaluation"]
+        E1["Completion rate: % tasks finished"]
+        E2["Accuracy: % correct results"]
+        E3["Cycle count: avg loops per task"]
     end
 
-    subgraph QUALITY["🧪 Testing + Ethics"]
-        T1["Smoke tests<br/><small>3 patterns</small>"]
-        T2["Health signals<br/><small>cycle, token, output</small>"]
-        ETH["Ethics<br/><small>transparency, harm, oversight</small>"]
+    subgraph QUALITY["Testing + Ethics"]
+        T1["Smoke tests: 3 patterns"]
+        T2["Health signals: cycle, token, output"]
+        ETH["Ethics: transparency, harm, oversight"]
     end
 
     A --> B --> C --> D --> E --> F
@@ -94,108 +94,108 @@ Adds Permission Gate, HITL, Retry vs. Replan, Goal Check, Coordinator, plus oper
 
 ```mermaid
 flowchart TD
-    subgraph TRIGGER["🎯 Trigger"]
+    subgraph TRIGGER["Trigger"]
         A["1. Prompt"]
     end
 
-    subgraph COGNITION["🧠 Cognitive Core"]
+    subgraph COGNITION["Cognitive Core"]
         B["2. Context"]
         C["3. Plan"]
         D["4. Reason"]
     end
 
-    subgraph COORD["🤝 Coordinator — multi-agent only"]
+    subgraph COORD["Coordinator - multi-agent only"]
         direction LR
         SA1["Sub-Agent A"]
         SA2["Sub-Agent B"]
         SAn["Sub-Agent N"]
     end
 
-    subgraph GATE["🛂 Guardrail + Security"]
-        E{"5. Permission Gate<br/><small>in scope? authorized?</small>"}
-        HITL["Human-in-the-loop<br/><small>approval</small>"]
-        SEC["Security<br/><small>injection detection, tool validation,<br/>memory integrity, exfil prevention</small>"]
+    subgraph GATE["Guardrail + Security"]
+        E["5. Permission Gate: in scope? authorized?"]
+        HITL["Human-in-the-loop: approval"]
+        SEC["Security: injection detection, tool validation, memory integrity, exfil prevention"]
     end
 
-    subgraph EXEC["⚙️ Execution Loop"]
+    subgraph EXEC["Execution Loop"]
         F["6. Act"]
         G["7. Observe"]
-        RETRY["Retry<br/><small>tool/transient error</small>"]
+        RETRY["Retry: tool/transient error"]
     end
 
-    subgraph CHECK["✅ Goal Check"]
-        H{"8. Done?"}
+    subgraph CHECK["Goal Check"]
+        H["8. Done?"]
     end
 
-    subgraph PERSIST["💾 Persistence Layer"]
+    subgraph PERSIST["Persistence Layer"]
         I["9. Storage"]
         J["Memory"]
     end
 
-    subgraph TESTING["🧪 Testing"]
-        T1["Unit tests<br/><small>gate, retry, goal check</small>"]
-        T2["Integration tests<br/><small>full loop e2e</small>"]
-        T3["Chaos engineering<br/><small>inject failures</small>"]
-        T4["Regression tests<br/><small>compare to baseline</small>"]
+    subgraph TESTING["Testing"]
+        T1["Unit tests: gate, retry, goal check"]
+        T2["Integration tests: full loop e2e"]
+        T3["Chaos engineering: inject failures"]
+        T4["Regression tests: compare to baseline"]
     end
 
-    subgraph EXPLAIN["🔍 Explainability"]
-        X1["Decision traces<br/><small>why this action?</small>"]
-        X2["Audit logs<br/><small>every action logged</small>"]
-        X3["Compliance<br/><small>SOC2, GDPR, HIPAA, PCI</small>"]
+    subgraph EXPLAIN["Explainability"]
+        X1["Decision traces: why this action?"]
+        X2["Audit logs: every action logged"]
+        X3["Compliance: SOC2, GDPR, HIPAA, PCI"]
     end
 
-    subgraph RESOURCES["📦 Resource Management"]
-        R1["Concurrency<br/><small>N parallel tasks</small>"]
-        R2["Priority scheduling<br/><small>P0-P3</small>"]
-        R3["Backpressure<br/><small>load shedding</small>"]
-        R4["Dead letter queue<br/><small>failed tasks</small>"]
+    subgraph RESOURCES["Resource Management"]
+        R1["Concurrency: N parallel tasks"]
+        R2["Priority scheduling: P0-P3"]
+        R3["Backpressure: load shedding"]
+        R4["Dead letter queue: failed tasks"]
     end
 
-    subgraph LIFECYCLE["🚀 Lifecycle"]
-        L1["Deployment<br/><small>blue-green, canary, rolling</small>"]
-        L2["Monitoring<br/><small>alerts + metrics</small>"]
-        L3["Incident response<br/><small>detect → contain → fix</small>"]
+    subgraph LIFECYCLE["Lifecycle"]
+        L1["Deployment: blue-green, canary, rolling"]
+        L2["Monitoring: alerts + metrics"]
+        L3["Incident response: detect to contain to fix"]
     end
 
-    subgraph UX_DESIGN["👤 User Experience"]
-        U1["Progress visibility<br/><small>what's happening</small>"]
-        U2["Transparency<br/><small>why this action</small>"]
-        U3["Correction<br/><small>undo, redirect, pause</small>"]
-        U4["Trust calibration<br/><small>capabilities + confidence</small>"]
+    subgraph UX_DESIGN["User Experience"]
+        U1["Progress visibility: what is happening"]
+        U2["Transparency: why this action"]
+        U3["Correction: undo, redirect, pause"]
+        U4["Trust calibration: capabilities + confidence"]
     end
 
-    subgraph STREAM["📡 Streaming Basics"]
-        ST1["Progress reporting<br/><small>step updates</small>"]
-        ST2["Status messages<br/><small>start, middle, end, fail</small>"]
+    subgraph STREAM["Streaming Basics"]
+        ST1["Progress reporting: step updates"]
+        ST2["Status messages: start, middle, end, fail"]
     end
 
-    subgraph COMPOSE["🔗 Composition Basics"]
-        CP1["Tool integration<br/><small>APIs, DBs, files</small>"]
-        CP2["Webhook triggers<br/><small>external events</small>"]
-        CP3["Output consumers<br/><small>CI/CD, dashboards</small>"]
+    subgraph COMPOSE["Composition Basics"]
+        CP1["Tool integration: APIs, DBs, files"]
+        CP2["Webhook triggers: external events"]
+        CP3["Output consumers: CI/CD, dashboards"]
     end
 
-    subgraph ETHICS["⚖️ Ethics Basics"]
-        ETH1["Transparency<br/><small>label agent output</small>"]
-        ETH2["Harm prevention<br/><small>don't act alone on high-stakes</small>"]
-        ETH3["Oversight<br/><small>human can intervene</small>"]
+    subgraph ETHICS["Ethics Basics"]
+        ETH1["Transparency: label agent output"]
+        ETH2["Harm prevention: do not act alone on high-stakes"]
+        ETH3["Oversight: human can intervene"]
     end
 
     A --> B --> C --> D --> E
     C -.dispatch sub-tasks.-> COORD
     COORD -.results merge.-> D
-    E -- allowed --> F
-    E -- high-stakes / out of policy --> HITL
-    HITL -- approved --> F
-    HITL -- rejected --> C
+    E -->|allowed| F
+    E -->|high-stakes / out of policy| HITL
+    HITL -->|approved| F
+    HITL -->|rejected| C
     F --> G
-    G -- tool/transient error --> RETRY
+    G -->|tool/transient error| RETRY
     RETRY --> F
-    G -- plan was wrong --> C
-    G -- success --> H
-    H -- not done --> I
-    H -- done --> I
+    G -->|plan was wrong| C
+    G -->|success| H
+    H -->|not done| I
+    H -->|done| I
     I --> J
     J -.next cycle, if not done.-> B
 
@@ -236,138 +236,138 @@ Full autonomous system with Self-Healing, Adaptive Planning, Cost Optimization, 
 
 ```mermaid
 flowchart TD
-    subgraph TRIGGER["🎯 Trigger"]
+    subgraph TRIGGER["Trigger"]
         A["1. Prompt"]
     end
 
-    subgraph COGNITION["🧠 Cognitive Core"]
-        B["2. Context<br/><small>+ cross-session memory</small>"]
-        C{"3. Adaptive Plan<br/><small>+ learned strategies</small>"}
-        D["4. Reason<br/><small>+ cost-optimized model</small>"}
+    subgraph COGNITION["Cognitive Core"]
+        B["2. Context + cross-session memory"]
+        C["3. Adaptive Plan + learned strategies"]
+        D["4. Reason + cost-optimized model"]
     end
 
-    subgraph GATE["🛂 Guardrail + Verification + Security"]
-        E{"5. Permission Gate<br/><small>scope? authorized?</small>"}
-        HITL["6. Human-in-the-loop<br/><small>approval</small>"]
-        V{"Verify<br/><small>will this work?</small>"}
-        SEC["4-Layer Defense<br/><small>injection, hierarchy,<br/>output validation, monitoring</small>"]
+    subgraph GATE["Guardrail + Verification + Security"]
+        E["5. Permission Gate: scope? authorized?"]
+        HITL["6. Human-in-the-loop: approval"]
+        V["Verify: will this work?"]
+        SEC["4-Layer Defense: injection, hierarchy, output validation, monitoring"]
     end
 
-    subgraph EXEC["⚙️ Execution Loop"]
-        F["7. Act<br/><small>sandboxed</small>"]
-        G{"8. Observe"}
-        SH["Self-Heal<br/><small>diagnose + fix</small>"]
-        RETRY["Retry<br/><small>transient error</small>"]
+    subgraph EXEC["Execution Loop"]
+        F["7. Act: sandboxed"]
+        G["8. Observe"]
+        SH["Self-Heal: diagnose + fix"]
+        RETRY["Retry: transient error"]
     end
 
-    subgraph CHECK["✅ Goal Check + Budget"]
-        H{"9. Done?<br/><small>+ budget check</small>"}
+    subgraph CHECK["Goal Check + Budget"]
+        H["9. Done? + budget check"]
     end
 
-    subgraph PERSIST["💾 Persistence Layer"]
+    subgraph PERSIST["Persistence Layer"]
         I["10. Store"]
-        J["Memory<br/><small>+ relevance scoring + integrity</small>"]
-        PM["Persistent Memory Store<br/><small>cross-session</small>"]
+        J["Memory: relevance scoring + integrity"]
+        PM["Persistent Memory Store: cross-session"]
     end
 
-    subgraph LEARN["🔄 Feedback + Learning"]
-        FL["Feedback Loop<br/><small>learns from outcomes</small>"]
-        CO["Cost Optimizer<br/><small>model selection + caching</small>"]
+    subgraph LEARN["Feedback + Learning"]
+        FL["Feedback Loop: learns from outcomes"]
+        CO["Cost Optimizer: model selection + caching"]
     end
 
-    subgraph DEGRAD["🛡️ Graceful Degradation"]
-        GD["Fallback paths<br/><small>L1-L7 when components fail</small>"]
+    subgraph DEGRAD["Graceful Degradation"]
+        GD["Fallback paths: L1-L7 when components fail"]
     end
 
-    subgraph SECURITY["🔒 Full Adversarial Robustness"]
-        S1["Threat model<br/><small>5 attacker types</small>"]
-        S2["Memory integrity<br/><small>signed, audited</small>"]
-        S3["Sandboxing<br/><small>process, container, VM, network</small>"]
-        S4["Red team testing<br/><small>injection, tool abuse, exfil, boundary</small>"]
+    subgraph SECURITY["Full Adversarial Robustness"]
+        S1["Threat model: 5 attacker types"]
+        S2["Memory integrity: signed, audited"]
+        S3["Sandboxing: process, container, VM, network"]
+        S4["Red team testing: injection, tool abuse, exfil, boundary"]
     end
 
-    subgraph EVAL["📊 Evaluation Framework"]
-        EV1["Task suites<br/><small>50-100 tasks</small>"]
-        EV2["8 metrics<br/><small>completion, accuracy, cost...</small>"]
-        EV3["A/B comparison<br/><small>baseline vs candidate</small>"]
-        EV4["Regression gate<br/><small>block if >5% regress</small>"]
+    subgraph EVAL["Evaluation Framework"]
+        EV1["Task suites: 50-100 tasks"]
+        EV2["8 metrics: completion, accuracy, cost..."]
+        EV3["A/B comparison: baseline vs candidate"]
+        EV4["Regression gate: block if >5% regress"]
     end
 
-    subgraph TESTING["🧪 Testing Framework"]
-        TP["Test pyramid<br/><small>unit → integration → E2E</small>"]
-        CH["Chaos engineering<br/><small>8 failure scenarios</small>"]
-        LD["Load testing<br/><small>concurrency + breaking point</small>"]
-        PB["Property-based<br/><small>safety invariants</small>"]
+    subgraph TESTING["Testing Framework"]
+        TP["Test pyramid: unit to integration to E2E"]
+        CH["Chaos engineering: 8 failure scenarios"]
+        LD["Load testing: concurrency + breaking point"]
+        PB["Property-based: safety invariants"]
     end
 
-    subgraph EXPLAIN["🔍 Explainability + Compliance"]
-        X1["Decision traces<br/><small>reasoning + context + memories</small>"]
-        X2["Audit logs<br/><small>complete action history</small>"]
-        X3["7 regulations<br/><small>GDPR, SOC2, HIPAA, PCI, AI Act...</small>"]
-        X4["Impact assessment<br/><small>pre-deployment review</small>"]
+    subgraph EXPLAIN["Explainability + Compliance"]
+        X1["Decision traces: reasoning + context + memories"]
+        X2["Audit logs: complete action history"]
+        X3["7 regulations: GDPR, SOC2, HIPAA, PCI, AI Act..."]
+        X4["Impact assessment: pre-deployment review"]
     end
 
-    subgraph RESOURCES["📦 Resource Management"]
-        R1["Concurrency<br/><small>N parallel tasks</small>"]
-        R2["Priority scheduling<br/><small>P0-P3 + SLAs</small>"]
-        R3["Backpressure<br/><small>load shedding</small>"]
-        R4["Dead letter queue<br/><small>failed task handling</small>"]
+    subgraph RESOURCES["Resource Management"]
+        R1["Concurrency: N parallel tasks"]
+        R2["Priority scheduling: P0-P3 + SLAs"]
+        R3["Backpressure: load shedding"]
+        R4["Dead letter queue: failed task handling"]
     end
 
-    subgraph LIFECYCLE["🚀 Lifecycle"]
-        L1["4 deployment strategies<br/><small>blue-green, canary, rolling, shadow</small>"]
-        L2["Monitoring + alerting<br/><small>5 metric thresholds</small>"]
-        L3["Incident response<br/><small>detect → contain → fix → review</small>"]
+    subgraph LIFECYCLE["Lifecycle"]
+        L1["4 deployment strategies: blue-green, canary, rolling, shadow"]
+        L2["Monitoring + alerting: 5 metric thresholds"]
+        L3["Incident response: detect to contain to fix to review"]
     end
 
-    subgraph UX_DESIGN["👤 User Experience"]
-        U1["Progress visibility<br/><small>real-time updates</small>"]
-        U2["Transparency<br/><small>action log + reasoning</small>"]
-        U3["Correction<br/><small>undo, redirect, pause, cancel</small>"]
-        U4["Trust calibration<br/><small>capabilities + confidence + risk</small>"]
+    subgraph UX_DESIGN["User Experience"]
+        U1["Progress visibility: real-time updates"]
+        U2["Transparency: action log + reasoning"]
+        U3["Correction: undo, redirect, pause, cancel"]
+        U4["Trust calibration: capabilities + confidence + risk"]
     end
 
-    subgraph STREAM["📡 Streaming + Real-Time"]
-        ST1["Event-driven architecture<br/><small>event bus + workers</small>"]
-        ST2["Streaming responses<br/><small>SSE/WebSocket</small>"]
-        ST3["Interrupt handling<br/><small>graceful cancel + state save</small>"]
-        ST4["Long-running tasks<br/><small>heartbeat, checkpoint, timeout</small>"]
+    subgraph STREAM["Streaming + Real-Time"]
+        ST1["Event-driven architecture: event bus + workers"]
+        ST2["Streaming responses: SSE/WebSocket"]
+        ST3["Interrupt handling: graceful cancel + state save"]
+        ST4["Long-running tasks: heartbeat, checkpoint, timeout"]
     end
 
-    subgraph COMPOSE["🔗 Agent Composition"]
-        CP1["5 communication patterns<br/><small>req-res, pub-sub, queue, shared, blackboard</small>"]
-        CP2["DAG orchestration<br/><small>workflow graphs</small>"]
-        CP3["Shared state<br/><small>optimistic locking + conflict resolution</small>"]
+    subgraph COMPOSE["Agent Composition"]
+        CP1["5 communication patterns: req-res, pub-sub, queue, shared, blackboard"]
+        CP2["DAG orchestration: workflow graphs"]
+        CP3["Shared state: optimistic locking + conflict resolution"]
     end
 
-    subgraph ETHICS["⚖️ Ethics + Compliance"]
-        ETH1["5 principles<br/><small>transparency, accountability, fairness, privacy, safety</small>"]
-        ETH2["Bias testing<br/><small>demographics, phrasings, edge cases</small>"]
-        ETH3["Compliance checklist<br/><small>7 regulations documented</small>"]
+    subgraph ETHICS["Ethics + Compliance"]
+        ETH1["5 principles: transparency, accountability, fairness, privacy, safety"]
+        ETH2["Bias testing: demographics, phrasings, edge cases"]
+        ETH3["Compliance checklist: 7 regulations documented"]
     end
 
-    subgraph API["🌐 Agent-as-a-Service"]
-        AP1["REST API<br/><small>CRUD tasks</small>"]
-        AP2["Auth + rate limiting<br/><small>API keys, tiers</small>"]
-        AP3["SLA guarantees<br/><small>uptime + latency</small>"]
+    subgraph API_SERVICE["Agent-as-a-Service"]
+        AP1["REST API: CRUD tasks"]
+        AP2["Auth + rate limiting: API keys, tiers"]
+        AP3["SLA guarantees: uptime + latency"]
     end
 
     A --> B --> C --> D --> E
-    E -- allowed --> V
-    E -- high-stakes / out of policy --> HITL
-    HITL -- approved --> V
-    HITL -- rejected --> C
-    V -- passes --> F
-    V -- fails --> C
+    E -->|allowed| V
+    E -->|high-stakes| HITL
+    HITL -->|approved| V
+    HITL -->|rejected| C
+    V -->|passes| F
+    V -->|fails| C
     F --> G
-    G -- transient error --> RETRY
+    G -->|transient error| RETRY
     RETRY --> F
-    G -- plan wrong --> C
-    G -- self-healable --> SH
+    G -->|plan wrong| C
+    G -->|self-healable| SH
     SH --> F
-    G -- success --> H
-    H -- not done --> I
-    H -- done --> I
+    G -->|success| H
+    H -->|not done| I
+    H -->|done| I
     I --> J
     J --> PM
     PM -.next session.-> B
@@ -391,7 +391,7 @@ flowchart TD
     STREAM -.streams.-> F
     COMPOSE -.orchestrates.-> C
     ETHICS -.governs.-> E
-    API -.exposes.-> F
+    API_SERVICE -.exposes.-> F
 
     style TRIGGER fill:#1a1a2e,color:#fff,stroke:#e94560
     style COGNITION fill:#16213e,color:#fff,stroke:#0f3460
@@ -411,7 +411,7 @@ flowchart TD
     style STREAM fill:#1a1a2e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
     style COMPOSE fill:#3d0000,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
     style ETHICS fill:#0f3460,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
-    style API fill:#16213e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
+    style API_SERVICE fill:#16213e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
 ```
 
 **Guide:** [v3 guide](agentic-ai-loop-v3-guide.md) — full explanations, implementation patterns, checklists.
