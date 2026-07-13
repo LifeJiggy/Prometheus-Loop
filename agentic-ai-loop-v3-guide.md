@@ -1,6 +1,6 @@
-# The Agentic AI Loop v3: 70% Autonomous Operation
+# The Agentic AI Loop v3: Autonomous Operation
 
-v1 gave you the shape. v2 gave you the safety harness. v3 gives you the *autonomy* — an agent that can handle most situations without human intervention, learn from its mistakes, optimize its own costs, and remember across sessions. The goal: the human reviews the 30% that matters; the agent handles the rest.
+v1 gave you the shape. v2 gave you the safety harness. v3 gives you the *autonomy* — an agent designed to minimize human touchpoints, learn from its mistakes, optimize its own costs, and remember across sessions. The goal: routine operations run fully autonomously; the human focuses only on novel, ambiguous, or high-stakes decisions.
 
 ```mermaid
 flowchart TD
@@ -60,16 +60,16 @@ v2 made the agent safe. v3 makes it *efficient*. Every addition here exists beca
 | **Verification** | None | Permission gate only | Pre-execution safety verification |
 | **Learning** | None | None | Feedback loops improve policies |
 
-### The 70% autonomy target
+### The autonomy target
 
 | Task type | v2 human involvement | v3 human involvement |
 |---|---|---|
 | **Routine operations** | 5-10% approval | 0% — fully autonomous |
 | **Known failure patterns** | Manual retry/replan | 0% — self-healing handles it |
 | **Cost-sensitive tasks** | Manual model selection | 0% — optimizer decides |
-| **Novel situations** | HITL required | HITL required (the 30%) |
-| **High-stakes actions** | HITL required | HITL required (the 30%) |
-| **Ambiguous intent** | HITL required | HITL required (the 30%) |
+| **Novel situations** | HITL required | HITL required |
+| **High-stakes actions** | HITL required | HITL required |
+| **Ambiguous intent** | HITL required | HITL required |
 
 ---
 
@@ -612,7 +612,7 @@ Prompt → Context (with cross-session memory)
 | **Composition** | Not needed | Tool integration + Coordinator basics | 5 patterns + DAG orchestration |
 | **Ethics** | 3 questions + minimum posture | Ethical controls (gate, HITL, observability) | 5 principles + bias testing + 7 regulations |
 | **Agent-as-a-Service** | Not addressed | Not addressed | API + auth + rate limiting + SLA |
-| **Autonomy level** | 0% (manual everything) | ~30% (some HITL) | ~70% (minimal HITL) |
+| **Autonomy level** | 0% (manual everything) | ~30% (some HITL) | Designed to minimize human touchpoints |
 
 ---
 

@@ -1,0 +1,18 @@
+flowchart TD
+    A["1. Prompt"] --> B["2. Context"] --> C["3. Plan"] --> D["4. Reason"] --> E{"5. Permission Gate"}
+    E -->|allowed| V{"6. Verify"}
+    E -->|high-stakes| HITL["Human approval"]
+    HITL -->|approved| V
+    HITL -->|rejected| C
+    V -->|passes| F["7. Act"]
+    V -->|fails| C
+    F --> G{"8. Observe"}
+    G -->|transient error| RETRY["Retry"] --> F
+    G -->|plan wrong| C
+    G -->|self-healable| SH["Self-Heal"] --> F
+    G -->|success| H{"9. Done?"}
+    H -->|not done| I["10. Store"] --> J["Memory"]
+    H -->|done| I
+    J --> PM["Persistent Memory"]
+    PM -.next session.-> B
+    J -.next cycle.-> C

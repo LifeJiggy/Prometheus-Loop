@@ -1,0 +1,5 @@
+flowchart LR
+    A["1. Prompt"] --> B["2. Context"] --> C["3. Plan"] --> D["4. Reason"] --> E["5. Act"] --> F["6. Observe"]
+    F --> G["7. Storage"] --> H["Memory"]
+    H -.next cycle.-> B
+    F -.replan if failed.-> C

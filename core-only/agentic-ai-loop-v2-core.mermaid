@@ -1,0 +1,13 @@
+flowchart TD
+    A["1. Prompt"] --> B["2. Context"] --> C["3. Plan"] --> D["4. Reason"] --> E{"5. Permission Gate"}
+    E -->|allowed| F["6. Act"]
+    E -->|high-stakes| HITL["Human approval"]
+    HITL -->|approved| F
+    HITL -->|rejected| C
+    F --> G["7. Observe"]
+    G -->|tool error| RETRY["Retry"] --> F
+    G -->|plan wrong| C
+    G -->|success| H{"8. Done?"}
+    H -->|not done| I["9. Storage"] --> J["Memory"]
+    H -->|done| I
+    J -.next cycle.-> B

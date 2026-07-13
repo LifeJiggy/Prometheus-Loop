@@ -1,23 +1,60 @@
-# Agentic AI Loop — Guide & Diagrams
+# Prometheus Loop — Agentic AI Loop Guide & Diagrams
 
-A comprehensive breakdown of what actually happens inside an agentic AI system — from the initial prompt to persisted memory — across three evolutionary stages: concept (v1), safety (v2), and autonomy (v3). Now includes security, evaluation, testing, explainability, resource management, lifecycle, UX, streaming, ethics, and agent-as-a-service patterns.
+A comprehensive breakdown of what actually happens inside an agentic AI system — from the initial prompt to persisted memory — across three maturity levels: **Concept**, **Production**, and **Autonomous**. Now includes security, evaluation, testing, explainability, resource management, lifecycle, UX, streaming, ethics, and agent-as-a-service patterns.
 
 This is the reference for building, teaching, or reasoning about agentic AI systems. It covers both the conceptual model (what the loop *is*) and the operational model (what you need to run it safely, autonomously, and securely).
 
-## Files
+## Repository Structure
 
-| File | What it is |
-|---|---|
-| `agentic-ai-loop-guide.md` | **v1** — the core 7-step loop plus security awareness, basic evaluation, smoke tests, explainability basics, and ethics basics. Start here if you're new to agentic AI. |
-| `agentic-ai-loop.mermaid` | Diagram for v1 — 7-step loop with 3 cross-cutting subgraphs: Security Awareness, Evaluation, Testing + Ethics. |
-| `agentic-ai-loop-v2-guide.md` | **v2** — adds safety layers (Permission Gate, HITL, Retry/Replan, Goal Check, Coordinator) plus operational gaps: security at the gate level, testing methodology, explainability, resource management, lifecycle, UX, streaming basics, composition basics, and ethics basics. |
-| `agentic-ai-loop-v2.mermaid` | Diagram for v2 — full safety system with 9 cross-cutting subgraphs: Security, Testing, Explainability, Resources, Lifecycle, UX, Streaming, Composition, Ethics. |
-| `agentic-ai-loop-v3-guide.md` | **v3** — 70% autonomous operation. Adds Self-Healing, Adaptive Planning, Cost Optimization, Cross-Session Memory, Verification, Multi-Tenant Orchestration, Feedback Loops, Graceful Degradation, plus full adversarial robustness, evaluation framework, testing framework, streaming, agent composition, ethics & compliance, and agent-as-a-service. |
-| `agentic-ai-loop-v3.mermaid` | Diagram for v3 — full autonomous system with 11 cross-cutting subgraphs: Security, Evaluation, Testing, Explainability, Resources, Lifecycle, UX, Streaming, Composition, Ethics, API. |
+```
+Prometheus-Loop/
+├── core/                          # Concept level (v1)
+│   ├── README.md
+│   ├── agentic-ai-loop-guide.md
+│   ├── agentic-ai-loop.mermaid
+│   └── agentic-ai-loop-core.mermaid
+├── production/                    # Production level (v2)
+│   ├── README.md
+│   ├── agentic-ai-loop-v2-guide.md
+│   ├── agentic-ai-loop-v2.mermaid
+│   └── agentic-ai-loop-v2-core.mermaid
+├── autonomous/                    # Autonomous level (v3)
+│   ├── README.md
+│   ├── agentic-ai-loop-v3-guide.md
+│   ├── agentic-ai-loop-v3.mermaid
+│   └── agentic-ai-loop-v3-core.mermaid
+├── shared/                        # Common resources
+│   ├── README.md
+│   ├── evaluation-metrics.md
+│   ├── observability.md
+│   ├── cost-optimization.md
+│   ├── ethics-compliance.md
+│   └── multi-agent-patterns.md
+├── examples/                      # Code snippets & case studies
+│   ├── README.md
+│   ├── code-snippets.md
+│   ├── coding-agent-case-study.md
+│   ├── research-agent-case-study.md
+│   └── support-agent-case-study.md
+├── LICENSE                        # MIT License
+└── README.md                      # This file
+```
+
+## Quick Start
+
+| Level | Best for | Start here |
+|---|---|---|
+| **Concept** (v1) | Teaching, prototyping | `core/README.md` |
+| **Production** (v2) | Real deployments, human oversight | `production/README.md` |
+| **Autonomous** (v3) | Minimal oversight, cost-sensitive | `autonomous/README.md` |
 
 ## How to view the diagrams
 
-The diagrams are embedded below and render automatically on GitHub, Notion, Obsidian, and any Mermaid-compatible renderer. The `.mermaid` source files are also included for standalone use or editing at [mermaid.live](https://mermaid.live).
+The diagrams are embedded below and render automatically on GitHub, Notion, Obsidian, and any Mermaid-compatible renderer. Each version has two diagrams:
+- **Core** — simplified loop only (10 nodes, readable in 10 seconds)
+- **Full** — loop + all cross-cutting concerns (comprehensive)
+
+The `.mermaid` source files are also included for standalone use or editing at [mermaid.live](https://mermaid.live).
 
 ---
 
@@ -230,9 +267,9 @@ flowchart TD
 
 ---
 
-## v3 — 70% Autonomous Operation
+## v3 — Autonomous Operation
 
-Full autonomous system with Self-Healing, Adaptive Planning, Cost Optimization, Cross-Session Memory, Verification, Feedback Loops, Graceful Degradation, plus 11 cross-cutting concerns.
+Designed to minimize human touchpoints. Full autonomous system with Self-Healing, Adaptive Planning, Cost Optimization, Cross-Session Memory, Verification, Feedback Loops, Graceful Degradation, plus 11 cross-cutting concerns.
 
 ```mermaid
 flowchart TD
@@ -429,7 +466,7 @@ flowchart TD
 
 > **v1:** Prompt → Context → Plan → Reason → Act → Observe → Store/Remember → loop
 > **v2:** same loop, plus permission gate, HITL, retry vs. replan, goal check, coordinator, security at the gate level, testing, explainability, resource management, lifecycle, UX.
-> **v3:** same loop, plus self-healing, adaptive planning, cost optimization, cross-session memory, verification, multi-tenant isolation, feedback loops, graceful degradation, full adversarial robustness, evaluation framework, testing framework, streaming, agent composition, ethics & compliance, agent-as-a-service.
+> **v3:** same loop, designed to minimize human touchpoints — self-healing, adaptive planning, cost optimization, cross-session memory, verification, multi-tenant isolation, feedback loops, graceful degradation, full adversarial robustness, evaluation framework, testing framework, streaming, agent composition, ethics & compliance, agent-as-a-service.
 
 ## Quick reference: step-by-step
 
@@ -479,7 +516,7 @@ flowchart TD
 | Multi-agent orchestration | **v2** — Coordinator is essential |
 | High-stakes or irreversible actions | **v2** — Permission Gate + HITL are non-negotiable |
 | Long-running autonomous agents | **v2** — Goal Check prevents infinite loops |
-| Production with minimal oversight | **v3** — 70% autonomous operation |
+| Production with minimal oversight | **v3** — designed to minimize human touchpoints |
 | Cost-sensitive deployments | **v3** — dynamic model selection saves money |
 | Recurring / cross-session tasks | **v3** — cross-session memory accumulates knowledge |
 | Multi-user platforms | **v3** — multi-tenant isolation is required |
@@ -515,3 +552,32 @@ flowchart TD
 | **Self-healing** | Automatic diagnosis and recovery from known failure patterns without human intervention |
 | **Sandboxing** | Executing agent actions in isolated environments to limit blast radius |
 | **Verification** | Pre-execution checks that prove an action will produce the expected result |
+
+---
+
+## Shared Resources
+
+Common resources that apply across all maturity levels:
+
+| Resource | Description |
+|---|---|
+| [Evaluation & Metrics](shared/evaluation-metrics.md) | Benchmarks, metric definitions, evaluation suites, A/B comparison templates |
+| [Observability & Monitoring](shared/observability.md) | LangSmith, Phoenix, structured logs, dashboards, alert rules |
+| [Cost Optimization](shared/cost-optimization.md) | Model routing, caching, context compression, budget enforcement |
+| [Ethics & Compliance](shared/ethics-compliance.md) | GDPR, SOC 2, HIPAA, PCI DSS, EU AI Act checklists, bias testing |
+| [Multi-Agent Patterns](shared/multi-agent-patterns.md) | Communication protocols, consensus, conflict resolution, workflow orchestration |
+
+## Examples
+
+Concrete implementations and case studies:
+
+| Example | Description |
+|---|---|
+| [Code Snippets](examples/code-snippets.md) | Python pseudocode for Permission Gate, Goal Check, Self-Healing, Adaptive Planning, Cost Optimizer, Memory Manager |
+| [Coding Agent Case Study](examples/coding-agent-case-study.md) | How the loop applies to bug fixing, feature implementation, refactoring |
+| [Research Agent Case Study](examples/research-agent-case-study.md) | How the loop applies to paper research, synthesis, report writing |
+| [Customer Support Case Study](examples/support-agent-case-study.md) | How the loop applies to inquiry handling, troubleshooting, escalation |
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.
