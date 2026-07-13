@@ -396,6 +396,24 @@ Every agent has ethical implications, even a simple one:
 
 ---
 
+## Deep dives (go deeper)
+
+The core guide covers the fundamentals. For deeper architecture exploration, see:
+
+| Topic | What you'll learn | Link |
+|---|---|---|
+| **Memory Systems** | Short-term vs long-term memory, vector stores, graph memory, summarization, forgetting mechanisms | [Memory Systems Deep Dive](shared/memory-systems.md) |
+| **Planning & Reasoning** | Chain-of-Thought, Tree of Thoughts, Graph of Thoughts, ReAct, Reflexion, meta-reasoning | [Planning & Reasoning Deep Dive](shared/planning-reasoning.md) |
+| **Safety & Guardrails** | Threat modeling, sandboxing strategies, output validation, adversarial testing | [Safety & Guardrails Deep Dive](shared/safety-guardrails.md) |
+| **Evaluation** | Metrics definitions, evaluation suites, A/B testing methodology | [Evaluation & Metrics](shared/evaluation-metrics.md) |
+| **Ethics & Compliance** | GDPR, SOC 2, HIPAA, PCI DSS, EU AI Act checklists, bias testing | [Ethics & Compliance Deep Dive](shared/ethics-compliance.md) |
+
+### What to read first
+
+If you're building your first agent, start with the **core loop** (sections 1-7) and the **Memory Systems** deep dive — memory is the most common failure point. Then add **Safety & Guardrails** before going to production.
+
+---
+
 ## See also
 
 - **v2 guide** — adds permission gates, human-in-the-loop, retry vs. replan, goal checks, and multi-agent coordination on top of this core loop. Note: v2 renumbers steps (5-13) to accommodate the new layers — don't expect the same step numbers to match.

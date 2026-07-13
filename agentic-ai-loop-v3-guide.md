@@ -1151,3 +1151,26 @@ These are the likely shapes of a "v4" — but they're research problems, not eng
 
 - **v1 guide** — the core 7-step loop. Start here if you're new.
 - **v2 guide** — adds safety layers (permission gate, HITL, retry/replan, goal check). The bridge between v1 and v3.
+
+---
+
+## Deep dives (go deeper)
+
+The autonomous guide covers the full system. For deeper architecture exploration, see:
+
+| Topic | What you'll learn | Link |
+|---|---|---|
+| **Memory Systems** | Short-term vs long-term memory, vector stores, graph memory, summarization, forgetting mechanisms | [Memory Systems Deep Dive](shared/memory-systems.md) |
+| **Planning & Reasoning** | Chain-of-Thought, Tree of Thoughts, Graph of Thoughts, ReAct, Reflexion, meta-reasoning | [Planning & Reasoning Deep Dive](shared/planning-reasoning.md) |
+| **Safety & Guardrails** | Threat modeling, sandboxing strategies, output validation, adversarial testing | [Safety & Guardrails Deep Dive](shared/safety-guardrails.md) |
+| **Multi-Agent Orchestration** | Communication patterns, consensus algorithms, conflict resolution, coordination protocols | [Multi-Agent Orchestration Deep Dive](shared/multi-agent-orchestration.md) |
+| **Evaluation Framework** | Standardized benchmarks, metrics dashboards, red-teaming suites | [Evaluation Framework Deep Dive](shared/evaluation-framework.md) |
+| **Production Concerns** | Observability, cost control, streaming, deployment patterns, Agent-as-a-Service | [Production Concerns Deep Dive](shared/production-concerns.md) |
+| **Observability** | LangSmith, Phoenix, structured logs, dashboards, alert rules | [Observability Guide](shared/observability.md) |
+| **Cost Optimization** | Model routing, caching, context compression, budget enforcement | [Cost Optimization Guide](shared/cost-optimization.md) |
+| **Ethics & Compliance** | GDPR, SOC 2, HIPAA, PCI DSS, EU AI Act checklists, bias testing | [Ethics & Compliance Deep Dive](shared/ethics-compliance.md) |
+| **Code Snippets** | Python implementations of Permission Gate, Goal Check, Self-Healing, Adaptive Planning | [Code Snippets](examples/code-snippets.md) |
+
+### What to read first
+
+At the autonomous level, all deep dives are relevant. Start with **Safety & Guardrails** (adversarial robustness is critical) and **Memory Systems** (cross-session memory is the foundation of autonomy). Then add **Evaluation Framework** to measure improvement, and **Production Concerns** for deployment.
