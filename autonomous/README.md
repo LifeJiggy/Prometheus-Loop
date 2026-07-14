@@ -39,3 +39,16 @@ Everything in Production, plus:
 - Security-critical deployments
 - Agent exposed as API
 - Real-time / interactive agents
+
+## Deep dives
+
+- [Memory Systems](../shared/memory-systems.md)
+- [Planning & Reasoning](../shared/planning-reasoning.md)
+- [Safety & Guardrails](../shared/safety-guardrails.md)
+- [Multi-Agent Orchestration](../shared/multi-agent-orchestration.md)
+- [Evaluation Framework](../shared/evaluation-framework.md)
+- [Production Concerns](../shared/production-concerns.md)
+- [Observability](../shared/observability.md)
+- [Cost Optimization](../shared/cost-optimization.md)
+- [Ethics & Compliance](../shared/ethics-compliance.md)
+- [Code Snippets](../examples/code-snippets.md)

@@ -24,3 +24,11 @@ The foundational agentic loop. Start here if you're new to agentic AI.
 - Teaching the concept of agentic AI
 - Building a prototype or PoC
 - Understanding the fundamentals before going deeper
+
+## Deep dives
+
+- [Memory Systems](../shared/memory-systems.md)
+- [Planning & Reasoning](../shared/planning-reasoning.md)
+- [Safety & Guardrails](../shared/safety-guardrails.md)
+- [Evaluation & Metrics](../shared/evaluation-metrics.md)
+- [Ethics & Compliance](../shared/ethics-compliance.md)

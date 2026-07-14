@@ -64,64 +64,18 @@ The 7-step agentic loop: Prompt, Context, Plan, Reason, Act, Observe, Store/Memo
 
 ```mermaid
 flowchart LR
-    subgraph INPUT["Trigger"]
-        A["1. Prompt: goal + system rules + tool defs"]
-    end
-
-    subgraph COGNITION["Cognitive Core"]
-        B["2. Context: retrieved data, history, live inputs"]
-        C["3. Plan: decompose goal to sub-tasks"]
-        D["4. Reason: chain-of-thought, decide next move"]
-    end
-
-    subgraph EXECUTION["Execution Loop"]
-        E["5. Act: call tool / API / run code"]
-        F["6. Observe: capture result, success or failure"]
-    end
-
-    subgraph PERSIST["Persistence Layer"]
-        G["7. Storage: raw logs, artifacts, DB"]
-        H["Memory: curated, retrievable state"]
-    end
-
-    subgraph SECURITY["Security Awareness"]
-        S1["Prompt injection: user input hijack"]
-        S2["Indirect injection: adversarial RAG content"]
-        S3["Tool abuse: unintended tool calls"]
-    end
-
-    subgraph EVAL["Evaluation"]
-        E1["Completion rate: % tasks finished"]
-        E2["Accuracy: % correct results"]
-        E3["Cycle count: avg loops per task"]
-    end
-
-    subgraph QUALITY["Testing + Ethics"]
-        T1["Smoke tests: 3 patterns"]
-        T2["Health signals: cycle, token, output"]
-        ETH["Ethics: transparency, harm, oversight"]
-    end
-
-    A --> B --> C --> D --> E --> F
-    F --> G
-    G --> H
+    A["1. Prompt"] --> B["2. Context"]
+    B --> C["3. Plan"]
+    C --> D["4. Reason"]
+    D --> E["5. Act"]
+    E --> F["6. Observe"]
+    F --> G["7. Storage"]
+    G --> H["Memory"]
     H -.next cycle.-> B
-    F -.replan if failed.-> C
-
-    SECURITY -.defends.-> E
-    EVAL -.measures.-> F
-    QUALITY -.validates.-> D
-
-    style INPUT fill:#1a1a2e,color:#fff,stroke:#e94560
-    style COGNITION fill:#16213e,color:#fff,stroke:#0f3460
-    style EXECUTION fill:#0f3460,color:#fff,stroke:#e94560
-    style PERSIST fill:#1a1a2e,color:#fff,stroke:#0f3460
-    style SECURITY fill:#3d0000,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
-    style EVAL fill:#16213e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
-    style QUALITY fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
+    F -.replan.-> C
 ```
 
-**Guide:** [v1 guide](agentic-ai-loop-guide.md) — full explanations, failure modes, examples for each step.
+**Guide:** [v1 guide](core/agentic-ai-loop-guide.md) | **Core diagram:** [simplified](core-only/agentic-ai-loop-core.mermaid)
 
 ---
 
@@ -131,120 +85,26 @@ Adds Permission Gate, HITL, Retry vs. Replan, Goal Check, Coordinator, plus oper
 
 ```mermaid
 flowchart TD
-    subgraph TRIGGER["Trigger"]
-        A["1. Prompt"]
-    end
-
-    subgraph COGNITION["Cognitive Core"]
-        B["2. Context"]
-        C["3. Plan"]
-        D["4. Reason"]
-    end
-
-    subgraph COORD["Coordinator - multi-agent only"]
-        direction LR
-        SA1["Sub-Agent A"]
-        SA2["Sub-Agent B"]
-        SAn["Sub-Agent N"]
-    end
-
-    subgraph GATE["Guardrail + Security"]
-        E["5. Permission Gate: in scope? authorized?"]
-        HITL["Human-in-the-loop: approval"]
-        SEC["Security: injection detection, tool validation, memory integrity, exfil prevention"]
-    end
-
-    subgraph EXEC["Execution Loop"]
-        F["6. Act"]
-        G["7. Observe"]
-        RETRY["Retry: tool/transient error"]
-    end
-
-    subgraph CHECK["Goal Check"]
-        H["8. Done?"]
-    end
-
-    subgraph PERSIST["Persistence Layer"]
-        I["9. Storage"]
-        J["Memory"]
-    end
-
-    subgraph TESTING["Testing"]
-        T1["Unit tests: gate, retry, goal check"]
-        T2["Integration tests: full loop e2e"]
-        T3["Chaos engineering: inject failures"]
-        T4["Regression tests: compare to baseline"]
-    end
-
-    subgraph EXPLAIN["Explainability"]
-        X1["Decision traces: why this action?"]
-        X2["Audit logs: every action logged"]
-        X3["Compliance: SOC2, GDPR, HIPAA, PCI"]
-    end
-
-    subgraph RESOURCES["Resource Management"]
-        R1["Concurrency: N parallel tasks"]
-        R2["Priority scheduling: P0-P3"]
-        R3["Backpressure: load shedding"]
-        R4["Dead letter queue: failed tasks"]
-    end
-
-    subgraph LIFECYCLE["Lifecycle"]
-        L1["Deployment: blue-green, canary, rolling"]
-        L2["Monitoring: alerts + metrics"]
-        L3["Incident response: detect to contain to fix"]
-    end
-
-    subgraph UX_DESIGN["User Experience"]
-        U1["Progress visibility: what is happening"]
-        U2["Transparency: why this action"]
-        U3["Correction: undo, redirect, pause"]
-        U4["Trust calibration: capabilities + confidence"]
-    end
-
-    subgraph STREAM["Streaming Basics"]
-        ST1["Progress reporting: step updates"]
-        ST2["Status messages: start, middle, end, fail"]
-    end
-
-    subgraph COMPOSE["Composition Basics"]
-        CP1["Tool integration: APIs, DBs, files"]
-        CP2["Webhook triggers: external events"]
-        CP3["Output consumers: CI/CD, dashboards"]
-    end
-
-    subgraph ETHICS["Ethics Basics"]
-        ETH1["Transparency: label agent output"]
-        ETH2["Harm prevention: do not act alone on high-stakes"]
-        ETH3["Oversight: human can intervene"]
-    end
-
-    A --> B --> C --> D --> E
-    C -.dispatch sub-tasks.-> COORD
-    COORD -.results merge.-> D
-    E -->|allowed| F
-    E -->|high-stakes / out of policy| HITL
+    A["1. Prompt"] --> B["2. Context"]
+    B --> C["3. Plan"]
+    C --> D["4. Reason"]
+    D --> E{"5. Permission Gate"}
+    E -->|allowed| F["6. Act"]
+    E -->|high-stakes| HITL["Human approval"]
     HITL -->|approved| F
     HITL -->|rejected| C
-    F --> G
-    G -->|tool/transient error| RETRY
+    F --> G["7. Observe"]
+    G -->|error| RETRY["Retry"]
     RETRY --> F
-    G -->|plan was wrong| C
-    G -->|success| H
-    H -->|not done| I
+    G -->|plan wrong| C
+    G -->|success| H{"8. Done?"}
+    H -->|not done| I["9. Storage"]
     H -->|done| I
-    I --> J
-    J -.next cycle, if not done.-> B
+    I --> J["Memory"]
+    J -.next cycle.-> B
+```
 
-    SEC -.validates.-> E
-    TESTING -.tests.-> G
-    EXPLAIN -.traces.-> D
-    RESOURCES -.manages.-> F
-    LIFECYCLE -.deploys.-> A
-    UX_DESIGN -.presents.-> G
-    STREAM -.reports.-> F
-    COMPOSE -.integrates.-> F
-    ETHICS -.governs.-> E
+**Guide:** [v2 guide](production/agentic-ai-loop-v2-guide.md) | **Core diagram:** [simplified](core-only/agentic-ai-loop-v2-core.mermaid)
 
     style TRIGGER fill:#1a1a2e,color:#fff,stroke:#e94560
     style COGNITION fill:#16213e,color:#fff,stroke:#0f3460
@@ -273,183 +133,32 @@ Designed to minimize human touchpoints. Full autonomous system with Self-Healing
 
 ```mermaid
 flowchart TD
-    subgraph TRIGGER["Trigger"]
-        A["1. Prompt"]
-    end
-
-    subgraph COGNITION["Cognitive Core"]
-        B["2. Context + cross-session memory"]
-        C["3. Adaptive Plan + learned strategies"]
-        D["4. Reason + cost-optimized model"]
-    end
-
-    subgraph GATE["Guardrail + Verification + Security"]
-        E["5. Permission Gate: scope? authorized?"]
-        HITL["6. Human-in-the-loop: approval"]
-        V["Verify: will this work?"]
-        SEC["4-Layer Defense: injection, hierarchy, output validation, monitoring"]
-    end
-
-    subgraph EXEC["Execution Loop"]
-        F["7. Act: sandboxed"]
-        G["8. Observe"]
-        SH["Self-Heal: diagnose + fix"]
-        RETRY["Retry: transient error"]
-    end
-
-    subgraph CHECK["Goal Check + Budget"]
-        H["9. Done? + budget check"]
-    end
-
-    subgraph PERSIST["Persistence Layer"]
-        I["10. Store"]
-        J["Memory: relevance scoring + integrity"]
-        PM["Persistent Memory Store: cross-session"]
-    end
-
-    subgraph LEARN["Feedback + Learning"]
-        FL["Feedback Loop: learns from outcomes"]
-        CO["Cost Optimizer: model selection + caching"]
-    end
-
-    subgraph DEGRAD["Graceful Degradation"]
-        GD["Fallback paths: L1-L7 when components fail"]
-    end
-
-    subgraph SECURITY["Full Adversarial Robustness"]
-        S1["Threat model: 5 attacker types"]
-        S2["Memory integrity: signed, audited"]
-        S3["Sandboxing: process, container, VM, network"]
-        S4["Red team testing: injection, tool abuse, exfil, boundary"]
-    end
-
-    subgraph EVAL["Evaluation Framework"]
-        EV1["Task suites: 50-100 tasks"]
-        EV2["8 metrics: completion, accuracy, cost..."]
-        EV3["A/B comparison: baseline vs candidate"]
-        EV4["Regression gate: block if >5% regress"]
-    end
-
-    subgraph TESTING["Testing Framework"]
-        TP["Test pyramid: unit to integration to E2E"]
-        CH["Chaos engineering: 8 failure scenarios"]
-        LD["Load testing: concurrency + breaking point"]
-        PB["Property-based: safety invariants"]
-    end
-
-    subgraph EXPLAIN["Explainability + Compliance"]
-        X1["Decision traces: reasoning + context + memories"]
-        X2["Audit logs: complete action history"]
-        X3["7 regulations: GDPR, SOC2, HIPAA, PCI, AI Act..."]
-        X4["Impact assessment: pre-deployment review"]
-    end
-
-    subgraph RESOURCES["Resource Management"]
-        R1["Concurrency: N parallel tasks"]
-        R2["Priority scheduling: P0-P3 + SLAs"]
-        R3["Backpressure: load shedding"]
-        R4["Dead letter queue: failed task handling"]
-    end
-
-    subgraph LIFECYCLE["Lifecycle"]
-        L1["4 deployment strategies: blue-green, canary, rolling, shadow"]
-        L2["Monitoring + alerting: 5 metric thresholds"]
-        L3["Incident response: detect to contain to fix to review"]
-    end
-
-    subgraph UX_DESIGN["User Experience"]
-        U1["Progress visibility: real-time updates"]
-        U2["Transparency: action log + reasoning"]
-        U3["Correction: undo, redirect, pause, cancel"]
-        U4["Trust calibration: capabilities + confidence + risk"]
-    end
-
-    subgraph STREAM["Streaming + Real-Time"]
-        ST1["Event-driven architecture: event bus + workers"]
-        ST2["Streaming responses: SSE/WebSocket"]
-        ST3["Interrupt handling: graceful cancel + state save"]
-        ST4["Long-running tasks: heartbeat, checkpoint, timeout"]
-    end
-
-    subgraph COMPOSE["Agent Composition"]
-        CP1["5 communication patterns: req-res, pub-sub, queue, shared, blackboard"]
-        CP2["DAG orchestration: workflow graphs"]
-        CP3["Shared state: optimistic locking + conflict resolution"]
-    end
-
-    subgraph ETHICS["Ethics + Compliance"]
-        ETH1["5 principles: transparency, accountability, fairness, privacy, safety"]
-        ETH2["Bias testing: demographics, phrasings, edge cases"]
-        ETH3["Compliance checklist: 7 regulations documented"]
-    end
-
-    subgraph API_SERVICE["Agent-as-a-Service"]
-        AP1["REST API: CRUD tasks"]
-        AP2["Auth + rate limiting: API keys, tiers"]
-        AP3["SLA guarantees: uptime + latency"]
-    end
-
-    A --> B --> C --> D --> E
-    E -->|allowed| V
-    E -->|high-stakes| HITL
+    A["1. Prompt"] --> B["2. Context"]
+    B --> C["3. Plan"]
+    C --> D["4. Reason"]
+    D --> E{"5. Permission Gate"}
+    E -->|allowed| V{"6. Verify"}
+    E -->|high-stakes| HITL["Human approval"]
     HITL -->|approved| V
     HITL -->|rejected| C
-    V -->|passes| F
+    V -->|passes| F["7. Act"]
     V -->|fails| C
-    F --> G
-    G -->|transient error| RETRY
+    F --> G{"8. Observe"}
+    G -->|error| RETRY["Retry"]
     RETRY --> F
     G -->|plan wrong| C
-    G -->|self-healable| SH
+    G -->|self-healable| SH["Self-Heal"]
     SH --> F
-    G -->|success| H
-    H -->|not done| I
+    G -->|success| H{"9. Done?"}
+    H -->|not done| I["10. Store"]
     H -->|done| I
-    I --> J
-    J --> PM
+    I --> J["Memory"]
+    J --> PM["Persistent Memory"]
     PM -.next session.-> B
     J -.next cycle.-> C
-
-    FL -.learns from.-> G
-    FL -.updates.-> C
-    CO -.selects model.-> D
-    CO -.monitors budget.-> H
-    GD -.fallback for.-> E
-    GD -.fallback for.-> G
-    GD -.fallback for.-> PM
-
-    SEC -.defends.-> E
-    EVAL -.measures.-> G
-    TESTING -.validates.-> F
-    EXPLAIN -.traces.-> D
-    RESOURCES -.manages.-> F
-    LIFECYCLE -.deploys.-> A
-    UX_DESIGN -.presents.-> G
-    STREAM -.streams.-> F
-    COMPOSE -.orchestrates.-> C
-    ETHICS -.governs.-> E
-    API_SERVICE -.exposes.-> F
-
-    style TRIGGER fill:#1a1a2e,color:#fff,stroke:#e94560
-    style COGNITION fill:#16213e,color:#fff,stroke:#0f3460
-    style GATE fill:#3d0000,color:#fff,stroke:#e94560
-    style EXEC fill:#0f3460,color:#fff,stroke:#e94560
-    style CHECK fill:#16213e,color:#fff,stroke:#0f3460
-    style PERSIST fill:#1a1a2e,color:#fff,stroke:#0f3460
-    style LEARN fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
-    style DEGRAD fill:#1a1a2e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
-    style SECURITY fill:#3d0000,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
-    style EVAL fill:#16213e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
-    style TESTING fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
-    style EXPLAIN fill:#1a1a2e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
-    style RESOURCES fill:#0f3460,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
-    style LIFECYCLE fill:#16213e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
-    style UX_DESIGN fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
-    style STREAM fill:#1a1a2e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
-    style COMPOSE fill:#3d0000,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
-    style ETHICS fill:#0f3460,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
-    style API_SERVICE fill:#16213e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
 ```
+
+**Guide:** [v3 guide](autonomous/agentic-ai-loop-v3-guide.md) | **Core diagram:** [simplified](core-only/agentic-ai-loop-v3-core.mermaid)
 
 **Guide:** [v3 guide](agentic-ai-loop-v3-guide.md) — full explanations, implementation patterns, checklists.
 
