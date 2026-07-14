@@ -1,0 +1,11 @@
+flowchart TD
+    A["Collect Metrics"] --> B["Check Thresholds"]
+    B --> C{"Threshold Exceeded?"}
+    C -->|No| D["Continue"]
+    C -->|Yes| E["Trigger Alert"]
+    E --> F["Notify Handlers"]
+    F --> G["Run Health Checks"]
+    G --> H{"Healthy?"}
+    H -->|Yes| I["Log Status"]
+    H -->|No| J["Escalate"]
+    I --> K["Update Dashboard"]

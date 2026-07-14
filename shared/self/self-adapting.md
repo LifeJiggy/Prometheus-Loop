@@ -399,7 +399,320 @@ if result["adapted"]:
 7. **Human oversight for critical changes** — some adaptations need review
 8. **Monitor adaptation effects** — ensure adaptations help
 
-## Integration
+## Advanced Adaptation Patterns
+
+### Context-Aware Model Selection
+
+```python
+class ModelSelector:
+    """Selects the best model based on context."""
+    
+    def __init__(self):
+        self.models = {
+            "fast": {"model": "gpt-4o-mini", "cost": 0.15, "quality": 0.7},
+            "balanced": {"model": "gpt-4o", "cost": 2.50, "quality": 0.85},
+            "powerful": {"model": "claude-3-opus", "cost": 15.0, "quality": 0.95}
+        }
+        self.selection_history = []
+    
+    def select(self, task: dict, context: dict) -> dict:
+        """Select model based on task and context."""
+        
+        # Analyze task complexity
+        complexity = self.assess_complexity(task)
+        
+        # Check constraints
+        budget = context.get("budget_remaining", float('inf'))
+        latency_required = context.get("latency_required", "normal")
+        
+        # Select model
+        if budget < 1.0 or latency_required == "fast":
+            selected = "fast"
+        elif complexity > 0.7 or context.get("quality_required") == "high":
+            selected = "powerful"
+        else:
+            selected = "balanced"
+        
+        # Verify budget
+        model_cost = self.models[selected]["cost"]
+        if model_cost > budget:
+            selected = "fast"
+        
+        self.selection_history.append({
+            "task": str(task)[:50],
+            "selected": selected,
+            "complexity": complexity,
+            "timestamp": datetime.now().isoformat()
+        })
+        
+        return {
+            "model": self.models[selected]["model"],
+            "tier": selected,
+            "estimated_cost": model_cost
+        }
+    
+    def assess_complexity(self, task: dict) -> float:
+        """Assess task complexity (0-1)."""
+        
+        task_str = str(task).lower()
+        
+        simple_indicators = ["read", "list", "simple", "quick"]
+        complex_indicators = ["analyze", "complex", "integrate", "optimize", "security"]
+        
+        simple_score = sum(1 for ind in simple_indicators if ind in task_str)
+        complex_score = sum(1 for ind in complex_indicators if ind in task_str)
+        
+        total = simple_score + complex_score
+        if total == 0:
+            return 0.5
+        
+        return complex_score / total
+```
+
+### Dynamic Batch Sizing
+
+```python
+class DynamicBatchSizer:
+    """Dynamically adjusts batch sizes based on load."""
+    
+    def __init__(self, min_batch: int = 1, max_batch: int = 50):
+        self.min_batch = min_batch
+        self.max_batch = max_batch
+        self.current_batch = min_batch
+        self.metrics = []
+    
+    def adjust(self, metrics: dict) -> int:
+        """Adjust batch size based on metrics."""
+        
+        self.metrics.append(metrics)
+        
+        # Calculate optimal batch size
+        if metrics.get("cpu_usage", 0) > 80:
+            # High CPU - reduce batch size
+            self.current_batch = max(self.min_batch, self.current_batch - 5)
+        elif metrics.get("memory_usage", 0) > 80:
+            # High memory - reduce batch size
+            self.current_batch = max(self.min_batch, self.current_batch - 5)
+        elif metrics.get("queue_depth", 0) > 100:
+            # Large queue - increase batch size
+            self.current_batch = min(self.max_batch, self.current_batch + 5)
+        elif metrics.get("error_rate", 0) > 0.1:
+            # High errors - reduce batch size
+            self.current_batch = max(self.min_batch, self.current_batch - 3)
+        
+        return self.current_batch
+    
+    def get_stats(self) -> dict:
+        """Get batching statistics."""
+        
+        return {
+            "current_batch": self.current_batch,
+            "min_batch": self.min_batch,
+            "max_batch": self.max_batch,
+            "adjustments": len(self.metrics)
+        }
+```
+
+### Load Balancing Adaptation
+
+```python
+class LoadBalancer:
+    """Adapts load distribution across workers."""
+    
+    def __init__(self):
+        self.workers = {}
+        self.load_history = defaultdict(list)
+    
+    def register_worker(self, worker_id: str, capacity: int):
+        """Register a worker."""
+        
+        self.workers[worker_id] = {
+            "capacity": capacity,
+            "current_load": 0,
+            "status": "healthy"
+        }
+    
+    def distribute(self, task: dict) -> str:
+        """Distribute task to best worker."""
+        
+        # Find worker with lowest load ratio
+        best_worker = None
+        best_ratio = float('inf')
+        
+        for worker_id, info in self.workers.items():
+            if info["status"] != "healthy":
+                continue
+            
+            ratio = info["current_load"] / info["capacity"]
+            if ratio < best_ratio:
+                best_ratio = ratio
+                best_worker = worker_id
+        
+        if best_worker:
+            self.workers[best_worker]["current_load"] += 1
+        
+        return best_worker
+    
+    def update_status(self, worker_id: str, status: str):
+        """Update worker status."""
+        
+        if worker_id in self.workers:
+            self.workers[worker_id]["status"] = status
+            if status == "healthy":
+                self.workers[worker_id]["current_load"] = 0
+    
+    def get_load_distribution(self) -> dict:
+        """Get current load distribution."""
+        
+        return {
+            worker_id: {
+                "load": info["current_load"],
+                "capacity": info["capacity"],
+                "utilization": info["current_load"] / info["capacity"] if info["capacity"] > 0 else 0
+            }
+            for worker_id, info in self.workers.items()
+        }
+```
+
+### Adaptive Timeout Management
+
+```python
+class AdaptiveTimeoutManager:
+    """Dynamically adjusts timeouts based on performance."""
+    
+    def __init__(self, default_timeout: int = 30):
+        self.default_timeout = default_timeout
+        self.timeouts = {}
+        self.latency_history = defaultdict(list)
+    
+    def get_timeout(self, operation: str) -> int:
+        """Get adapted timeout for an operation."""
+        
+        if operation in self.timeouts:
+            return self.timeouts[operation]
+        
+        return self.default_timeout
+    
+    def record_latency(self, operation: str, latency: float):
+        """Record operation latency."""
+        
+        self.latency_history[operation].append(latency)
+        
+        # Keep only recent history
+        if len(self.latency_history[operation]) > 100:
+            self.latency_history[operation] = self.latency_history[operation][-100:]
+        
+        # Adapt timeout based on latency
+        self.adapt_timeout(operation)
+    
+    def adapt_timeout(self, operation: str):
+        """Adapt timeout based on latency history."""
+        
+        latencies = self.latency_history.get(operation, [])
+        if len(latencies) < 5:
+            return
+        
+        # Calculate p95 latency
+        sorted_latencies = sorted(latencies)
+        p95_index = int(len(sorted_latencies) * 0.95)
+        p95_latency = sorted_latencies[p95_index]
+        
+        # Set timeout to 2x p95 with minimum
+        new_timeout = max(30, int(p95_latency * 2))
+        
+        self.timeouts[operation] = new_timeout
+    
+    def get_stats(self) -> dict:
+        """Get timeout statistics."""
+        
+        stats = {}
+        for operation, latencies in self.latency_history.items():
+            if latencies:
+                stats[operation] = {
+                    "current_timeout": self.get_timeout(operation),
+                    "avg_latency": sum(latencies) / len(latencies),
+                    "p95_latency": sorted(latencies)[int(len(latencies) * 0.95)],
+                    "samples": len(latencies)
+                }
+        
+        return stats
+```
+
+### Adaptive Retry Configuration
+
+```python
+class AdaptiveRetryConfig:
+    """Dynamically adjusts retry configuration."""
+    
+    def __init__(self):
+        self.configs = {}
+        self.failure_history = defaultdict(list)
+    
+    def get_config(self, operation: str) -> dict:
+        """Get adapted retry config for an operation."""
+        
+        if operation in self.configs:
+            return self.configs[operation]
+        
+        return {
+            "max_retries": 3,
+            "base_delay": 1.0,
+            "max_delay": 60.0,
+            "backoff_multiplier": 2.0
+        }
+    
+    def record_outcome(self, operation: str, success: bool, attempts: int):
+        """Record operation outcome."""
+        
+        self.failure_history[operation].append({
+            "success": success,
+            "attempts": attempts,
+            "timestamp": datetime.now().isoformat()
+        })
+        
+        # Adapt config based on history
+        self.adapt_config(operation)
+    
+    def adapt_config(self, operation: str):
+        """Adapt retry config based on history."""
+        
+        history = self.failure_history.get(operation, [])
+        if len(history) < 5:
+            return
+        
+        # Calculate success rate
+        recent = history[-10:]
+        success_rate = sum(1 for h in recent if h["success"]) / len(recent)
+        avg_attempts = sum(h["attempts"] for h in recent) / len(recent)
+        
+        # Adapt
+        if success_rate < 0.5:
+            # Low success rate - more aggressive retries
+            self.configs[operation] = {
+                "max_retries": 5,
+                "base_delay": 0.5,
+                "max_delay": 30.0,
+                "backoff_multiplier": 1.5
+            }
+        elif success_rate > 0.9 and avg_attempts < 2:
+            # High success rate, few attempts - less aggressive
+            self.configs[operation] = {
+                "max_retries": 2,
+                "base_delay": 2.0,
+                "max_delay": 30.0,
+                "backoff_multiplier": 2.0
+            }
+    
+    def get_stats(self) -> dict:
+        """Get retry configuration statistics."""
+        
+        return {
+            "configs": self.configs,
+            "operations_tracked": len(self.failure_history)
+        }
+```
+
+### Integration
 
 | Capability | Integration |
 |---|---|
@@ -408,3 +721,4 @@ if result["adapted"]:
 | **Self-Planning** | Plans adapt based on context |
 | **Self-Evolution** | Adaptation is a form of evolution |
 | **Self-Governing** | Governance constrains adaptations |
+| **Self-Remembering** | Adaptation patterns are remembered |

@@ -494,3 +494,382 @@ else:
 | **Self-Monitoring** | Monitoring detects policy violations |
 | **Self-Governing** | Meta-governance of governance itself |
 | **Self-Adapting** | Adaptation respects policy boundaries |
+
+## Advanced Governance Patterns
+
+### Ethical Decision Framework
+
+```python
+class EthicalFramework:
+    """Framework for ethical decision-making."""
+    
+    def __init__(self):
+        self.principles = {
+            "beneficence": {"weight": 0.3, "description": "Act in user's best interest"},
+            "non_maleficence": {"weight": 0.3, "description": "Do no harm"},
+            "autonomy": {"weight": 0.2, "description": "Respect user choices"},
+            "justice": {"weight": 0.1, "description": "Fair treatment"},
+            "transparency": {"weight": 0.1, "description": "Be explainable"}
+        }
+        self.decision_history = []
+    
+    def evaluate_action(self, action: dict, context: dict) -> dict:
+        """Evaluate action against ethical principles."""
+        
+        scores = {}
+        
+        # Beneficence - does it help the user?
+        scores["beneficence"] = self.assess_beneficence(action, context)
+        
+        # Non-maleficence - does it avoid harm?
+        scores["non_maleficence"] = self.assess_harm(action, context)
+        
+        # Autonomy - does it respect user choices?
+        scores["autonomy"] = self.assess_autonomy(action, context)
+        
+        # Justice - is it fair?
+        scores["justice"] = self.assess_fairness(action, context)
+        
+        # Transparency - is it explainable?
+        scores["transparency"] = self.assess_explainability(action, context)
+        
+        # Calculate weighted score
+        total_score = sum(
+            scores[principle] * self.principles[principle]["weight"]
+            for principle in scores
+        )
+        
+        # Determine verdict
+        if total_score >= 0.7:
+            verdict = "ethical"
+        elif total_score >= 0.5:
+            verdict = "questionable"
+        else:
+            verdict = "unethical"
+        
+        decision = {
+            "action": action,
+            "scores": scores,
+            "total_score": total_score,
+            "verdict": verdict,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        self.decision_history.append(decision)
+        
+        return decision
+    
+    def assess_beneficence(self, action: dict, context: dict) -> float:
+        """Assess if action benefits the user."""
+        
+        # Positive indicators
+        positive = 0.5  # Default neutral
+        
+        if action.get("type") in ["help", "assist", "fix", "improve"]:
+            positive += 0.3
+        if context.get("user_requested"):
+            positive += 0.2
+        
+        return min(positive, 1.0)
+    
+    def assess_harm(self, action: dict, context: dict) -> float:
+        """Assess if action causes harm."""
+        
+        # Start with full score (no harm)
+        score = 1.0
+        
+        # Deduct for potential harm
+        if action.get("type") in ["delete", "remove", "destroy"]:
+            score -= 0.3
+        if action.get("scope") == "all":
+            score -= 0.2
+        if action.get("irreversible"):
+            score -= 0.3
+        
+        return max(score, 0.0)
+    
+    def assess_autonomy(self, action: dict, context: dict) -> float:
+        """Assess if action respects user autonomy."""
+        
+        score = 0.5  # Default neutral
+        
+        # Respect user choices
+        if context.get("user_choice"):
+            score += 0.3
+        if not action.get("overriding_user"):
+            score += 0.2
+        
+        return min(score, 1.0)
+    
+    def assess_fairness(self, action: dict, context: dict) -> float:
+        """Assess if action is fair."""
+        
+        return 0.8  # Default to fair
+    
+    def assess_explainability(self, action: dict, context: dict) -> float:
+        """Assess if action is explainable."""
+        
+        score = 0.5
+        
+        if action.get("reasoning"):
+            score += 0.3
+        if action.get("documented"):
+            score += 0.2
+        
+        return min(score, 1.0)
+```
+
+### Compliance Checker
+
+```python
+class ComplianceChecker:
+    """Checks compliance with regulations."""
+    
+    def __init__(self):
+        self.regulations = {
+            "gdpr": {
+                "data_minimization": True,
+                "consent_required": True,
+                "right_to_erasure": True,
+                "data_portability": True
+            },
+            "hipaa": {
+                "access_controls": True,
+                "audit_logging": True,
+                "encryption_required": True
+            },
+            "soc2": {
+                "audit_trail": True,
+                "access_controls": True,
+                "monitoring": True
+            }
+        }
+        self.compliance_log = []
+    
+    def check_compliance(self, action: dict, regulation: str) -> dict:
+        """Check if action complies with regulation."""
+        
+        rules = self.regulations.get(regulation, {})
+        
+        violations = []
+        
+        for rule, required in rules.items():
+            if required and not self.check_rule(action, rule):
+                violations.append({
+                    "rule": rule,
+                    "regulation": regulation,
+                    "severity": "high"
+                })
+        
+        result = {
+            "regulation": regulation,
+            "compliant": len(violations) == 0,
+            "violations": violations,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        self.compliance_log.append(result)
+        
+        return result
+    
+    def check_rule(self, action: dict, rule: str) -> bool:
+        """Check if action satisfies a rule."""
+        
+        rule_checks = {
+            "data_minimization": lambda a: len(str(a)) < 10000,
+            "consent_required": lambda a: a.get("consent_obtained", False),
+            "right_to_erasure": lambda a: True,  # Capability exists
+            "data_portability": lambda a: True,  # Capability exists
+            "access_controls": lambda a: a.get("access_controlled", True),
+            "audit_logging": lambda a: a.get("logged", False),
+            "encryption_required": lambda a: a.get("encrypted", True)
+        }
+        
+        check_fn = rule_checks.get(rule)
+        if check_fn:
+            return check_fn(action)
+        
+        return True
+    
+    def get_compliance_report(self) -> dict:
+        """Get compliance report."""
+        
+        return {
+            "total_checks": len(self.compliance_log),
+            "compliant": sum(1 for c in self.compliance_log if c["compliant"]),
+            "violations": sum(len(c["violations"]) for c in self.compliance_log),
+            "by_regulation": self.get_by_regulation()
+        }
+    
+    def get_by_regulation(self) -> dict:
+        """Get compliance by regulation."""
+        
+        by_reg = defaultdict(lambda: {"checks": 0, "compliant": 0})
+        
+        for check in self.compliance_log:
+            reg = check["regulation"]
+            by_reg[reg]["checks"] += 1
+            if check["compliant"]:
+                by_reg[reg]["compliant"] += 1
+        
+        return dict(by_reg)
+```
+
+### Risk Assessment
+
+```python
+class RiskAssessor:
+    """Assesses risks of actions."""
+    
+    def __init__(self):
+        self.risk_factors = {
+            "scope": {"low": 1, "medium": 5, "high": 10},
+            "reversibility": {"reversible": 1, "difficult": 5, "irreversible": 10},
+            "visibility": {"private": 1, "internal": 5, "public": 10}
+        }
+        self.risk_history = []
+    
+    def assess_risk(self, action: dict) -> dict:
+        """Assess risk level of an action."""
+        
+        risk_score = 0
+        risk_factors = []
+        
+        # Assess scope
+        scope = action.get("scope", "low")
+        scope_risk = self.risk_factors["scope"].get(scope, 5)
+        risk_score += scope_risk
+        risk_factors.append({"factor": "scope", "level": scope, "score": scope_risk})
+        
+        # Assess reversibility
+        reversibility = action.get("reversibility", "reversible")
+        rev_risk = self.risk_factors["reversibility"].get(reversibility, 5)
+        risk_score += rev_risk
+        risk_factors.append({"factor": "reversibility", "level": reversibility, "score": rev_risk})
+        
+        # Assess visibility
+        visibility = action.get("visibility", "private")
+        vis_risk = self.risk_factors["visibility"].get(visibility, 5)
+        risk_score += vis_risk
+        risk_factors.append({"factor": "visibility", "level": visibility, "score": vis_risk})
+        
+        # Determine risk level
+        if risk_score <= 5:
+            risk_level = "low"
+        elif risk_score <= 15:
+            risk_level = "medium"
+        else:
+            risk_level = "high"
+        
+        assessment = {
+            "action": action,
+            "risk_score": risk_score,
+            "risk_level": risk_level,
+            "risk_factors": risk_factors,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        self.risk_history.append(assessment)
+        
+        return assessment
+    
+    def get_risk_stats(self) -> dict:
+        """Get risk statistics."""
+        
+        if not self.risk_history:
+            return {"total": 0}
+        
+        levels = defaultdict(int)
+        for assessment in self.risk_history:
+            levels[assessment["risk_level"]] += 1
+        
+        return {
+            "total": len(self.risk_history),
+            "by_level": dict(levels)
+        }
+```
+
+### Audit Trail Manager
+
+```python
+class AuditTrailManager:
+    """Manages comprehensive audit trails."""
+    
+    def __init__(self):
+        self.trails = []
+        self.current_trail = None
+    
+    def start_trail(self, session_id: str):
+        """Start a new audit trail."""
+        
+        self.current_trail = {
+            "session_id": session_id,
+            "events": [],
+            "start_time": datetime.now().isoformat()
+        }
+    
+    def log_event(self, event_type: str, details: dict):
+        """Log an event to the current trail."""
+        
+        if self.current_trail:
+            self.current_trail["events"].append({
+                "type": event_type,
+                "details": details,
+                "timestamp": datetime.now().isoformat()
+            })
+    
+    def end_trail(self):
+        """End the current audit trail."""
+        
+        if self.current_trail:
+            self.current_trail["end_time"] = datetime.now().isoformat()
+            self.current_trail["event_count"] = len(self.current_trail["events"])
+            self.trails.append(self.current_trail)
+            self.current_trail = None
+    
+    def get_trail(self, session_id: str) -> dict:
+        """Get audit trail for a session."""
+        
+        for trail in self.trails:
+            if trail["session_id"] == session_id:
+                return trail
+        
+        return None
+    
+    def search_trails(self, query: dict) -> list:
+        """Search audit trails."""
+        
+        results = []
+        
+        for trail in self.trails:
+            if self.matches_query(trail, query):
+                results.append(trail)
+        
+        return results
+    
+    def matches_query(self, trail: dict, query: dict) -> bool:
+        """Check if trail matches search query."""
+        
+        for key, value in query.items():
+            if key == "event_type":
+                if not any(e["type"] == value for e in trail["events"]):
+                    return False
+            elif key == "after":
+                if trail["start_time"] < value:
+                    return False
+            elif key == "before":
+                if trail["start_time"] > value:
+                    return False
+        
+        return True
+```
+
+## Integration
+
+| Capability | Integration |
+|---|---|
+| **Self-Healing** | Governance constrains healing actions |
+| **Self-Improving** | Policies evolve based on outcomes |
+| **Self-Monitoring** | Monitoring detects policy violations |
+| **Self-Governing** | Meta-governance of governance itself |
+| **Self-Adapting** | Adaptation respects policy boundaries |

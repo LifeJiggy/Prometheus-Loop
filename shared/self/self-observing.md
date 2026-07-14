@@ -468,6 +468,424 @@ print(f"Success rate: {insights['success_rate']:.1%}")
 7. **Visualize patterns** — make insights accessible
 8. **Act on insights** — observation without action is wasted
 
+## Advanced Observation Patterns
+
+### Meta-Cognition Engine
+
+```python
+class MetaCognitionEngine:
+    """Enables agent to think about its own thinking."""
+    
+    def __init__(self):
+        self.thinking_history = []
+        self.confidence_tracker = {}
+    
+    def evaluate_thinking(self, reasoning_chain: dict) -> dict:
+        """Evaluate quality of reasoning."""
+        
+        evaluation = {
+            "clarity": self.assess_clarity(reasoning_chain),
+            "completeness": self.assess_completeness(reasoning_chain),
+            "consistency": self.assess_consistency(reasoning_chain),
+            "efficiency": self.assess_efficiency(reasoning_chain)
+        }
+        
+        # Calculate overall quality
+        evaluation["overall"] = sum(evaluation.values()) / len(evaluation)
+        
+        self.thinking_history.append(evaluation)
+        
+        return evaluation
+    
+    def assess_clarity(self, chain: dict) -> float:
+        """Assess clarity of reasoning."""
+        
+        steps = chain.get("steps", [])
+        
+        if not steps:
+            return 0.0
+        
+        # Check if steps are well-defined
+        defined_steps = sum(1 for s in steps if s.get("description"))
+        
+        return defined_steps / len(steps)
+    
+    def assess_completeness(self, chain: dict) -> float:
+        """Assess completeness of reasoning."""
+        
+        steps = chain.get("steps", [])
+        
+        # Check if all necessary steps are present
+        required = ["observation", "analysis", "decision", "action"]
+        present = sum(1 for r in required if any(r in str(s).lower() for s in steps))
+        
+        return present / len(required)
+    
+    def assess_consistency(self, chain: dict) -> float:
+        """Assess consistency of reasoning."""
+        
+        steps = chain.get("steps", [])
+        
+        if len(steps) < 2:
+            return 1.0
+        
+        # Check for contradictions (simplified)
+        contradictions = 0
+        
+        for i, step1 in enumerate(steps):
+            for step2 in steps[i+1:]:
+                if self.contradicts(step1, step2):
+                    contradictions += 1
+        
+        return max(0, 1 - contradictions / len(steps))
+    
+    def assess_efficiency(self, chain: dict) -> float:
+        """Assess efficiency of reasoning."""
+        
+        steps = chain.get("steps", [])
+        
+        if not steps:
+            return 0.0
+        
+        # Check for redundancy
+        unique_steps = len(set(str(s) for s in steps))
+        
+        return unique_steps / len(steps)
+    
+    def contradicts(self, step1: dict, step2: dict) -> bool:
+        """Check if two steps contradict each other."""
+        
+        # Simplified contradiction detection
+        str1 = str(step1).lower()
+        str2 = str(step2).lower()
+        
+        contradictions = [
+            ("yes", "no"),
+            ("true", "false"),
+            ("allow", "deny"),
+            ("enable", "disable")
+        ]
+        
+        for pos, neg in contradictions:
+            if pos in str1 and neg in str2:
+                return True
+            if neg in str1 and pos in str2:
+                return True
+        
+        return False
+    
+    def get_confidence(self, task_type: str) -> float:
+        """Get confidence level for a task type."""
+        
+        if task_type in self.confidence_tracker:
+            return self.confidence_tracker[task_type]
+        
+        return 0.5  # Default neutral confidence
+    
+    def update_confidence(self, task_type: str, success: bool):
+        """Update confidence based on outcome."""
+        
+        current = self.get_confidence(task_type)
+        
+        if success:
+            new_confidence = min(1.0, current + 0.1)
+        else:
+            new_confidence = max(0.0, current - 0.1)
+        
+        self.confidence_tracker[task_type] = new_confidence
+```
+
+### Decision Quality Analyzer
+
+```python
+class DecisionQualityAnalyzer:
+    """Analyzes quality of decisions made."""
+    
+    def __init__(self):
+        self.decisions = []
+        self.quality_metrics = {}
+    
+    def analyze_decision(self, decision: dict, outcome: dict) -> dict:
+        """Analyze a decision."""
+        
+        analysis = {
+            "decision": decision,
+            "outcome": outcome,
+            "quality_score": self.calculate_quality(decision, outcome),
+            "factors": self.identify_factors(decision, outcome),
+            "improvement_suggestions": self.suggest_improvements(decision, outcome)
+        }
+        
+        self.decisions.append(analysis)
+        
+        return analysis
+    
+    def calculate_quality(self, decision: dict, outcome: dict) -> float:
+        """Calculate decision quality score."""
+        
+        score = 0.0
+        
+        # Did the decision lead to success?
+        if outcome.get("success"):
+            score += 0.4
+        
+        # Was the reasoning sound?
+        if decision.get("reasoning_quality", 0) > 0.7:
+            score += 0.2
+        
+        # Was it efficient?
+        if outcome.get("efficiency", 0) > 0.7:
+            score += 0.2
+        
+        # Was it well-documented?
+        if decision.get("documented"):
+            score += 0.2
+        
+        return score
+    
+    def identify_factors(self, decision: dict, outcome: dict) -> list:
+        """Identify factors that influenced the outcome."""
+        
+        factors = []
+        
+        if outcome.get("success"):
+            factors.append("Correct approach selected")
+            if decision.get("context_used"):
+                factors.append("Good context utilization")
+        else:
+            factors.append("Incorrect approach")
+            if not decision.get("context_used"):
+                factors.append("Insufficient context")
+        
+        return factors
+    
+    def suggest_improvements(self, decision: dict, outcome: dict) -> list:
+        """Suggest improvements for future decisions."""
+        
+        suggestions = []
+        
+        if not outcome.get("success"):
+            suggestions.append("Consider alternative approaches")
+            if decision.get("confidence", 0) < 0.5:
+                suggestions.append("Gather more information before deciding")
+        
+        if outcome.get("efficiency", 0) < 0.5:
+            suggestions.append("Look for more efficient approaches")
+        
+        return suggestions
+```
+
+### Behavior Tracker
+
+```python
+class BehaviorTracker:
+    """Tracks agent behavior patterns."""
+    
+    def __init__(self):
+        self.behaviors = defaultdict(list)
+        self.patterns = {}
+    
+    def track(self, behavior_type: str, details: dict):
+        """Track a behavior."""
+        
+        self.behaviors[behavior_type].append({
+            **details,
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    def analyze_patterns(self, behavior_type: str) -> dict:
+        """Analyze patterns in behavior."""
+        
+        records = self.behaviors.get(behavior_type, [])
+        
+        if len(records) < 5:
+            return {"insufficient_data": True}
+        
+        analysis = {
+            "total_occurrences": len(records),
+            "frequency": self.calculate_frequency(records),
+            "common_outcomes": self.find_common_outcomes(records),
+            "trends": self.detect_trends(records)
+        }
+        
+        self.patterns[behavior_type] = analysis
+        
+        return analysis
+    
+    def calculate_frequency(self, records: list) -> dict:
+        """Calculate behavior frequency."""
+        
+        if not records:
+            return {"per_hour": 0, "per_day": 0}
+        
+        # Calculate time span
+        timestamps = [datetime.fromisoformat(r["timestamp"]) for r in records]
+        span = max(timestamps) - min(timestamps)
+        
+        hours = max(span.total_seconds() / 3600, 1)
+        days = max(span.days, 1)
+        
+        return {
+            "per_hour": len(records) / hours,
+            "per_day": len(records) / days
+        }
+    
+    def find_common_outcomes(self, records: list) -> list:
+        """Find common outcomes."""
+        
+        outcomes = defaultdict(int)
+        
+        for record in records:
+            outcome = record.get("outcome", "unknown")
+            outcomes[outcome] += 1
+        
+        return sorted(outcomes.items(), key=lambda x: x[1], reverse=True)[:5]
+    
+    def detect_trends(self, records: list) -> dict:
+        """Detect trends in behavior."""
+        
+        if len(records) < 10:
+            return {"trend": "insufficient_data"}
+        
+        # Simple trend detection
+        recent = records[-5:]
+        older = records[-10:-5]
+        
+        recent_rate = len(recent) / 5 if recent else 0
+        older_rate = len(older) / 5 if older else 0
+        
+        if recent_rate > older_rate * 1.2:
+            trend = "increasing"
+        elif recent_rate < older_rate * 0.8:
+            trend = "decreasing"
+        else:
+            trend = "stable"
+        
+        return {"trend": trend, "recent_rate": recent_rate, "older_rate": older_rate}
+```
+
+### Self-Reflection Engine
+
+```python
+class SelfReflectionEngine:
+    """Enables agent to reflect on its performance."""
+    
+    def __init__(self):
+        self.reflections = []
+        self.insights = []
+    
+    def reflect(self, task: dict, outcome: dict, observations: dict) -> dict:
+        """Reflect on task performance."""
+        
+        reflection = {
+            "task": task,
+            "outcome": outcome,
+            "observations": observations,
+            "strengths": self.identify_strengths(outcome),
+            "weaknesses": self.identify_weaknesses(outcome),
+            "lessons": self.extract_lessons(outcome),
+            "improvements": self.suggest_improvements(outcome)
+        }
+        
+        self.reflections.append(reflection)
+        
+        # Extract insights
+        new_insights = self.extract_insights(reflection)
+        self.insights.extend(new_insights)
+        
+        return reflection
+    
+    def identify_strengths(self, outcome: dict) -> list:
+        """Identify what went well."""
+        
+        strengths = []
+        
+        if outcome.get("success"):
+            strengths.append("Task completed successfully")
+        if outcome.get("efficiency", 0) > 0.7:
+            strengths.append("Efficient execution")
+        if outcome.get("accuracy", 0) > 0.9:
+            strengths.append("High accuracy")
+        
+        return strengths
+    
+    def identify_weaknesses(self, outcome: dict) -> list:
+        """Identify what could improve."""
+        
+        weaknesses = []
+        
+        if not outcome.get("success"):
+            weaknesses.append("Task failed")
+        if outcome.get("efficiency", 0) < 0.5:
+            weaknesses.append("Low efficiency")
+        if outcome.get("attempts", 1) > 3:
+            weaknesses.append("Required multiple attempts")
+        
+        return weaknesses
+    
+    def extract_lessons(self, outcome: dict) -> list:
+        """Extract lessons from outcome."""
+        
+        lessons = []
+        
+        if outcome.get("success"):
+            lessons.append({
+                "type": "success_pattern",
+                "lesson": "Current approach worked well"
+            })
+        else:
+            lessons.append({
+                "type": "failure_analysis",
+                "lesson": f"Failed due to: {outcome.get('failure_reason', 'unknown')}"
+            })
+        
+        return lessons
+    
+    def suggest_improvements(self, outcome: dict) -> list:
+        """Suggest improvements."""
+        
+        improvements = []
+        
+        if not outcome.get("success"):
+            improvements.append("Try alternative approach next time")
+        if outcome.get("duration", 0) > 60:
+            improvements.append("Look for optimization opportunities")
+        
+        return improvements
+    
+    def extract_insights(self, reflection: dict) -> list:
+        """Extract insights from reflection."""
+        
+        insights = []
+        
+        # Extract from strengths
+        for strength in reflection.get("strengths", []):
+            insights.append({
+                "type": "strength",
+                "insight": strength,
+                "timestamp": datetime.now().isoformat()
+            })
+        
+        # Extract from lessons
+        for lesson in reflection.get("lessons", []):
+            insights.append({
+                "type": "lesson",
+                "insight": lesson.get("lesson", ""),
+                "timestamp": datetime.now().isoformat()
+            })
+        
+        return insights
+    
+    def get_reflection_stats(self) -> dict:
+        """Get reflection statistics."""
+        
+        return {
+            "total_reflections": len(self.reflections),
+            "total_insights": len(self.insights),
+            "recent_reflections": self.reflections[-5:]
+        }
+```
+
 ## Integration
 
 | Capability | Integration |

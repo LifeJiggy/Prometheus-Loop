@@ -1,0 +1,14 @@
+flowchart TD
+    A["Submit Task"] --> B["Route to Agent"]
+    B --> C{"Agent Available?"}
+    C -->|Yes| D["Assign Task"]
+    C -->|No| E["Queue Task"]
+    D --> F["Execute Task"]
+    F --> G{"Conflicts?"}
+    G -->|No| H["Collect Result"]
+    G -->|Yes| I["Resolve Conflict"]
+    I --> H
+    H --> J["Aggregate Results"]
+    J --> K["Return Final Result"]
+    E --> L["Wait for Agent"]
+    L --> B

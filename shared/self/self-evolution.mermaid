@@ -1,0 +1,13 @@
+flowchart TD
+    A["New Task"] --> B{"Capability Exists?"}
+    B -->|Yes| C["Use Existing"]
+    B -->|No| D{"Can Learn?"}
+    D -->|Yes| E["Learn Capability"]
+    D -->|No| F["Evolve Architecture"]
+    E --> G["Acquire Skill"]
+    F --> H["Adapt Components"]
+    G --> I["Test New Capability"]
+    H --> I
+    I -->|Pass| J["Register Capability"]
+    I -->|Fail| K["Rollback"]
+    J --> L["Update Fitness Score"]

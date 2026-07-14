@@ -556,6 +556,325 @@ print(f"Progress: {status['progress']:.1f}%")
 7. **Break down complex tasks** — large tasks need decomposition
 8. **Validate assumptions** — check that prerequisites are met
 
+## Advanced Planning Patterns
+
+### Hierarchical Planning
+
+```python
+class HierarchicalPlanner:
+    """Plans at multiple levels of abstraction."""
+    
+    def __init__(self):
+        self.levels = ["strategic", "tactical", "operational"]
+        self.plans = {}
+    
+    def create_hierarchical_plan(self, goal: str) -> dict:
+        """Create a multi-level plan."""
+        
+        # Strategic level (high-level goals)
+        strategic = self.create_strategic_plan(goal)
+        
+        # Tactical level (break down into phases)
+        tactical = self.create_tactical_plan(strategic)
+        
+        # Operational level (specific actions)
+        operational = self.create_operational_plan(tactical)
+        
+        plan = {
+            "goal": goal,
+            "strategic": strategic,
+            "tactical": tactical,
+            "operational": operational,
+            "created_at": datetime.now().isoformat()
+        }
+        
+        self.plans[plan.get("id", str(uuid4()))] = plan
+        
+        return plan
+    
+    def create_strategic_plan(self, goal: str) -> dict:
+        """Create high-level strategic plan."""
+        
+        return {
+            "objective": goal,
+            "approach": "divide_and_conquer",
+            "phases": ["analysis", "implementation", "validation"],
+            "success_criteria": ["goal_met", "quality_acceptable"]
+        }
+    
+    def create_tactical_plan(self, strategic: dict) -> list:
+        """Create tactical plan from strategic plan."""
+        
+        tactics = []
+        
+        for phase in strategic.get("phases", []):
+            tactic = {
+                "phase": phase,
+                "tasks": self.decompose_phase(phase),
+                "dependencies": [],
+                "resources_needed": []
+            }
+            tactics.append(tactic)
+        
+        return tactics
+    
+    def create_operational_plan(self, tactical: list) -> list:
+        """Create operational plan from tactical plan."""
+        
+        operations = []
+        
+        for tactic in tactical:
+            for task in tactic.get("tasks", []):
+                operation = {
+                    "task": task,
+                    "action": self.determine_action(task),
+                    "parameters": {},
+                    "expected_outcome": "",
+                    "rollback": ""
+                }
+                operations.append(operation)
+        
+        return operations
+    
+    def decompose_phase(self, phase: str) -> list:
+        """Decompose a phase into tasks."""
+        
+        decompositions = {
+            "analysis": ["gather_requirements", "analyze_constraints", "identify_risks"],
+            "implementation": ["design_solution", "write_code", "integrate_components"],
+            "validation": ["test_solution", "review_code", "document_results"]
+        }
+        
+        return decompositions.get(phase, [phase])
+    
+    def determine_action(self, task: str) -> str:
+        """Determine action for a task."""
+        
+        actions = {
+            "gather_requirements": "interview_stakeholders",
+            "analyze_constraints": "review_specifications",
+            "identify_risks": "risk_assessment",
+            "design_solution": "create_architecture",
+            "write_code": "implement_solution",
+            "integrate_components": "run_integration_tests",
+            "test_solution": "execute_test_suite",
+            "review_code": "code_review",
+            "document_results": "write_documentation"
+        }
+        
+        return actions.get(task, "unknown")
+```
+
+### Dynamic Plan Adaptation
+
+```python
+class DynamicPlanAdapter:
+    """Dynamically adapts plans based on feedback."""
+    
+    def __init__(self):
+        self.adaptation_history = []
+        self.adaptation_rules = []
+    
+    def add_rule(self, condition: callable, adaptation: callable):
+        """Add an adaptation rule."""
+        
+        self.adaptation_rules.append({
+            "condition": condition,
+            "adaptation": adaptation
+        })
+    
+    def adapt_plan(self, plan: dict, context: dict) -> dict:
+        """Adapt plan based on context."""
+        
+        adaptations = []
+        
+        for rule in self.adaptation_rules:
+            if rule["condition"](plan, context):
+                adapted_plan = rule["adaptation"](plan, context)
+                adaptations.append({
+                    "rule": rule,
+                    "adapted_plan": adapted_plan
+                })
+        
+        if adaptations:
+            # Apply most relevant adaptation
+            best = adaptations[0]["adapted_plan"]
+            
+            self.adaptation_history.append({
+                "original": plan,
+                "adapted": best,
+                "timestamp": datetime.now().isoformat()
+            })
+            
+            return best
+        
+        return plan
+    
+    def add_default_rules(self):
+        """Add default adaptation rules."""
+        
+        # Rule: If step fails, try alternative
+        self.add_rule(
+            lambda plan, ctx: ctx.get("step_failed"),
+            lambda plan, ctx: self.add_alternative_steps(plan, ctx)
+        )
+        
+        # Rule: If time is running out, simplify
+        self.add_rule(
+            lambda plan, ctx: ctx.get("time_pressure", False),
+            lambda plan, ctx: self.simplify_plan(plan)
+        )
+    
+    def add_alternative_steps(self, plan: dict, context: dict) -> dict:
+        """Add alternative steps for failed steps."""
+        
+        adapted = plan.copy()
+        
+        for step in adapted.get("steps", []):
+            if step.get("id") == context.get("failed_step"):
+                step["alternative"] = True
+                step["notes"] = "Trying alternative approach"
+        
+        return adapted
+    
+    def simplify_plan(self, plan: dict) -> dict:
+        """Simplify plan to reduce time."""
+        
+        adapted = plan.copy()
+        
+        # Remove non-essential steps
+        adapted["steps"] = [
+            s for s in adapted.get("steps", [])
+            if s.get("priority", "medium") != "low"
+        ]
+        
+        return adapted
+```
+
+### Plan Comparison
+
+```python
+class PlanComparator:
+    """Compares different plans."""
+    
+    def __init__(self):
+        self.comparison_history = []
+    
+    def compare(self, plan1: dict, plan2: dict) -> dict:
+        """Compare two plans."""
+        
+        comparison = {
+            "plan1": self.analyze_plan(plan1),
+            "plan2": self.analyze_plan(plan2),
+            "recommendation": self.make_recommendation(plan1, plan2)
+        }
+        
+        self.comparison_history.append(comparison)
+        
+        return comparison
+    
+    def analyze_plan(self, plan: dict) -> dict:
+        """Analyze a plan."""
+        
+        steps = plan.get("steps", [])
+        
+        return {
+            "step_count": len(steps),
+            "estimated_duration": plan.get("estimated_duration", 0),
+            "complexity": self.estimate_complexity(steps),
+            "risks": self.identify_risks(steps)
+        }
+    
+    def estimate_complexity(self, steps: list) -> str:
+        """Estimate plan complexity."""
+        
+        if len(steps) <= 3:
+            return "simple"
+        elif len(steps) <= 7:
+            return "moderate"
+        else:
+            return "complex"
+    
+    def identify_risks(self, steps: list) -> list:
+        """Identify risks in plan."""
+        
+        risks = []
+        
+        for step in steps:
+            if step.get("priority") == "high":
+                risks.append(f"High priority step: {step.get('description', 'unknown')}")
+        
+        return risks
+    
+    def make_recommendation(self, plan1: dict, plan2: dict) -> str:
+        """Make recommendation based on comparison."""
+        
+        analysis1 = self.analyze_plan(plan1)
+        analysis2 = self.analyze_plan(plan2)
+        
+        # Recommend based on fewer steps and lower complexity
+        if analysis1["step_count"] < analysis2["step_count"]:
+            return "plan1"
+        elif analysis2["step_count"] < analysis1["step_count"]:
+            return "plan2"
+        
+        return "either"
+```
+
+### Plan Validation
+
+```python
+class PlanValidator:
+    """Validates plans before execution."""
+    
+    def __init__(self):
+        self.validation_rules = []
+        self.validation_history = []
+    
+    def add_rule(self, rule: callable):
+        """Add a validation rule."""
+        
+        self.validation_rules.append(rule)
+    
+    def validate(self, plan: dict) -> dict:
+        """Validate a plan."""
+        
+        violations = []
+        
+        for rule in self.validation_rules:
+            result = rule(plan)
+            if not result.get("valid", True):
+                violations.append(result)
+        
+        is_valid = len(violations) == 0
+        
+        validation = {
+            "plan_id": plan.get("id"),
+            "valid": is_valid,
+            "violations": violations,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        self.validation_history.append(validation)
+        
+        return validation
+    
+    def add_default_rules(self):
+        """Add default validation rules."""
+        
+        # Rule: Plan must have at least one step
+        self.add_rule(
+            lambda plan: {"valid": len(plan.get("steps", [])) > 0, 
+                         "reason": "Plan must have at least one step"}
+        )
+        
+        # Rule: Steps must have descriptions
+        self.add_rule(
+            lambda plan: {"valid": all(s.get("description") for s in plan.get("steps", [])),
+                         "reason": "All steps must have descriptions"}
+        )
+```
+
 ## Integration
 
 | Capability | Integration |

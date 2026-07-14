@@ -583,6 +583,328 @@ RETRY_CONFIGS = {
 7. **Test retry paths** — inject errors to verify retry works
 8. **Consider idempotency** — ensure retries don't cause duplicate side effects
 
+## Advanced Retry Patterns
+
+### Adaptive Retry Strategy
+
+```python
+class AdaptiveRetryStrategy:
+    """Dynamically adjusts retry strategy based on performance."""
+    
+    def __init__(self):
+        self.strategies = {}
+        self.performance_history = defaultdict(list)
+    
+    def select_strategy(self, operation: str, error: Exception) -> dict:
+        """Select best retry strategy for operation."""
+        
+        # Get historical performance
+        history = self.performance_history.get(operation, [])
+        
+        if len(history) < 5:
+            return self.get_default_strategy()
+        
+        # Find best performing strategy
+        strategy_performance = defaultdict(list)
+        for record in history:
+            strategy_performance[record["strategy"]].append(record["success"])
+        
+        best_strategy = None
+        best_rate = 0
+        
+        for strategy, successes in strategy_performance.items():
+            rate = sum(successes) / len(successes) if successes else 0
+            if rate > best_rate:
+                best_rate = rate
+                best_strategy = strategy
+        
+        if best_strategy and best_rate > 0.5:
+            return self.get_strategy(best_strategy)
+        
+        return self.get_default_strategy()
+    
+    def get_default_strategy(self) -> dict:
+        """Get default retry strategy."""
+        
+        return {
+            "max_retries": 3,
+            "backoff": "exponential",
+            "base_delay": 1.0,
+            "max_delay": 60.0
+        }
+    
+    def get_strategy(self, name: str) -> dict:
+        """Get strategy by name."""
+        
+        strategies = {
+            "aggressive": {"max_retries": 5, "backoff": "linear", "base_delay": 0.5},
+            "conservative": {"max_retries": 2, "backoff": "exponential", "base_delay": 2.0},
+            "balanced": {"max_retries": 3, "backoff": "exponential", "base_delay": 1.0}
+        }
+        
+        return strategies.get(name, self.get_default_strategy())
+    
+    def record_outcome(self, operation: str, strategy: str, success: bool):
+        """Record retry outcome."""
+        
+        self.performance_history[operation].append({
+            "strategy": strategy,
+            "success": success,
+            "timestamp": datetime.now().isoformat()
+        })
+```
+
+### Circuit Breaker Patterns
+
+```python
+class AdvancedCircuitBreaker:
+    """Advanced circuit breaker with multiple states."""
+    
+    def __init__(self, failure_threshold: int = 5, 
+                 recovery_timeout: int = 60,
+                 half_open_max: int = 3):
+        self.failure_threshold = failure_threshold
+        self.recovery_timeout = recovery_timeout
+        self.half_open_max = half_open_max
+        
+        self.state = "closed"
+        self.failure_count = 0
+        self.success_count = 0
+        self.last_failure_time = None
+        self.state_history = []
+    
+    def record_success(self):
+        """Record a successful call."""
+        
+        if self.state == "half-open":
+            self.success_count += 1
+            if self.success_count >= self.half_open_max:
+                self.transition_to("closed")
+        elif self.state == "closed":
+            self.failure_count = max(0, self.failure_count - 1)
+    
+    def record_failure(self):
+        """Record a failed call."""
+        
+        self.failure_count += 1
+        self.last_failure_time = time.time()
+        
+        if self.failure_count >= self.failure_threshold:
+            self.transition_to("open")
+    
+    def transition_to(self, new_state: str):
+        """Transition to new state."""
+        
+        old_state = self.state
+        self.state = new_state
+        
+        self.state_history.append({
+            "from": old_state,
+            "to": new_state,
+            "timestamp": datetime.now().isoformat()
+        })
+        
+        if new_state == "closed":
+            self.failure_count = 0
+            self.success_count = 0
+        elif new_state == "half-open":
+            self.success_count = 0
+    
+    def can_execute(self) -> dict:
+        """Check if execution is allowed."""
+        
+        if self.state == "closed":
+            return {"allowed": True, "state": "closed"}
+        
+        elif self.state == "open":
+            if self.last_failure_time:
+                elapsed = time.time() - self.last_failure_time
+                if elapsed >= self.recovery_timeout:
+                    self.transition_to("half-open")
+                    return {"allowed": True, "state": "half-open"}
+            
+            return {
+                "allowed": False,
+                "state": "open",
+                "retry_after": self.recovery_timeout - elapsed if self.last_failure_time else 0
+            }
+        
+        elif self.state == "half-open":
+            return {"allowed": True, "state": "half-open", "limit": self.half_open_max}
+        
+        return {"allowed": False, "state": "unknown"}
+    
+    def get_stats(self) -> dict:
+        """Get circuit breaker statistics."""
+        
+        return {
+            "state": self.state,
+            "failure_count": self.failure_count,
+            "success_count": self.success_count,
+            "state_changes": len(self.state_history)
+        }
+```
+
+### Retry Monitoring
+
+```python
+class RetryMonitor:
+    """Monitors retry behavior and performance."""
+    
+    def __init__(self):
+        self.retry_history = []
+        self.metrics = defaultdict(list)
+    
+    def record_retry(self, operation: str, attempt: int, success: bool, 
+                    duration: float):
+        """Record a retry attempt."""
+        
+        record = {
+            "operation": operation,
+            "attempt": attempt,
+            "success": success,
+            "duration": duration,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        self.retry_history.append(record)
+        
+        # Update metrics
+        self.metrics[f"{operation}_attempts"].append(attempt)
+        self.metrics[f"{operation}_duration"].append(duration)
+    
+    def get_operation_stats(self, operation: str) -> dict:
+        """Get statistics for an operation."""
+        
+        records = [r for r in self.retry_history if r["operation"] == operation]
+        
+        if not records:
+            return {"total": 0}
+        
+        successful = sum(1 for r in records if r["success"])
+        
+        return {
+            "total": len(records),
+            "successful": successful,
+            "success_rate": successful / len(records),
+            "avg_attempts": sum(r["attempt"] for r in records) / len(records),
+            "avg_duration": sum(r["duration"] for r in records) / len(records)
+        }
+    
+    def get_overall_stats(self) -> dict:
+        """Get overall retry statistics."""
+        
+        if not self.retry_history:
+            return {"total": 0}
+        
+        successful = sum(1 for r in self.retry_history if r["success"])
+        
+        return {
+            "total_retries": len(self.retry_history),
+            "successful": successful,
+            "success_rate": successful / len(self.retry_history),
+            "operations": list(set(r["operation"] for r in self.retry_history))
+        }
+    
+    def detect_patterns(self) -> dict:
+        """Detect patterns in retry behavior."""
+        
+        patterns = {}
+        
+        # Group by operation
+        by_operation = defaultdict(list)
+        for record in self.retry_history:
+            by_operation[record["operation"]].append(record)
+        
+        for operation, records in by_operation.items():
+            # Check if retries are getting better or worse
+            if len(records) >= 3:
+                recent = records[-3:]
+                older = records[:-3] if len(records) > 3 else records
+                
+                recent_success_rate = sum(1 for r in recent if r["success"]) / len(recent)
+                older_success_rate = sum(1 for r in older if r["success"]) / len(older) if older else 0.5
+                
+                if recent_success_rate > older_success_rate:
+                    pattern = "improving"
+                elif recent_success_rate < older_success_rate:
+                    pattern = "degrading"
+                else:
+                    pattern = "stable"
+                
+                patterns[operation] = {
+                    "pattern": pattern,
+                    "recent_success_rate": recent_success_rate,
+                    "older_success_rate": older_success_rate
+                }
+        
+        return patterns
+```
+
+### Retry with Fallback
+
+```python
+class RetryWithFallback:
+    """Retry with fallback strategies."""
+    
+    def __init__(self):
+        self.fallbacks = {}
+        self.fallback_history = []
+    
+    def register_fallback(self, operation: str, fallback_fn: callable):
+        """Register a fallback function for an operation."""
+        
+        self.fallbacks[operation] = fallback_fn
+    
+    def execute_with_fallback(self, operation: str, primary_fn: callable, 
+                             *args, **kwargs) -> dict:
+        """Execute with fallback on failure."""
+        
+        try:
+            result = primary_fn(*args, **kwargs)
+            return {"success": True, "result": result, "source": "primary"}
+        except Exception as e:
+            # Try fallback
+            if operation in self.fallbacks:
+                try:
+                    result = self.fallbacks[operation](*args, **kwargs)
+                    
+                    self.fallback_history.append({
+                        "operation": operation,
+                        "primary_error": str(e),
+                        "fallback_used": True,
+                        "timestamp": datetime.now().isoformat()
+                    })
+                    
+                    return {"success": True, "result": result, "source": "fallback"}
+                except Exception as fallback_error:
+                    return {
+                        "success": False,
+                        "primary_error": str(e),
+                        "fallback_error": str(fallback_error),
+                        "source": "both_failed"
+                    }
+            
+            return {"success": False, "error": str(e), "source": "primary_only"}
+    
+    def get_fallback_stats(self) -> dict:
+        """Get fallback statistics."""
+        
+        return {
+            "total_fallbacks": len(self.fallback_history),
+            "fallbacks_by_operation": self._count_by_operation()
+        }
+    
+    def _count_by_operation(self) -> dict:
+        """Count fallbacks by operation."""
+        
+        counts = defaultdict(int)
+        for record in self.fallback_history:
+            counts[record["operation"]] += 1
+        
+        return dict(counts)
+```
+
 ## Integration with Other Self-* Capabilities
 
 | Capability | How it integrates |

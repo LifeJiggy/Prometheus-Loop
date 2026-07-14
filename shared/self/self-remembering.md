@@ -581,6 +581,313 @@ print(f"Utilization: {stats['storage']['utilization']:.1%}")
 7. **Monitor memory health** — track utilization and relevance
 8. **Privacy-aware** — don't remember sensitive data
 
+## Advanced Memory Patterns
+
+### Memory Consolidation
+
+```python
+class MemoryConsolidator:
+    """Consolidates related memories for efficiency."""
+    
+    def __init__(self, llm=None):
+        self.llm = llm
+        self.consolidation_history = []
+    
+    def consolidate(self, memories: list) -> list:
+        """Consolidate related memories."""
+        
+        if len(memories) < 3:
+            return memories
+        
+        # Group related memories
+        groups = self.group_related(memories)
+        
+        # Consolidate each group
+        consolidated = []
+        for group in groups:
+            if len(group) > 1:
+                summary = self.summarize_group(group)
+                consolidated.append(summary)
+            else:
+                consolidated.append(group[0])
+        
+        self.consolidation_history.append({
+            "input_count": len(memories),
+            "output_count": len(consolidated),
+            "timestamp": datetime.now().isoformat()
+        })
+        
+        return consolidated
+    
+    def group_related(self, memories: list) -> list:
+        """Group related memories."""
+        
+        groups = []
+        used = set()
+        
+        for i, mem1 in enumerate(memories):
+            if i in used:
+                continue
+            
+            group = [mem1]
+            used.add(i)
+            
+            for j, mem2 in enumerate(memories):
+                if j in used:
+                    continue
+                
+                if self.are_related(mem1, mem2):
+                    group.append(mem2)
+                    used.add(j)
+            
+            groups.append(group)
+        
+        return groups
+    
+    def are_related(self, mem1: dict, mem2: dict) -> bool:
+        """Check if two memories are related."""
+        
+        if mem1.get("type") == mem2.get("type"):
+            return True
+        
+        str1 = str(mem1).lower()
+        str2 = str(mem2).lower()
+        
+        words1 = set(str1.split())
+        words2 = set(str2.split())
+        
+        if words1 and words2:
+            overlap = len(words1 & words2) / max(len(words1), len(words2))
+            if overlap > 0.5:
+                return True
+        
+        return False
+    
+    def summarize_group(self, group: list) -> dict:
+        """Summarize a group of memories."""
+        
+        if self.llm:
+            return self.summarize_with_llm(group)
+        
+        return {
+            "type": group[0].get("type", "general"),
+            "content": f"Summary of {len(group)} related memories",
+            "memories": [str(m)[:100] for m in group],
+            "consolidated_at": datetime.now().isoformat()
+        }
+    
+    def summarize_with_llm(self, group: list) -> dict:
+        """Summarize using LLM."""
+        
+        if not self.llm:
+            return self.summarize_group(group)
+        
+        prompt = f"""
+        Summarize these related memories:
+        {json.dumps(group, indent=2, default=str)}
+        
+        Return JSON with: type, content, key_points
+        """
+        
+        try:
+            response = self.llm.call(prompt)
+            return json.loads(response)
+        except:
+            return self.summarize_group(group)
+```
+
+### Memory Search Engine
+
+```python
+class MemorySearchEngine:
+    """Searches through memories efficiently."""
+    
+    def __init__(self):
+        self.index = {}
+        self.search_history = []
+    
+    def index_memory(self, memory: dict, memory_id: str):
+        """Index a memory for search."""
+        
+        # Extract keywords
+        content = str(memory).lower()
+        words = set(content.split())
+        
+        for word in words:
+            if len(word) > 3:  # Skip short words
+                if word not in self.index:
+                    self.index[word] = []
+                self.index[word].append(memory_id)
+    
+    def search(self, query: str, memories: dict) -> list:
+        """Search memories by query."""
+        
+        query_words = set(query.lower().split())
+        
+        # Find matching memories
+        scores = defaultdict(float)
+        
+        for word in query_words:
+            if word in self.index:
+                for memory_id in self.index[word]:
+                    scores[memory_id] += 1.0
+        
+        # Sort by score
+        sorted_results = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+        
+        # Return top results
+        results = []
+        for memory_id, score in sorted_results[:10]:
+            if memory_id in memories:
+                results.append({
+                    "memory": memories[memory_id],
+                    "score": score
+                })
+        
+        self.search_history.append({
+            "query": query,
+            "results_count": len(results),
+            "timestamp": datetime.now().isoformat()
+        })
+        
+        return results
+    
+    def get_search_stats(self) -> dict:
+        """Get search statistics."""
+        
+        return {
+            "index_size": len(self.index),
+            "total_searches": len(self.search_history)
+        }
+```
+
+### Forgetting Mechanism
+
+```python
+class ForgettingMechanism:
+    """Implements forgetting for memory management."""
+    
+    def __init__(self, decay_rate: float = 0.1):
+        self.decay_rate = decay_rate
+        self.forgetting_history = []
+    
+    def should_forget(self, memory: dict) -> bool:
+        """Determine if memory should be forgotten."""
+        
+        # Check age
+        stored_at = memory.get("stored_at")
+        if stored_at:
+            try:
+                age = datetime.now() - datetime.fromisoformat(stored_at)
+                if age.days > 30:  # Older than 30 days
+                    return True
+            except:
+                pass
+        
+        # Check access count
+        if memory.get("access_count", 0) == 0:
+            return True
+        
+        # Check relevance decay
+        relevance = memory.get("relevance", 0.5)
+        if relevance < 0.2:
+            return True
+        
+        return False
+    
+    def apply_decay(self, memory: dict) -> dict:
+        """Apply relevance decay to a memory."""
+        
+        current_relevance = memory.get("relevance", 0.5)
+        new_relevance = current_relevance * (1 - self.decay_rate)
+        
+        memory["relevance"] = max(0, new_relevance)
+        memory["last_decayed"] = datetime.now().isoformat()
+        
+        return memory
+    
+    def batch_decay(self, memories: list) -> list:
+        """Apply decay to a batch of memories."""
+        
+        decayed = []
+        forgotten = []
+        
+        for memory in memories:
+            if self.should_forget(memory):
+                forgotten.append(memory)
+            else:
+                decayed.append(self.apply_decay(memory))
+        
+        self.forgetting_history.append({
+            "input_count": len(memories),
+            "kept_count": len(decayed),
+            "forgotten_count": len(forgotten),
+            "timestamp": datetime.now().isoformat()
+        })
+        
+        return decayed
+```
+
+### Memory Validation
+
+```python
+class MemoryValidator:
+    """Validates memory integrity."""
+    
+    def __init__(self):
+        self.validation_rules = []
+        self.validation_history = []
+    
+    def add_rule(self, rule: callable):
+        """Add a validation rule."""
+        
+        self.validation_rules.append(rule)
+    
+    def validate(self, memory: dict) -> dict:
+        """Validate a memory."""
+        
+        violations = []
+        
+        for rule in self.validation_rules:
+            result = rule(memory)
+            if not result.get("valid", True):
+                violations.append(result)
+        
+        is_valid = len(violations) == 0
+        
+        validation = {
+            "memory_id": memory.get("id"),
+            "valid": is_valid,
+            "violations": violations,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        self.validation_history.append(validation)
+        
+        return validation
+    
+    def add_default_rules(self):
+        """Add default validation rules."""
+        
+        # Rule: Memory must have content
+        self.add_rule(
+            lambda m: {"valid": bool(m.get("content")), 
+                       "reason": "Memory must have content"}
+        )
+        
+        # Rule: Memory must have type
+        self.add_rule(
+            lambda m: {"valid": bool(m.get("type")), 
+                       "reason": "Memory must have type"}
+        )
+        
+        # Rule: Relevance must be between 0 and 1
+        self.add_rule(
+            lambda m: {"valid": 0 <= m.get("relevance", 0.5) <= 1, 
+                       "reason": "Relevance must be between 0 and 1"}
+        )
+```
+
 ## Integration
 
 | Capability | Integration |

@@ -1,0 +1,13 @@
+flowchart TD
+    A["New Content"] --> B{"Should Remember?"}
+    B -->|No| C["Discard"]
+    B -->|Yes| D["Score Relevance"]
+    D --> E{"Above Threshold?"}
+    E -->|No| C
+    E -->|Yes| F["Store Memory"]
+    F --> G["Update Index"]
+    G --> H{"Memory Full?"}
+    H -->|No| I["Done"]
+    H -->|Yes| J["Evict Old Memories"]
+    J --> K["Consolidate Related"]
+    K --> I

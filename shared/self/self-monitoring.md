@@ -564,6 +564,294 @@ print(json.dumps(dashboard, indent=2))
 7. **Test alerting** — ensure alerts actually fire
 8. **Review and tune** — adjust thresholds based on reality
 
+## Advanced Monitoring Patterns
+
+### Anomaly Detection
+
+```python
+class AnomalyDetector:
+    """Detects anomalies in metrics."""
+    
+    def __init__(self, sensitivity: float = 2.0):
+        self.sensitivity = sensitivity
+        self.baselines = {}
+        self.anomaly_history = []
+    
+    def update_baseline(self, metric_name: str, values: list):
+        """Update baseline for a metric."""
+        
+        if not values:
+            return
+        
+        mean = sum(values) / len(values)
+        std = (sum((x - mean) ** 2 for x in values) / len(values)) ** 0.5
+        
+        self.baselines[metric_name] = {
+            "mean": mean,
+            "std": std,
+            "sample_size": len(values),
+            "updated": datetime.now().isoformat()
+        }
+    
+    def detect(self, metric_name: str, value: float) -> dict:
+        """Detect if value is anomalous."""
+        
+        if metric_name not in self.baselines:
+            return {"is_anomaly": False, "reason": "No baseline"}
+        
+        baseline = self.baselines[metric_name]
+        mean = baseline["mean"]
+        std = baseline["std"]
+        
+        if std == 0:
+            return {"is_anomaly": False, "reason": "No variance"}
+        
+        z_score = abs(value - mean) / std
+        is_anomaly = z_score > self.sensitivity
+        
+        if is_anomaly:
+            self.anomaly_history.append({
+                "metric": metric_name,
+                "value": value,
+                "z_score": z_score,
+                "timestamp": datetime.now().isoformat()
+            })
+        
+        return {
+            "is_anomaly": is_anomaly,
+            "z_score": z_score,
+            "value": value,
+            "baseline_mean": mean,
+            "deviation": value - mean
+        }
+    
+    def detect_batch(self, metric_name: str, values: list) -> list:
+        """Detect anomalies in a batch of values."""
+        
+        anomalies = []
+        for i, value in enumerate(values):
+            result = self.detect(metric_name, value)
+            if result["is_anomaly"]:
+                anomalies.append({"index": i, "value": value, "details": result})
+        
+        return anomalies
+    
+    def get_anomaly_stats(self) -> dict:
+        """Get anomaly statistics."""
+        
+        return {
+            "total_anomalies": len(self.anomaly_history),
+            "recent_anomalies": self.anomaly_history[-10:]
+        }
+```
+
+### Performance Profiler
+
+```python
+class PerformanceProfiler:
+    """Profiles agent performance."""
+    
+    def __init__(self):
+        self.profiles = {}
+        self.profiles_history = []
+    
+    def profile(self, operation: str, func: callable, *args, **kwargs):
+        """Profile an operation."""
+        
+        import time
+        import tracemalloc
+        
+        # Start profiling
+        tracemalloc.start()
+        start_time = time.time()
+        
+        # Execute
+        result = func(*args, **kwargs)
+        
+        # Stop profiling
+        end_time = time.time()
+        current, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+        
+        profile = {
+            "operation": operation,
+            "duration": end_time - start_time,
+            "memory_current": current,
+            "memory_peak": peak,
+            "result": result,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        self.profiles[operation] = profile
+        self.profiles_history.append(profile)
+        
+        return result
+    
+    def get_profile(self, operation: str) -> dict:
+        """Get profile for an operation."""
+        
+        return self.profiles.get(operation, {})
+    
+    def get_average_profile(self, operation: str) -> dict:
+        """Get average profile for an operation."""
+        
+        profiles = [p for p in self.profiles_history if p["operation"] == operation]
+        
+        if not profiles:
+            return {}
+        
+        return {
+            "avg_duration": sum(p["duration"] for p in profiles) / len(profiles),
+            "avg_memory": sum(p["memory_current"] for p in profiles) / len(profiles),
+            "samples": len(profiles)
+        }
+```
+
+### Capacity Planner
+
+```python
+class CapacityPlanner:
+    """Plans resource capacity based on usage patterns."""
+    
+    def __init__(self):
+        self.usage_history = []
+        self.capacity_plans = []
+    
+    def record_usage(self, resources: dict):
+        """Record resource usage."""
+        
+        self.usage_history.append({
+            **resources,
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    def plan_capacity(self, forecast_days: int = 7) -> dict:
+        """Plan capacity for future period."""
+        
+        if len(self.usage_history) < 7:
+            return {"status": "insufficient_data"}
+        
+        # Calculate trends
+        recent = self.usage_history[-7:]
+        
+        avg_cpu = sum(r.get("cpu", 0) for r in recent) / len(recent)
+        avg_memory = sum(r.get("memory", 0) for r in recent) / len(recent)
+        avg_disk = sum(r.get("disk", 0) for r in recent) / len(recent)
+        
+        # Forecast
+        plan = {
+            "forecast_days": forecast_days,
+            "current_usage": {
+                "cpu_avg": avg_cpu,
+                "memory_avg": avg_memory,
+                "disk_avg": avg_disk
+            },
+            "recommended_capacity": {
+                "cpu": max(100, int(avg_cpu * 1.3)),  # 30% headroom
+                "memory": max(100, int(avg_memory * 1.3)),
+                "disk": max(100, int(avg_disk * 1.2))  # 20% headroom
+            },
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        self.capacity_plans.append(plan)
+        
+        return plan
+    
+    def get_capacity_trend(self) -> dict:
+        """Get capacity usage trend."""
+        
+        if len(self.usage_history) < 14:
+            return {"trend": "insufficient_data"}
+        
+        # Compare last 7 days to previous 7 days
+        recent = self.usage_history[-7:]
+        older = self.usage_history[-14:-7]
+        
+        recent_avg = sum(r.get("cpu", 0) for r in recent) / len(recent)
+        older_avg = sum(r.get("cpu", 0) for r in older) / len(older)
+        
+        if recent_avg > older_avg * 1.1:
+            trend = "increasing"
+        elif recent_avg < older_avg * 0.9:
+            trend = "decreasing"
+        else:
+            trend = "stable"
+        
+        return {"trend": trend, "recent_avg": recent_avg, "older_avg": older_avg}
+```
+
+### SLA Monitor
+
+```python
+class SLAMonitor:
+    """Monitors SLA compliance."""
+    
+    def __init__(self):
+        self.sla_targets = {}
+        self.sla_records = []
+    
+    def set_sla(self, metric: str, target: float, operator: str = "gte"):
+        """Set SLA target for a metric."""
+        
+        self.sla_targets[metric] = {
+            "target": target,
+            "operator": operator
+        }
+    
+    def record_measurement(self, metric: str, value: float):
+        """Record a measurement against SLA."""
+        
+        target_info = self.sla_targets.get(metric)
+        
+        if not target_info:
+            return
+        
+        target = target_info["target"]
+        operator = target_info["operator"]
+        
+        if operator == "gte":
+            compliant = value >= target
+        elif operator == "lte":
+            compliant = value <= target
+        else:
+            compliant = value == target
+        
+        self.sla_records.append({
+            "metric": metric,
+            "value": value,
+            "target": target,
+            "compliant": compliant,
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    def get_sla_compliance(self, metric: str = None) -> dict:
+        """Get SLA compliance status."""
+        
+        if metric:
+            records = [r for r in self.sla_records if r["metric"] == metric]
+        else:
+            records = self.sla_records
+        
+        if not records:
+            return {"compliance_rate": 1.0, "total": 0}
+        
+        compliant = sum(1 for r in records if r["compliant"])
+        
+        return {
+            "compliance_rate": compliant / len(records),
+            "total": len(records),
+            "compliant": compliant,
+            "violations": len(records) - compliant
+        }
+    
+    def get_violations(self, limit: int = 10) -> list:
+        """Get SLA violations."""
+        
+        violations = [r for r in self.sla_records if not r["compliant"]]
+        return violations[-limit:]
+```
+
 ## Integration
 
 | Capability | Integration |

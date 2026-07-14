@@ -1,0 +1,13 @@
+flowchart TD
+    A["Error Detected"] --> B{"Classify Error"}
+    B -->|Transient| C["Retry with Backoff"]
+    B -->|Permanent| D["Find Alternative"]
+    B -->|Logic| E["LLM Diagnose"]
+    B -->|Resource| F["Free Resources"]
+    C --> G{"Verify Fix"}
+    D --> G
+    E --> G
+    F --> G
+    G -->|Success| H["Learn Pattern"]
+    G -->|Failed| I["Escalate to Human"]
+    H --> J["Update Pattern DB"]

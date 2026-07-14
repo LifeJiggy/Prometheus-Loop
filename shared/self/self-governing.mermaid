@@ -1,0 +1,13 @@
+flowchart TD
+    A["Action Requested"] --> B["Check Policies"]
+    B --> C{"Policy Violation?"}
+    C -->|Yes| D["Deny Action"]
+    C -->|No| E{"High Risk?"}
+    E -->|Yes| F["Require Approval"]
+    E -->|No| G["Allow Action"]
+    F --> H{"Approved?"}
+    H -->|Yes| G
+    H -->|No| D
+    G --> I["Log Action"]
+    D --> I
+    I --> J["Verify Compliance"]

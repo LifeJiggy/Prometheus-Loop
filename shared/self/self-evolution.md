@@ -438,6 +438,386 @@ if evolution["evolved"]:
 7. **Human oversight for major changes** — significant evolutions need review
 8. **Document evolutions** — track what changed and why
 
+## Advanced Evolution Patterns
+
+### Skill Discovery System
+
+```python
+class SkillDiscovery:
+    """Discovers new skills from successful task patterns."""
+    
+    def __init__(self):
+        self.discovered_skills = {}
+        self.skill_candidates = []
+    
+    def analyze_task(self, task: dict, result: dict, approach: str):
+        """Analyze task for potential new skills."""
+        
+        if not result.get("success"):
+            return
+        
+        skill = {
+            "task_pattern": self.extract_pattern(task),
+            "approach": approach,
+            "tools_used": result.get("tools_used", []),
+            "success_count": 1,
+            "discovered_at": datetime.now().isoformat()
+        }
+        
+        existing = self.find_similar_skill(skill)
+        
+        if existing:
+            self.discovered_skills[existing]["success_count"] += 1
+        else:
+            self.skill_candidates.append(skill)
+            if len(self.skill_candidates) >= 3:
+                self.promote_skill(skill)
+    
+    def extract_pattern(self, task: dict) -> str:
+        """Extract pattern from task."""
+        
+        task_str = str(task).lower()
+        
+        patterns = {
+            "file_operation": ["read", "write", "file", "open"],
+            "api_call": ["api", "request", "fetch", "endpoint"],
+            "data_transform": ["transform", "convert", "parse", "process"],
+            "code_generation": ["generate", "create", "write code", "implement"],
+            "analysis": ["analyze", "review", "evaluate", "assess"]
+        }
+        
+        for pattern, keywords in patterns.items():
+            if any(kw in task_str for kw in keywords):
+                return pattern
+        
+        return "general"
+    
+    def find_similar_skill(self, skill: dict) -> str:
+        """Find similar existing skill."""
+        
+        for skill_id, existing in self.discovered_skills.items():
+            if existing["task_pattern"] == skill["task_pattern"]:
+                return skill_id
+        
+        return None
+    
+    def promote_skill(self, skill: dict):
+        """Promote a skill candidate to discovered skill."""
+        
+        skill_id = str(uuid4())
+        self.discovered_skills[skill_id] = skill
+    
+    def get_skills(self, pattern: str = None) -> list:
+        """Get discovered skills."""
+        
+        skills = list(self.discovered_skills.values())
+        
+        if pattern:
+            skills = [s for s in skills if s["task_pattern"] == pattern]
+        
+        return sorted(skills, key=lambda s: s["success_count"], reverse=True)
+```
+
+### Architecture Evolution Engine
+
+```python
+class ArchitectureEvolution:
+    """Evolves agent architecture based on requirements."""
+    
+    def __init__(self):
+        self.architectures = []
+        self.fitness_scores = {}
+    
+    def evaluate_fitness(self, architecture: dict, tasks: list) -> float:
+        """Evaluate fitness of an architecture."""
+        
+        score = 0.0
+        
+        required_caps = set()
+        for task in tasks:
+            required_caps.update(self.extract_capabilities(task))
+        
+        available_caps = set(architecture.get("capabilities", []))
+        coverage = len(required_caps & available_caps) / len(required_caps) if required_caps else 1.0
+        score += coverage * 0.4
+        
+        components = len(architecture.get("components", []))
+        score += max(0, 1 - components / 20) * 0.2
+        
+        return score
+    
+    def extract_capabilities(self, task: dict) -> set:
+        """Extract required capabilities."""
+        
+        task_str = str(task).lower()
+        capabilities = set()
+        
+        if "code" in task_str:
+            capabilities.add("coding")
+        if "test" in task_str:
+            capabilities.add("testing")
+        if "analyze" in task_str:
+            capabilities.add("analysis")
+        if "deploy" in task_str:
+            capabilities.add("deployment")
+        
+        return capabilities if capabilities else {"general"}
+    
+    def evolve(self, parent: dict, mutation_rate: float = 0.1) -> dict:
+        """Create evolved architecture from parent."""
+        
+        child = parent.copy()
+        
+        if random.random() < mutation_rate:
+            if random.random() < 0.5 and child.get("components"):
+                child["components"].pop(random.randint(0, len(child["components"]) - 1))
+            else:
+                new_components = ["logging", "monitoring", "caching", "retry"]
+                child["components"].append(random.choice(new_components))
+        
+        child["id"] = str(uuid4())
+        child["parent_id"] = parent.get("id")
+        
+        return child
+```
+
+### Knowledge Transfer System
+
+```python
+class KnowledgeTransfer:
+    """Transfers knowledge between different domains."""
+    
+    def __init__(self):
+        self.knowledge_base = {}
+        self.transfer_history = []
+    
+    def store_knowledge(self, domain: str, knowledge: dict):
+        """Store knowledge for a domain."""
+        
+        if domain not in self.knowledge_base:
+            self.knowledge_base[domain] = []
+        
+        self.knowledge_base[domain].append({
+            **knowledge,
+            "stored_at": datetime.now().isoformat()
+        })
+    
+    def transfer(self, source_domain: str, target_domain: str) -> list:
+        """Transfer knowledge between domains."""
+        
+        source_knowledge = self.knowledge_base.get(source_domain, [])
+        transferred = []
+        
+        for knowledge in source_knowledge:
+            if self.is_transferable(knowledge, target_domain):
+                transferred.append({
+                    **knowledge,
+                    "source_domain": source_domain,
+                    "target_domain": target_domain
+                })
+        
+        if target_domain not in self.knowledge_base:
+            self.knowledge_base[target_domain] = []
+        
+        self.knowledge_base[target_domain].extend(transferred)
+        
+        return transferred
+    
+    def is_transferable(self, knowledge: dict, target_domain: str) -> bool:
+        """Check if knowledge is transferable."""
+        
+        knowledge_str = str(knowledge).lower()
+        domain_keywords = {
+            "coding": ["code", "function", "class"],
+            "testing": ["test", "assert", "validate"],
+            "analysis": ["analyze", "review", "evaluate"]
+        }
+        
+        keywords = domain_keywords.get(target_domain, [])
+        return any(kw in knowledge_str for kw in keywords)
+```
+
+### Fitness Tracking
+
+```python
+class FitnessTracker:
+    """Tracks fitness of different approaches."""
+    
+    def __init__(self):
+        self.fitness_history = defaultdict(list)
+    
+    def record(self, approach: str, fitness: float):
+        """Record fitness for an approach."""
+        
+        self.fitness_history[approach].append({
+            "fitness": fitness,
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    def get_average_fitness(self, approach: str) -> float:
+        """Get average fitness for an approach."""
+        
+        history = self.fitness_history.get(approach, [])
+        if not history:
+            return 0.0
+        
+        return sum(h["fitness"] for h in history) / len(history)
+    
+    def get_best_approach(self) -> str:
+        """Get approach with highest average fitness."""
+        
+        if not self.fitness_history:
+            return None
+        
+        return max(
+            self.fitness_history.keys(),
+            key=lambda a: self.get_average_fitness(a)
+        )
+```
+
+## Advanced Evolution Patterns
+
+### Capability Acquisition
+
+```python
+class CapabilityAcquisition:
+    """Acquires new capabilities through learning."""
+    
+    def __init__(self, llm=None):
+        self.llm = llm
+        self.acquired_capabilities = {}
+        self.learning_history = []
+    
+    def acquire(self, capability: str, task: dict) -> dict:
+        """Attempt to acquire a new capability."""
+        
+        # Check if already acquired
+        if capability in self.acquired_capabilities:
+            return {
+                "acquired": True,
+                "source": "already_known",
+                "capability": capability
+            }
+        
+        # Try to learn from task
+        if self.llm:
+            learning = self.learn_from_task(capability, task)
+        else:
+            learning = self.learn_heuristic(capability, task)
+        
+        if learning.get("success"):
+            self.acquired_capabilities[capability] = {
+                "learned_from": task,
+                "learned_at": datetime.now().isoformat(),
+                "confidence": learning.get("confidence", 0.5)
+            }
+            
+            self.learning_history.append({
+                "capability": capability,
+                "success": True,
+                "timestamp": datetime.now().isoformat()
+            })
+            
+            return {"acquired": True, "source": "learned", "capability": capability}
+        
+        return {"acquired": False, "reason": learning.get("reason", "Learning failed")}
+    
+    def learn_from_task(self, capability: str, task: dict) -> dict:
+        """Learn capability from task using LLM."""
+        
+        prompt = f"""
+        Learn how to perform this capability based on the task:
+        
+        Capability: {capability}
+        Task: {task}
+        
+        Provide:
+        1. Step-by-step approach
+        2. Required tools
+        3. Common pitfalls
+        4. Confidence level (0-1)
+        
+        Return JSON with: approach, tools, pitfalls, confidence
+        """
+        
+        try:
+            response = self.llm.call(prompt)
+            return json.loads(response)
+        except:
+            return {"success": False, "reason": "LLM learning failed"}
+    
+    def learn_heuristic(self, capability: str, task: dict) -> dict:
+        """Learn capability heuristically."""
+        
+        # Simple heuristic learning
+        approaches = {
+            "data_analysis": {"approach": "Use pandas for data manipulation", "confidence": 0.6},
+            "web_scraping": {"approach": "Use requests + beautifulsoup", "confidence": 0.6},
+            "file_processing": {"approach": "Use built-in file operations", "confidence": 0.7}
+        }
+        
+        if capability in approaches:
+            return {"success": True, **approaches[capability]}
+        
+        return {"success": False, "reason": "No heuristic available"}
+    
+    def get_capabilities(self) -> list:
+        """Get list of acquired capabilities."""
+        
+        return list(self.acquired_capabilities.keys())
+```
+
+### Evolution Tracking
+
+```python
+class EvolutionTracker:
+    """Tracks evolution over time."""
+    
+    def __init__(self):
+        self.evolution_history = []
+        self.milestones = []
+    
+    def record_evolution(self, evolution: dict):
+        """Record an evolution event."""
+        
+        self.evolution_history.append({
+            **evolution,
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    def add_milestone(self, name: str, description: str):
+        """Add an evolution milestone."""
+        
+        self.milestones.append({
+            "name": name,
+            "description": description,
+            "timestamp": datetime.now().isoformat(),
+            "evolution_count": len(self.evolution_history)
+        })
+    
+    def get_evolution_rate(self, days: int = 30) -> float:
+        """Get evolution rate per day."""
+        
+        cutoff = datetime.now() - timedelta(days=days)
+        
+        recent = [
+            e for e in self.evolution_history
+            if datetime.fromisoformat(e["timestamp"]) > cutoff
+        ]
+        
+        return len(recent) / days if days > 0 else 0
+    
+    def get_evolution_summary(self) -> dict:
+        """Get evolution summary."""
+        
+        return {
+            "total_evolutions": len(self.evolution_history),
+            "milestones": len(self.milestones),
+            "evolution_rate": self.get_evolution_rate(),
+            "recent_evolutions": self.evolution_history[-5:]
+        }
+```
+
 ## Integration
 
 | Capability | Integration |

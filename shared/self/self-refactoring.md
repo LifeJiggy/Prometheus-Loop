@@ -498,6 +498,352 @@ for suggestion in analysis["suggestions"][:3]:
 7. **Avoid over-refactoring** — not every smell needs fixing
 8. **Human review for complex changes** — let humans verify major refactorings
 
+## Advanced Refactoring Patterns
+
+### Code Smell Detection Engine
+
+```python
+class CodeSmellDetector:
+    """Detects various code smells."""
+    
+    def __init__(self):
+        self.smell_definitions = {
+            "long_method": {"threshold": 50, "severity": "high"},
+            "large_class": {"threshold": 500, "severity": "high"},
+            "long_parameter_list": {"threshold": 7, "severity": "medium"},
+            "deep_nesting": {"threshold": 4, "severity": "medium"},
+            "duplicate_code": {"threshold": 0.2, "severity": "high"},
+            "dead_code": {"severity": "low"},
+            "magic_numbers": {"severity": "medium"},
+            "complex_conditionals": {"threshold": 3, "severity": "medium"}
+        }
+    
+    def detect(self, code: str) -> list:
+        """Detect code smells in code."""
+        
+        smells = []
+        
+        # Check for long methods
+        methods = self.extract_methods(code)
+        for method in methods:
+            if method["lines"] > self.smell_definitions["long_method"]["threshold"]:
+                smells.append({
+                    "type": "long_method",
+                    "name": method["name"],
+                    "lines": method["lines"],
+                    "severity": "high"
+                })
+        
+        # Check for large classes
+        classes = self.extract_classes(code)
+        for cls in classes:
+            if cls["lines"] > self.smell_definitions["large_class"]["threshold"]:
+                smells.append({
+                    "type": "large_class",
+                    "name": cls["name"],
+                    "lines": cls["lines"],
+                    "severity": "high"
+                })
+        
+        # Check for deep nesting
+        nesting = self.calculate_max_nesting(code)
+        if nesting > self.smell_definitions["deep_nesting"]["threshold"]:
+            smells.append({
+                "type": "deep_nesting",
+                "depth": nesting,
+                "severity": "medium"
+            })
+        
+        # Check for duplicate code
+        duplicates = self.find_duplicates(code)
+        if duplicates:
+            smells.append({
+                "type": "duplicate_code",
+                "count": len(duplicates),
+                "severity": "high"
+            })
+        
+        return smells
+    
+    def extract_methods(self, code: str) -> list:
+        """Extract methods from code."""
+        
+        import re
+        
+        methods = []
+        
+        for match in re.finditer(r'def\s+(\w+)\s*\([^)]*\):', code):
+            name = match.group(1)
+            start = match.end()
+            
+            # Find method body
+            lines = code[start:].split('\n')
+            body_lines = 0
+            for line in lines[1:]:
+                if line.strip() and not line.strip().startswith(('def ', 'class ')):
+                    body_lines += 1
+                elif line.strip().startswith(('def ', 'class ')):
+                    break
+            
+            methods.append({"name": name, "lines": body_lines})
+        
+        return methods
+    
+    def extract_classes(self, code: str) -> list:
+        """Extract classes from code."""
+        
+        import re
+        
+        classes = []
+        
+        for match in re.finditer(r'class\s+(\w+):', code):
+            name = match.group(1)
+            start = match.end()
+            
+            # Find class body
+            lines = code[start:].split('\n')
+            body_lines = 0
+            for line in lines:
+                if line.strip().startswith(('def ', 'class ')):
+                    break
+                body_lines += 1
+            
+            classes.append({"name": name, "lines": body_lines})
+        
+        return classes
+    
+    def calculate_max_nesting(self, code: str) -> int:
+        """Calculate maximum nesting depth."""
+        
+        max_depth = 0
+        current_depth = 0
+        
+        for line in code.split('\n'):
+            stripped = line.strip()
+            if stripped.startswith(('if ', 'for ', 'while ', 'with ')):
+                current_depth += 1
+                max_depth = max(max_depth, current_depth)
+            elif stripped.startswith(('else:', 'elif ')):
+                pass
+            elif current_depth > 0 and not stripped.startswith((' ', '\t')):
+                current_depth = max(0, current_depth - 1)
+        
+        return max_depth
+    
+    def find_duplicates(self, code: str) -> list:
+        """Find duplicate code blocks."""
+        
+        lines = [l.strip() for l in code.split('\n') if l.strip()]
+        
+        seen = {}
+        duplicates = []
+        
+        for i, line in enumerate(lines):
+            if len(line) < 20:
+                continue
+            if line in seen:
+                duplicates.append({"line": line, "first": seen[line], "second": i})
+            else:
+                seen[line] = i
+        
+        return duplicates
+```
+
+### Refactoring Strategies
+
+```python
+class RefactoringStrategies:
+    """Collection of refactoring strategies."""
+    
+    def __init__(self):
+        self.strategies = {
+            "extract_method": self.extract_method,
+            "extract_class": self.extract_class,
+            "rename": self.rename,
+            "move_method": self.move_method,
+            "inline": self.inline,
+            "replace_temp_with_query": self.replace_temp_with_query,
+            "introduce_parameter_object": self.introduce_parameter_object,
+            "replace_conditional_with_polymorphism": self.replace_conditional_with_polymorphism
+        }
+    
+    def extract_method(self, code: str, start_line: int, end_line: int, 
+                       method_name: str) -> str:
+        """Extract a method from code."""
+        
+        lines = code.split('\n')
+        method_body = lines[start_line:end_line]
+        
+        # Create method
+        method = f"\ndef {method_name}():\n"
+        for line in method_body:
+            method += f"    {line}\n"
+        
+        # Replace original with method call
+        lines[start_line:end_line] = [f"{method_name}()"]
+        
+        return method + '\n'.join(lines)
+    
+    def extract_class(self, code: str, methods: list, class_name: str) -> str:
+        """Extract a class from code."""
+        
+        class_def = f"\nclass {class_name}:\n"
+        for method in methods:
+            class_def += f"    {method}\n"
+        
+        return class_def
+    
+    def rename(self, code: str, old_name: str, new_name: str) -> str:
+        """Rename a variable or method."""
+        
+        import re
+        return re.sub(r'\b' + old_name + r'\b', new_name, code)
+    
+    def move_method(self, code: str, method_name: str, from_class: str, 
+                    to_class: str) -> str:
+        """Move a method from one class to another."""
+        
+        # Simplified - in reality would need AST manipulation
+        return code
+    
+    def inline(self, code: str, method_name: str) -> str:
+        """Inline a method."""
+        
+        # Find method definition
+        import re
+        pattern = rf'def {method_name}\([^)]*\):(.*?)(?=\ndef |\nclass |\Z)'
+        match = re.search(pattern, code, re.DOTALL)
+        
+        if match:
+            method_body = match.group(1).strip()
+            # Replace method calls with body
+            code = re.sub(rf'{method_name}\(\)', method_body, code)
+            # Remove method definition
+            code = re.sub(pattern, '', code, flags=re.DOTALL)
+        
+        return code
+    
+    def replace_temp_with_query(self, code: str, temp_name: str, 
+                                query: str) -> str:
+        """Replace temporary variable with query."""
+        
+        return code.replace(temp_name, query)
+    
+    def introduce_parameter_object(self, code: str, params: list, 
+                                   class_name: str) -> str:
+        """Introduce parameter object for long parameter lists."""
+        
+        param_obj = f"\nclass {class_name}:\n"
+        param_obj += f"    def __init__(self, {', '.join(params)}):\n"
+        for param in params:
+            param_obj += f"        self.{param} = {param}\n"
+        
+        return param_obj + code
+    
+    def replace_conditional_with_polymorphism(self, code: str, 
+                                              conditionals: dict) -> str:
+        """Replace conditional logic with polymorphism."""
+        
+        # Simplified - would need full class hierarchy in reality
+        base_class = "\nclass Base:\n    def execute(self):\n        pass\n\n"
+        
+        for condition, implementation in conditionals.items():
+            class_name = f"Handler_{condition}"
+            base_class += f"class {class_name}(Base):\n"
+            base_class += f"    def execute(self):\n"
+            base_class += f"        {implementation}\n\n"
+        
+        return base_class + code
+```
+
+### Quality Metrics Tracker
+
+```python
+class QualityMetricsTracker:
+    """Tracks code quality metrics over time."""
+    
+    def __init__(self):
+        self.metrics_history = []
+        self.thresholds = {
+            "complexity": {"max": 15, "target": 10},
+            "duplication": {"max": 0.3, "target": 0.1},
+            "coverage": {"min": 0.7, "target": 0.9},
+            "maintainability": {"min": 60, "target": 80}
+        }
+    
+    def record_metrics(self, file_path: str, metrics: dict):
+        """Record quality metrics for a file."""
+        
+        self.metrics_history.append({
+            "file": file_path,
+            "metrics": metrics,
+            "timestamp": datetime.now().isoformat(),
+            "quality_score": self.calculate_quality_score(metrics)
+        })
+    
+    def calculate_quality_score(self, metrics: dict) -> float:
+        """Calculate overall quality score."""
+        
+        score = 100.0
+        
+        # Complexity penalty
+        complexity = metrics.get("complexity", 0)
+        if complexity > self.thresholds["complexity"]["target"]:
+            score -= (complexity - self.thresholds["complexity"]["target"]) * 2
+        
+        # Duplication penalty
+        duplication = metrics.get("duplication", 0)
+        if duplication > self.thresholds["duplication"]["target"]:
+            score -= (duplication - self.thresholds["duplication"]["target"]) * 50
+        
+        return max(0, min(100, score))
+    
+    def check_thresholds(self, metrics: dict) -> list:
+        """Check if metrics exceed thresholds."""
+        
+        violations = []
+        
+        if metrics.get("complexity", 0) > self.thresholds["complexity"]["max"]:
+            violations.append({
+                "metric": "complexity",
+                "value": metrics["complexity"],
+                "threshold": self.thresholds["complexity"]["max"],
+                "severity": "high"
+            })
+        
+        if metrics.get("duplication", 0) > self.thresholds["duplication"]["max"]:
+            violations.append({
+                "metric": "duplication",
+                "value": metrics["duplication"],
+                "threshold": self.thresholds["duplication"]["max"],
+                "severity": "high"
+            })
+        
+        return violations
+    
+    def get_trend(self, file_path: str, metric: str) -> dict:
+        """Get trend for a metric."""
+        
+        file_metrics = [h for h in self.metrics_history if h["file"] == file_path]
+        
+        if len(file_metrics) < 2:
+            return {"trend": "insufficient_data"}
+        
+        values = [h["metrics"].get(metric, 0) for h in file_metrics]
+        
+        recent = values[-1]
+        older = values[0]
+        
+        if recent > older * 1.1:
+            trend = "degrading"
+        elif recent < older * 0.9:
+            trend = "improving"
+        else:
+            trend = "stable"
+        
+        return {"trend": "trend", "values": values}
+```
+
 ## Integration
 
 | Capability | Integration |

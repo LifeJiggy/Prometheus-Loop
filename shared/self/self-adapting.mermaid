@@ -1,0 +1,9 @@
+flowchart TD
+    A["Context Change"] --> B["Detect Change"]
+    B --> C["Select Strategy"]
+    C --> D["Adapt Configuration"]
+    D --> E["Apply Changes"]
+    E --> F["Verify Adaptation"]
+    F -->|Success| G["Record Adaptation"]
+    F -->|Failed| H["Rollback"]
+    G --> I["Update Strategy Success Rate"]
