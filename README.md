@@ -168,15 +168,58 @@ flowchart TD
 
 **Guide:** [v3 guide](autonomous/agentic-ai-loop-v3-guide.md) | **Core diagram:** [simplified](core-only/agentic-ai-loop-v3-core.mermaid)
 
-**Guide:** [v3 guide](agentic-ai-loop-v3-guide.md) — full explanations, implementation patterns, checklists.
+---
+
+## Self-* Capabilities Architecture
+
+13 self-* capabilities that make agents truly autonomous:
+
+```mermaid
+flowchart TD
+    subgraph Detection["Detection Layer"]
+        A["Self-Monitoring"]
+        B["Self-Observing"]
+    end
+
+    subgraph Diagnosis["Diagnosis Layer"]
+        C["Self-Debugging"]
+        D["Self-Healing"]
+    end
+
+    subgraph Adaptation["Adaptation Layer"]
+        E["Self-Adapting"]
+        F["Self-Retry"]
+        G["Self-Planning"]
+    end
+
+    subgraph Evolution["Evolution Layer"]
+        H["Self-Improving"]
+        I["Self-Evolution"]
+        J["Self-Refactoring"]
+    end
+
+    subgraph Governance["Governance Layer"]
+        K["Self-Governing"]
+        L["Multi-Agent Orchestration"]
+        M["Self-Remembering"]
+    end
+
+    Detection --> Diagnosis
+    Diagnosis --> Adaptation
+    Adaptation --> Evolution
+    Evolution --> Governance
+    Governance --> Detection
+```
+
+**Deep dives:** [shared/self/README.md](shared/self/README.md) — 700+ lines per capability with complete Python implementations.
 
 ---
 
 ## Suggested read order
 
-1. **`agentic-ai-loop-guide.md`** — get the shape of the loop. Each step explains *what* it does, *why* it matters, *what goes wrong*, and *real examples* of it in action.
-2. **`agentic-ai-loop-v2-guide.md`** — see what's needed to run it safely. Covers guardrails, error handling, multi-agent coordination, security at the gate level, testing, explainability, resource management, lifecycle, and UX.
-3. **`agentic-ai-loop-v3-guide.md`** — see how to make it autonomous and robust. Covers self-healing, adaptive planning, cost optimization, cross-session memory, full adversarial defense, evaluation framework, testing framework, streaming, composition, ethics, and agent-as-a-service.
+1. **`core/agentic-ai-loop-guide.md`** — get the shape of the loop. Each step explains *what* it does, *why* it matters, *what goes wrong*, and *real examples* of it in action.
+2. **`production/agentic-ai-loop-v2-guide.md`** — see what's needed to run it safely. Covers guardrails, error handling, multi-agent coordination, security at the gate level, testing, explainability, resource management, lifecycle, and UX.
+3. **`autonomous/agentic-ai-loop-v3-guide.md`** — see how to make it autonomous and robust. Covers self-healing, adaptive planning, cost optimization, cross-session memory, full adversarial defense, evaluation framework, testing framework, streaming, composition, ethics, and agent-as-a-service.
 4. **README** (you are here) — overview and quick reference.
 
 ## TL;DR
