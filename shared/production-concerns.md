@@ -1,5 +1,22 @@
 # Production Concerns Deep Dive
 
+> **Diagram:** [production-concerns.mermaid](production-concerns.mermaid)
+
+```mermaid
+flowchart TD
+    A["Agent Request"] --> B["Authenticate"]
+    B --> C{"Valid?"}
+    C -->|No| D["Reject"]
+    C -->|Yes| E["Check Rate Limit"]
+    E --> F{"Within Limit?"}
+    F -->|No| G["Reject"]
+    F -->|Yes| H["Route to Agent"]
+    H --> I["Execute Task"]
+    I --> J["Stream Response"]
+    J --> K["Track Metrics"]
+    K --> L["Update SLA"]
+```
+
 ## Observability Stack
 
 ### OpenTelemetry Integration

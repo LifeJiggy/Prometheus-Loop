@@ -1,5 +1,22 @@
 # Multi-Agent Orchestration Deep Dive
 
+> **Diagram:** [multi-agent-orchestration.mermaid](multi-agent-orchestration.mermaid)
+
+```mermaid
+flowchart TD
+    A["Task Received"] --> B{"Single Agent?"}
+    B -->|Yes| C["Execute Directly"]
+    B -->|No| D["Decompose Task"]
+    D --> E["Route to Agents"]
+    E --> F["Execute in Parallel"]
+    F --> G{"Conflicts?"}
+    G -->|Yes| H["Resolve Conflict"]
+    G -->|No| I["Collect Results"]
+    H --> I
+    I --> J["Aggregate"]
+    J --> K["Return Result"]
+```
+
 ## Communication Patterns
 
 ### 1. Request-Response (Synchronous)

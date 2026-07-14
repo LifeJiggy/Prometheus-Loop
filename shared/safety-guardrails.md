@@ -1,5 +1,24 @@
 # Safety & Guardrails Deep Dive
 
+> **Diagram:** [safety-guardrails.mermaid](safety-guardrails.mermaid)
+
+```mermaid
+flowchart TD
+    A["Action Requested"] --> B{"Threat?"}
+    B -->|Prompt Injection| C["Sanitize Input"]
+    B -->|Tool Abuse| D["Validate Tool Call"]
+    B -->|Data Exfil| E["Block Network"]
+    B -->|Memory Poison| F["Validate Memory"]
+    C --> G{"Safe?"}
+    D --> G
+    E --> G
+    F --> G
+    G -->|Yes| H["Allow Action"]
+    G -->|No| I["Deny Action"]
+    H --> J["Log Action"]
+    I --> J
+```
+
 ## Threat Model
 
 ### Attack Vectors

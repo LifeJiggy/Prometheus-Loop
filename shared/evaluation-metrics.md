@@ -1,5 +1,21 @@
 # Evaluation & Metrics
 
+> **Diagram:** [evaluation-metrics.mermaid](evaluation-metrics.mermaid)
+
+```mermaid
+flowchart TD
+    A["Define Metrics"] --> B["Set Targets"]
+    B --> C["Run Evaluation"]
+    C --> D["Calculate Scores"]
+    D --> E["Generate Report"]
+    E --> F{"Regression?"}
+    F -->|Yes| G["Block Deployment"]
+    F -->|No| H["Allow Deployment"]
+    G --> I["Investigate"]
+    I --> J["Fix Issue"]
+    J --> C
+```
+
 ## Metrics Definitions
 
 ### Core Metrics

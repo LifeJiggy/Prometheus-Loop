@@ -1,5 +1,23 @@
 # Observability & Monitoring
 
+> **Diagram:** [observability.mermaid](observability.mermaid)
+
+```mermaid
+flowchart TD
+    A["Collect Metrics"] --> B["Store Time Series"]
+    B --> C["Run Health Checks"]
+    C --> D{"Healthy?"}
+    D -->|Yes| E["Log Status"]
+    D -->|No| F["Trigger Alert"]
+    F --> G["Notify Handlers"]
+    E --> H["Update Dashboard"]
+    G --> H
+    H --> I["Detect Anomalies"]
+    I --> J{"Anomaly?"}
+    J -->|Yes| K["Investigate"]
+    J -->|No| L["Continue"]
+```
+
 ## Observability Stack
 
 | Layer | Tool | Purpose |

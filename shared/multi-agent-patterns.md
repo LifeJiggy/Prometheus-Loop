@@ -1,5 +1,24 @@
 # Multi-Agent Patterns
 
+> **Diagram:** [multi-agent-patterns.mermaid](multi-agent-patterns.mermaid)
+
+```mermaid
+flowchart TD
+    A["Communication Need"] --> B{"Pattern?"}
+    B -->|Sync| C["Request-Response"]
+    B -->|Async| D["Publish-Subscribe"]
+    B -->|Decoupled| E["Message Queue"]
+    B -->|Shared| F["Blackboard"]
+    C --> G["Process"]
+    D --> G
+    E --> G
+    F --> G
+    G --> H{"Conflict?"}
+    H -->|Yes| I["Resolve"]
+    H -->|No| J["Return Result"]
+    I --> J
+```
+
 ## Communication Protocols
 
 ### Request-Response (Synchronous)

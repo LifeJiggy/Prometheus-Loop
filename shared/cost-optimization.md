@@ -1,5 +1,23 @@
 # Cost Optimization Strategies
 
+> **Diagram:** [cost-optimization.mermaid](cost-optimization.mermaid)
+
+```mermaid
+flowchart TD
+    A["Model Selection"] --> B{"Task Complexity"}
+    B -->|Simple| C["gpt-4o-mini"]
+    B -->|Moderate| D["gpt-4o"]
+    B -->|Complex| E["gpt-4o + verification"]
+    C --> F["Execute"]
+    D --> F
+    E --> F
+    F --> G["Cache Result"]
+    G --> H["Track Cost"]
+    H --> I{"Budget OK?"}
+    I -->|Yes| J["Continue"]
+    I -->|No| K["Degrade Model"]
+```
+
 ## Cost Landscape
 
 ### Model Pricing (as of 2025)

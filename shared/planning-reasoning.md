@@ -1,5 +1,25 @@
 # Planning & Reasoning Deep Dive
 
+> **Diagram:** [planning-reasoning.mermaid](planning-reasoning.mermaid)
+
+```mermaid
+flowchart TD
+    A["Problem"] --> B["Generate Reasoning"]
+    B --> C{"Technique?"}
+    C -->|Simple| D["Chain-of-Thought"]
+    C -->|Complex| E["Tree of Thoughts"]
+    C -->|Interleaved| F["ReAct"]
+    C -->|Self-reflect| G["Reflexion"]
+    D --> H["Evaluate"]
+    E --> H
+    F --> H
+    G --> H
+    H --> I{"Satisfactory?"}
+    I -->|Yes| J["Return Solution"]
+    I -->|No| K["Refine"]
+    K --> B
+```
+
 ## Reasoning Techniques Overview
 
 | Technique | Description | When to use |

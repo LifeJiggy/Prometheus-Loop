@@ -1,5 +1,23 @@
 # Memory Systems Deep Dive
 
+> **Diagram:** [memory-systems.mermaid](memory-systems.mermaid)
+
+```mermaid
+flowchart TD
+    A["New Content"] --> B{"Should Remember?"}
+    B -->|No| C["Discard"]
+    B -->|Yes| D["Score Relevance"]
+    D --> E{"Above Threshold?"}
+    E -->|No| C
+    E -->|Yes| F{"Memory Full?"}
+    F -->|No| G["Store"]
+    F -->|Yes| H["Consolidate"]
+    H --> I["Evict Old"]
+    I --> G
+    G --> J["Update Index"]
+    J --> K["Ready for Recall"]
+```
+
 ## Memory Architecture Overview
 
 ```

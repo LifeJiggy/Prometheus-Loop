@@ -1,5 +1,34 @@
 # Self-* Capabilities Deep Dive
 
+> **Diagram:** [self-capabilities.mermaid](self-capabilities.mermaid)
+
+```mermaid
+flowchart TD
+    A["Self-Capabilities Overview"] --> B["Detection"]
+    A --> C["Diagnosis"]
+    A --> D["Adaptation"]
+    A --> E["Evolution"]
+    A --> F["Governance"]
+
+    B --> B1["Self-Monitoring"]
+    B --> B2["Self-Observing"]
+
+    C --> C1["Self-Debugging"]
+    C --> C2["Self-Healing"]
+
+    D --> D1["Self-Adapting"]
+    D --> D2["Self-Retry"]
+    D --> D3["Self-Planning"]
+
+    E --> E1["Self-Improving"]
+    E --> E2["Self-Evolution"]
+    E --> E3["Self-Refactoring"]
+
+    F --> F1["Self-Governing"]
+    F --> F2["Multi-Agent"]
+    F --> F3["Self-Remembering"]
+```
+
 ## Overview
 
 Self-* capabilities are what make an agent truly autonomous. Instead of relying on human intervention for every failure, adaptation, or improvement, the agent handles these internally.

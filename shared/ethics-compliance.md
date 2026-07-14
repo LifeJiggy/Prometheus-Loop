@@ -1,5 +1,25 @@
 # Ethics & Compliance
 
+> **Diagram:** [ethics-compliance.mermaid](ethics-compliance.mermaid)
+
+```mermaid
+flowchart TD
+    A["Action Requested"] --> B["Check Ethical Principles"]
+    B --> C{"Beneficence?"}
+    C -->|Pass| D{"Non-Maleficence?"}
+    C -->|Fail| E["Reject Action"]
+    D -->|Pass| E
+    D -->|Pass| F{"Autonomy?"}
+    F -->|Pass| G{"Justice?"}
+    F -->|Fail| E
+    G -->|Pass| H{"Transparency?"}
+    G -->|Fail| E
+    H -->|Pass| I["Allow Action"]
+    H -->|Fail| E
+    I --> J["Log Decision"]
+    E --> J
+```
+
 ## Ethical Principles
 
 | Principle | What it means | How to enforce | Example |

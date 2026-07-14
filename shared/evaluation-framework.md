@@ -1,5 +1,24 @@
 # Evaluation Framework Deep Dive
 
+> **Diagram:** [evaluation-framework.mermaid](evaluation-framework.mermaid)
+
+```mermaid
+flowchart TD
+    A["Define Metrics"] --> B["Create Task Suite"]
+    B --> C["Run Benchmark"]
+    C --> D["Score Results"]
+    D --> E{"Meets Targets?"}
+    E -->|Yes| F["Deploy"]
+    E -->|No| G["Analyze Failures"]
+    G --> H["Optimize"]
+    H --> C
+    F --> I["Monitor Production"]
+    I --> J["Compare to Baseline"]
+    J --> K{"Regression?"}
+    K -->|Yes| L["Rollback"]
+    K -->|No| M["Continue"]
+```
+
 ## Standardized Benchmarks
 
 ### Benchmark Categories
