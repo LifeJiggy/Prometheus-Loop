@@ -923,6 +923,37 @@ At the production level, start with **Safety & Guardrails** (the gate is your mo
 
 ---
 
+## Self-* capabilities for Production level
+
+Production agents need to handle failures, enforce policies, and operate reliably. These self-* capabilities provide that:
+
+| Capability | What it does | Why it matters | Deep dive |
+|---|---|---|---|
+| **Self-Healing** | Diagnoses errors, applies fixes, verifies recovery | Reduces downtime, maintains availability | [self-healing.md](../shared/self/self-healing.md) |
+| **Self-Retry** | Smart backoff, circuit breakers, adaptive strategies | Handles transient errors without human intervention | [self-retry.md](../shared/self/self-retry.md) |
+| **Self-Debugging** | Captures errors, analyzes root causes, generates fixes | Reduces need for human debugging | [self-debugging.md](../shared/self/self-debugging.md) |
+| **Self-Governing** | Enforces policies, ethical guidelines, compliance rules | Agent operates within defined boundaries | [self-governing.md](../shared/self/self-governing.md) |
+| **Self-Monitoring** | Advanced health checks, anomaly detection, SLA tracking | Proactive issue detection before failures | [self-monitoring.md](../shared/self/self-monitoring.md) |
+
+**Why these five at Production level?**
+
+```
+Self-Healing → fixes failures automatically
+Self-Retry → handles transient errors
+Self-Debugging → diagnoses persistent issues
+Self-Governing → stays within policy boundaries
+Self-Monitoring → detects problems early
+```
+
+Together, they create a resilient agent that can handle most production issues without human intervention.
+
+**What you DON'T need at Production level:**
+- Self-Improving, Self-Evolution — save for Autonomous (requires enough data to learn from)
+- Self-Refactoring — save for Autonomous (requires code ownership)
+- Self-Adapting — save for Autonomous (requires context awareness)
+
+---
+
 ## See also
 
 - **v1 guide** — the core 7-step loop without safety layers. Start here if you're new.

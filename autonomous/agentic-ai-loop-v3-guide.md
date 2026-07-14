@@ -1174,3 +1174,71 @@ The autonomous guide covers the full system. For deeper architecture exploration
 ### What to read first
 
 At the autonomous level, all deep dives are relevant. Start with **Safety & Guardrails** (adversarial robustness is critical) and **Memory Systems** (cross-session memory is the foundation of autonomy). Then add **Evaluation Framework** to measure improvement, and **Production Concerns** for deployment.
+
+---
+
+## Self-* capabilities for Autonomous level
+
+Autonomous agents need to learn, evolve, and operate with minimal human oversight. All 13 self-* capabilities are needed:
+
+### Detection Layer
+
+| Capability | What it does | Why it matters | Deep dive |
+|---|---|---|---|
+| **Self-Monitoring** | Metrics, health checks, alerts, anomaly detection, SLA tracking | Proactive issue detection, performance optimization | [self-monitoring.md](../shared/self/self-monitoring.md) |
+| **Self-Observing** | Decision tracing, meta-cognition, reflection | Meta-cognition enables course correction | [self-observing.md](../shared/self/self-observing.md) |
+
+### Diagnosis Layer
+
+| Capability | What it does | Why it matters | Deep dive |
+|---|---|---|---|
+| **Self-Debugging** | Error capture, code context, fix generation | Automated root cause analysis | [self-debugging.md](../shared/self/self-debugging.md) |
+| **Self-Healing** | Error classification, pattern database, fix execution | Automatic recovery without human intervention | [self-healing.md](../shared/self/self-healing.md) |
+
+### Adaptation Layer
+
+| Capability | What it does | Why it matters | Deep dive |
+|---|---|---|---|
+| **Self-Adapting** | Context detection, strategy selection, configuration | Works across different environments | [self-adapting.md](../shared/self/self-adapting.md) |
+| **Self-Retry** | Smart backoff, circuit breakers, adaptive strategies | Handles transient errors efficiently | [self-retry.md](../shared/self/self-retry.md) |
+| **Self-Planning** | Goal analysis, plan generation, dynamic replanning | Handles complex multi-step tasks | [self-planning.md](../shared/self/self-planning.md) |
+
+### Evolution Layer
+
+| Capability | What it does | Why it matters | Deep dive |
+|---|---|---|---|
+| **Self-Improving** | Pattern extraction, strategy optimization, benchmarking | Gets better over time without retraining | [self-improving.md](../shared/self/self-improving.md) |
+| **Self-Evolution** | Skill discovery, architecture adaptation, fitness tracking | Handles new domains without redesign | [self-evolution.md](../shared/self/self-evolution.md) |
+| **Self-Refactoring** | Code analysis, smell detection, refactoring | Maintains code quality as it evolves | [self-refactoring.md](../shared/self/self-refactoring.md) |
+
+### Governance Layer
+
+| Capability | What it does | Why it matters | Deep dive |
+|---|---|---|---|
+| **Self-Governing** | Policy engine, ethical framework, compliance | Maintains safety without external control | [self-governing.md](../shared/self/self-governing.md) |
+| **Multi-Agent Orchestration** | Agent registry, task routing, conflict resolution | Enables complex distributed tasks | [multi-agent-orchestration.md](../shared/self/multi-agent-orchestration.md) |
+| **Self-Remembering** | Input filtering, relevance scoring, consolidation | Preserves knowledge without bloat | [self-remembering.md](../shared/self/self-remembering.md) |
+
+**Why all 13 at Autonomous level?**
+
+```
+Detection:     Self-Monitoring + Self-Observing
+Diagnosis:     Self-Debugging + Self-Healing
+Adaptation:    Self-Adapting + Self-Retry + Self-Planning
+Evolution:     Self-Improving + Self-Evolution + Self-Refactoring
+Governance:    Self-Governing + Multi-Agent + Self-Remembering
+```
+
+Together, they create a fully autonomous agent that can:
+- **Detect** problems before they become failures
+- **Diagnose** root causes automatically
+- **Adapt** to changing contexts and requirements
+- **Evolve** its capabilities over time
+- **Govern** itself within ethical and policy boundaries
+
+---
+
+## See also
+
+- **v1 guide** — the core 7-step loop. Start here if you're new.
+- **v2 guide** — adds safety layers (permission gate, HITL, retry/replan, goal check). The bridge between v1 and v3.

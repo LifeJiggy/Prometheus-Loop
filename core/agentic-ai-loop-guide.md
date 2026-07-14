@@ -414,6 +414,33 @@ If you're building your first agent, start with the **core loop** (sections 1-7)
 
 ---
 
+## Self-* capabilities for Core level
+
+At the Concept level, you need to understand these self-* patterns — they form the foundation for autonomous operation:
+
+| Capability | What it does | Why it matters | Deep dive |
+|---|---|---|---|
+| **Self-Monitoring** | Tracks metrics, runs health checks, triggers alerts | You can't improve what you can't measure | [self-monitoring.md](../shared/self/self-monitoring.md) |
+| **Self-Remembering** | Stores relevant info, retrieves when needed, forgets stale data | Agents need memory to learn and accumulate knowledge | [self-remembering.md](../shared/self/self-remembering.md) |
+| **Self-Planning** | Decomposes goals, creates plans, adapts to failures | Complex tasks need structured execution | [self-planning.md](../shared/self/self-planning.md) |
+
+**Why these three at Core level?**
+
+```
+Self-Remembering → stores what happened
+Self-Monitoring → tracks how it's going
+Self-Planning → decides what to do next
+```
+
+Without these, the agent can't learn, can't measure itself, and can't handle multi-step tasks. They're the minimum viable self-* capabilities.
+
+**What you DON'T need at Core level:**
+- Self-Healing, Self-Retry — save for Production (requires safety infrastructure)
+- Self-Improving, Self-Evolution — save for Autonomous (requires enough data to learn from)
+- Self-Governing — save for Production (requires policy infrastructure)
+
+---
+
 ## See also
 
 - **v2 guide** — adds permission gates, human-in-the-loop, retry vs. replan, goal checks, and multi-agent coordination on top of this core loop. Note: v2 renumbers steps (5-13) to accommodate the new layers — don't expect the same step numbers to match.
