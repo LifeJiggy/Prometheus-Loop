@@ -25,20 +25,35 @@ A plugin for agentic CLI and IDE tools that provides the Agentic AI Loop framewo
 | **AI Toolkit** | `bash install.sh --ai-toolkit` |
 | **Supermaven** | `bash install.sh --supermaven` |
 
-## Quick Install
+## Installers
+
+Three installer options for different platforms:
+
+### Bash (Linux/macOS/WSL)
 
 ```bash
-# Auto-detect and install to all
-bash install.sh --all
+bash install.sh --all        # Auto-detect and install
+bash install.sh --claude     # Install to specific harness
+bash install.sh --list       # List supported harnesses
+bash install.sh --uninstall  # Remove plugin
+```
 
-# Install to specific harness
-bash install.sh --claude --cursor
+### PowerShell (Windows)
 
-# List all supported harnesses
-bash install.sh --list
+```powershell
+.\install.ps1 -All           # Auto-detect and install
+.\install.ps1 -Harness claude  # Install to specific harness
+.\install.ps1 -List          # List supported harnesses
+.\install.ps1 -Uninstall     # Remove plugin
+```
 
-# Uninstall
-bash install.sh --uninstall
+### Python (Cross-platform)
+
+```bash
+python install.py --all      # Auto-detect and install
+python install.py --claude   # Install to specific harness
+python install.py --list     # List supported harnesses
+python install.py --uninstall  # Remove plugin
 ```
 
 ## What's Included
