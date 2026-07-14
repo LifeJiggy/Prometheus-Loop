@@ -35,37 +35,75 @@ It provides:
 
 ```
 Prometheus-Loop/
-├── core/                          # Concept level (v1)
+├── core/                              # Concept level (v1)
 │   ├── README.md
 │   ├── agentic-ai-loop-guide.md
 │   ├── agentic-ai-loop.mermaid
 │   └── agentic-ai-loop-core.mermaid
-├── production/                    # Production level (v2)
+├── production/                        # Production level (v2)
 │   ├── README.md
 │   ├── agentic-ai-loop-v2-guide.md
 │   ├── agentic-ai-loop-v2.mermaid
 │   └── agentic-ai-loop-v2-core.mermaid
-├── autonomous/                    # Autonomous level (v3)
+├── autonomous/                        # Autonomous level (v3)
 │   ├── README.md
 │   ├── agentic-ai-loop-v3-guide.md
 │   ├── agentic-ai-loop-v3.mermaid
 │   └── agentic-ai-loop-v3-core.mermaid
-├── shared/                        # Common resources
+├── core-only/                         # Simplified diagrams
+│   ├── agentic-ai-loop-core.mermaid
+│   ├── agentic-ai-loop-v2-core.mermaid
+│   └── agentic-ai-loop-v3-core.mermaid
+├── shared/                            # Deep dives & common resources
 │   ├── README.md
-│   ├── evaluation-metrics.md
-│   ├── observability.md
-│   ├── cost-optimization.md
-│   ├── ethics-compliance.md
-│   └── multi-agent-patterns.md
-├── examples/                      # Code snippets & case studies
+│   ├── memory-systems.md + .mermaid
+│   ├── planning-reasoning.md + .mermaid
+│   ├── safety-guardrails.md + .mermaid
+│   ├── evaluation-metrics.md + .mermaid
+│   ├── evaluation-framework.md + .mermaid
+│   ├── observability.md + .mermaid
+│   ├── cost-optimization.md + .mermaid
+│   ├── ethics-compliance.md + .mermaid
+│   ├── multi-agent-patterns.md + .mermaid
+│   ├── multi-agent-orchestration.md + .mermaid
+│   ├── production-concerns.md + .mermaid
+│   ├── self-capabilities.md + .mermaid
+│   └── self/                           # 13 self-* capability deep dives
+│       ├── README.md
+│       ├── self-healing.md + .mermaid
+│       ├── self-retry.md + .mermaid
+│       ├── self-improving.md + .mermaid
+│       ├── self-monitoring.md + .mermaid
+│       ├── self-debugging.md + .mermaid
+│       ├── self-refactoring.md + .mermaid
+│       ├── self-evolution.md + .mermaid
+│       ├── self-observing.md + .mermaid
+│       ├── self-planning.md + .mermaid
+│       ├── self-adapting.md + .mermaid
+│       ├── self-governing.md + .mermaid
+│       ├── self-remembering.md + .mermaid
+│       └── multi-agent-orchestration.md + .mermaid
+├── examples/                          # Code snippets & case studies
 │   ├── README.md
 │   ├── code-snippets.md
 │   ├── coding-agent-case-study.md
 │   ├── research-agent-case-study.md
-│   └── support-agent-case-study.md
-├── LICENSE                        # MIT License
-└── README.md                      # This file
+│   ├── support-agent-case-study.md
+│   ├── data-pipeline-case-study.md
+│   ├── infrastructure-agent-case-study.md
+│   ├── customer-onboarding-case-study.md
+│   ├── security-monitoring-case-study.md
+│   └── content-generation-case-study.md
+├── LICENSE                            # MIT License
+└── README.md                          # This file
 ```
+
+**File counts:**
+- **Core/Production/Autonomous:** 9 guide files + 6 diagrams
+- **Shared:** 12 deep dive files + 12 diagrams
+- **Self-* Capabilities:** 13 capability files + 13 diagrams
+- **Examples:** 1 code snippets + 8 case studies
+- **Total:** 70+ files, 30,000+ lines
 
 ## Quick Start
 
@@ -77,9 +115,13 @@ Prometheus-Loop/
 
 ## How to view the diagrams
 
-The diagrams are embedded below and render automatically on GitHub, Notion, Obsidian, and any Mermaid-compatible renderer. Each version has two diagrams:
-- **Core** — simplified loop only (10 nodes, readable in 10 seconds)
-- **Full** — loop + all cross-cutting concerns (comprehensive)
+The diagrams are embedded below and render automatically on GitHub, Notion, Obsidian, and any Mermaid-compatible renderer.
+
+**Diagram locations:**
+- **v1/v2/v3 guides** — embedded at top of each guide file
+- **Shared resources** — embedded at top of each `shared/*.md` file
+- **Self-* capabilities** — embedded at top of each `shared/self/*.md` file
+- **Core-only diagrams** — simplified versions in `core-only/` folder
 
 The `.mermaid` source files are also included for standalone use or editing at [mermaid.live](https://mermaid.live).
 
