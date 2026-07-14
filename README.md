@@ -1,8 +1,35 @@
 # Prometheus Loop — Agentic AI Loop Guide & Diagrams
 
-A comprehensive breakdown of what actually happens inside an agentic AI system — from the initial prompt to persisted memory — across three maturity levels: **Concept**, **Production**, and **Autonomous**. Now includes security, evaluation, testing, explainability, resource management, lifecycle, UX, streaming, ethics, and agent-as-a-service patterns.
+## What is this?
 
-This is the reference for building, teaching, or reasoning about agentic AI systems. It covers both the conceptual model (what the loop *is*) and the operational model (what you need to run it safely, autonomously, and securely).
+Prometheus Loop is a comprehensive reference for building, teaching, and reasoning about **agentic AI systems** — AI agents that can plan, act, observe, learn, and iterate autonomously.
+
+It provides:
+- **Three maturity levels** — from concept to production to autonomous operation
+- **Complete diagrams** — mermaid flowcharts that render on GitHub
+- **Deep dive guides** — memory systems, planning, safety, multi-agent, evaluation, production
+- **Code examples** — Python implementations of every major component
+- **Case studies** — how the loop applies to coding, research, and support agents
+
+## Who is this for?
+
+| Audience | What you'll get |
+|---|---|
+| **AI engineers** | Implementation patterns, code snippets, architecture decisions |
+| **ML researchers** | Theoretical foundations, evaluation frameworks, state-of-the-art techniques |
+| **Engineering managers** | Deployment patterns, cost optimization, team coordination |
+| **Students & learners** | Clear explanations, progressive complexity, real-world examples |
+| **Security engineers** | Threat modeling, guardrails, adversarial testing, compliance |
+| **Product managers** | When to use which level, tradeoffs, ROI considerations |
+
+## How to use this repo
+
+1. **New to agentic AI?** Start with [core/README.md](core/README.md) — the 7-step loop explained simply
+2. **Building for production?** Go to [production/README.md](production/README.md) — safety, testing, deployment
+3. **Want autonomous operation?** See [autonomous/README.md](autonomous/README.md) — self-healing, cost optimization, compliance
+4. **Need deep dives?** Check [shared/README.md](shared/README.md) — memory, reasoning, safety, multi-agent patterns
+
+---
 
 ## Repository Structure
 
@@ -44,9 +71,9 @@ Prometheus-Loop/
 
 | Level | Best for | Start here |
 |---|---|---|
-| **Concept** (v1) | Teaching, prototyping | `core/README.md` |
-| **Production** (v2) | Real deployments, human oversight | `production/README.md` |
-| **Autonomous** (v3) | Minimal oversight, cost-sensitive | `autonomous/README.md` |
+| **Concept** (v1) | Teaching, prototyping | [core/README.md](core/README.md) |
+| **Production** (v2) | Real deployments, human oversight | [production/README.md](production/README.md) |
+| **Autonomous** (v3) | Minimal oversight, cost-sensitive | [autonomous/README.md](autonomous/README.md) |
 
 ## How to view the diagrams
 
@@ -105,25 +132,6 @@ flowchart TD
 ```
 
 **Guide:** [v2 guide](production/agentic-ai-loop-v2-guide.md) | **Core diagram:** [simplified](core-only/agentic-ai-loop-v2-core.mermaid)
-
-    style TRIGGER fill:#1a1a2e,color:#fff,stroke:#e94560
-    style COGNITION fill:#16213e,color:#fff,stroke:#0f3460
-    style COORD fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
-    style GATE fill:#3d0000,color:#fff,stroke:#e94560
-    style EXEC fill:#0f3460,color:#fff,stroke:#e94560
-    style CHECK fill:#16213e,color:#fff,stroke:#0f3460
-    style PERSIST fill:#1a1a2e,color:#fff,stroke:#0f3460
-    style TESTING fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
-    style EXPLAIN fill:#16213e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
-    style RESOURCES fill:#1a1a2e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
-    style LIFECYCLE fill:#0f3460,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
-    style UX_DESIGN fill:#2d132c,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
-    style STREAM fill:#16213e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
-    style COMPOSE fill:#1a1a2e,color:#fff,stroke:#0f3460,stroke-dasharray: 5 5
-    style ETHICS fill:#3d0000,color:#fff,stroke:#e94560,stroke-dasharray: 5 5
-```
-
-**Guide:** [v2 guide](agentic-ai-loop-v2-guide.md) — full explanations, implementation patterns, checklists.
 
 ---
 
