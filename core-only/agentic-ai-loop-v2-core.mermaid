@@ -1,13 +1,52 @@
 flowchart TD
-    A["1. Prompt"] --> B["2. Context"] --> C["3. Plan"] --> D["4. Reason"] --> E{"5. Permission Gate"}
-    E -->|allowed| F["6. Act"]
-    E -->|high-stakes| HITL["Human approval"]
+    subgraph INPUT["Input"]
+        A["1. Prompt"]
+    end
+
+    subgraph THINK["Thinking"]
+        B["2. Context"]
+        C["3. Plan"]
+        D["4. Reason"]
+    end
+
+    subgraph SAFETY["Safety"]
+        E{"5. Permission Gate"}
+        HITL["Human approval"]
+    end
+
+    subgraph DO["Doing"]
+        F["6. Act"]
+        G["7. Observe"]
+        RETRY["Retry"]
+    end
+
+    subgraph CHECK["Termination"]
+        H{"8. Done?"}
+    end
+
+    subgraph REMEMBER["Remembering"]
+        I["9. Storage"]
+        J["Memory"]
+    end
+
+    A --> B --> C --> D --> E
+    E -->|allowed| F
+    E -->|high-stakes| HITL
     HITL -->|approved| F
     HITL -->|rejected| C
-    F --> G["7. Observe"]
-    G -->|tool error| RETRY["Retry"] --> F
+    F --> G
+    G -->|error| RETRY
+    RETRY --> F
     G -->|plan wrong| C
-    G -->|success| H{"8. Done?"}
-    H -->|not done| I["9. Storage"] --> J["Memory"]
+    G -->|success| H
+    H -->|not done| I
     H -->|done| I
+    I --> J
     J -.next cycle.-> B
+
+    style INPUT fill:#1a1a2e,color:#fff,stroke:#e94560
+    style THINK fill:#16213e,color:#fff,stroke:#0f3460
+    style SAFETY fill:#3d0000,color:#fff,stroke:#e94560
+    style DO fill:#0f3460,color:#fff,stroke:#e94560
+    style CHECK fill:#16213e,color:#fff,stroke:#0f3460
+    style REMEMBER fill:#1a1a2e,color:#fff,stroke:#0f3460

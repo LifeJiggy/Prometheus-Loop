@@ -1,5 +1,31 @@
 flowchart LR
-    A["1. Prompt"] --> B["2. Context"] --> C["3. Plan"] --> D["4. Reason"] --> E["5. Act"] --> F["6. Observe"]
-    F --> G["7. Storage"] --> H["Memory"]
+    subgraph INPUT["Input"]
+        A["1. Prompt<br/>goal + system + tools"]
+    end
+
+    subgraph THINK["Thinking"]
+        B["2. Context<br/>retrieved data"]
+        C["3. Plan<br/>sub-tasks"]
+        D["4. Reason<br/>decide next"]
+    end
+
+    subgraph DO["Doing"]
+        E["5. Act<br/>execute"]
+        F["6. Observe<br/>result"]
+    end
+
+    subgraph REMEMBER["Remembering"]
+        G["7. Storage<br/>raw data"]
+        H["Memory<br/>curated state"]
+    end
+
+    A --> B --> C --> D --> E --> F
+    F --> G
+    G --> H
     H -.next cycle.-> B
-    F -.replan if failed.-> C
+    F -.replan.-> C
+
+    style INPUT fill:#1a1a2e,color:#fff,stroke:#e94560
+    style THINK fill:#16213e,color:#fff,stroke:#0f3460
+    style DO fill:#0f3460,color:#fff,stroke:#e94560
+    style REMEMBER fill:#1a1a2e,color:#fff,stroke:#0f3460
