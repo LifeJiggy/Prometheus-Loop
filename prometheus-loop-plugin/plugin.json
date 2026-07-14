@@ -1,0 +1,41 @@
+{
+  "name": "prometheus-loop",
+  "version": "1.0.0",
+  "description": "Agentic AI Loop guide and self-* capabilities for CLI and IDE tools",
+  "author": "LifeJiggy",
+  "license": "MIT",
+  "harnesses": {
+    "claude": {
+      "skills_path": "skills/",
+      "commands_path": "commands/"
+    },
+    "codex": {
+      "skills_path": "skills/"
+    },
+    "opencode": {
+      "skills_path": "skills/"
+    },
+    "hermes": {
+      "skills_path": "skills/"
+    }
+  },
+  "skills": [
+    "prometheus-loop-guide",
+    "self-healing",
+    "self-retry",
+    "self-improving",
+    "self-monitoring",
+    "self-debugging",
+    "self-refactoring",
+    "self-evolution",
+    "self-observing",
+    "self-planning",
+    "self-adapting",
+    "self-governing",
+    "self-remembering",
+    "multi-agent-orchestration"
+  ],
+  "commands": [
+    "loop"
+  ]
+}
