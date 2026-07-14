@@ -6,24 +6,24 @@ A plugin for agentic CLI and IDE tools that provides the Agentic AI Loop framewo
 
 | Harness | Install command |
 |---|---|
-| **Claude Code** | `bash install.sh --claude` |
+| **Claude Code** | `bash install.sh --claude-code` |
 | **Codex CLI** | `bash install.sh --codex` |
 | **OpenCode** | `bash install.sh --opencode` |
-| **Hermes** | `bash install.sh --hermes` |
+| **KiloCode** | `bash install.sh --kilocode` |
+| **Kimi Code** | `bash install.sh --kimi-code` |
+| **Hermes Agent** | `bash install.sh --hermes-agent` |
+| **Aider** | `bash install.sh --aider` |
+| **Gemini CLI** | `bash install.sh --gemini-cli` |
+| **Goose** | `bash install.sh --goose` |
 | **Cursor** | `bash install.sh --cursor` |
 | **Windsurf** | `bash install.sh --windsurf` |
-| **Aider** | `bash install.sh --aider` |
+| **Cline** | `bash install.sh --cline` |
+| **Roo Code** | `bash install.sh --roo-code` |
 | **Continue** | `bash install.sh --continue` |
 | **Zed** | `bash install.sh --zed` |
-| **Cline** | `bash install.sh --cline` |
-| **Roo Code** | `bash install.sh --roo` |
-| **Amea** | `bash install.sh --amea` |
-| **Void** | `bash install.sh --void` |
-| **Junie** | `bash install.sh --junie` |
-| **PearAI** | `bash install.sh --pearai` |
-| **Sweep** | `bash install.sh --sweep` |
-| **AI Toolkit** | `bash install.sh --ai-toolkit` |
-| **Supermaven** | `bash install.sh --supermaven` |
+| **Sourcegraph Cody** | `bash install.sh --sourcegraph-cody` |
+| **GitHub Copilot** | `bash install.sh --github-copilot` |
+| **JetBrains AI** | `bash install.sh --jetbrains-ai` |
 
 ## Installers
 

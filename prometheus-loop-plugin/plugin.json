@@ -5,19 +5,24 @@
   "author": "LifeJiggy",
   "license": "MIT",
   "harnesses": {
-    "claude": {
-      "skills_path": "skills/",
-      "commands_path": "commands/"
-    },
-    "codex": {
-      "skills_path": "skills/"
-    },
-    "opencode": {
-      "skills_path": "skills/"
-    },
-    "hermes": {
-      "skills_path": "skills/"
-    }
+    "claude-code": { "skills_path": "skills/" },
+    "codex": { "skills_path": "skills/" },
+    "opencode": { "skills_path": "skills/" },
+    "kilocode": { "skills_path": "skills/" },
+    "kimi-code": { "skills_path": "skills/" },
+    "hermes-agent": { "skills_path": "skills/" },
+    "aider": { "skills_path": "skills/" },
+    "gemini-cli": { "skills_path": "skills/" },
+    "goose": { "skills_path": "skills/" },
+    "cursor": { "skills_path": "skills/" },
+    "windsurf": { "skills_path": "skills/" },
+    "cline": { "skills_path": "skills/" },
+    "roo-code": { "skills_path": "skills/" },
+    "continue": { "skills_path": "skills/" },
+    "zed": { "skills_path": "skills/" },
+    "sourcegraph-cody": { "skills_path": "skills/" },
+    "github-copilot": { "skills_path": "skills/" },
+    "jetbrains-ai": { "skills_path": "skills/" }
   },
   "skills": [
     "prometheus-loop-guide",

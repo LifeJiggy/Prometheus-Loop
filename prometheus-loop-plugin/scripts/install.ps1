@@ -6,9 +6,9 @@
     Deploys the Prometheus Loop plugin (skills + commands) to supported
     agentic CLI and IDE tools on Windows.
 
-    Supports: Claude Code, Codex CLI, OpenCode, Hermes, Cursor, Windsurf,
-              Aider, Continue, Zed, Cline, Roo Code, Amea, Void, Junie,
-              PearAI, Sweep, AI Toolkit, Supermaven, and more
+    Supports: Claude Code, Codex CLI, OpenCode, KiloCode, Kimi Code, Hermes,
+              Aider, Gemini CLI, Goose, Cursor, Windsurf, Cline, Roo Code,
+              Continue, Zed, Sourcegraph Cody, GitHub Copilot, JetBrains AI
 
 .PARAMETER All
     Auto-detect and install to all detected harnesses
@@ -67,24 +67,24 @@ $BundleName = "prometheus-loop"
 
 # Supported harnesses: name = skills_path
 $HarnessConfig = @{
-    "claude"      = "$env:USERPROFILE\.claude\skills"
-    "codex"       = "$env:USERPROFILE\.agents\skills"
-    "opencode"    = "$env:USERPROFILE\.claude\skills"
-    "hermes"      = "$env:USERPROFILE\.hermes\skills"
-    "cursor"      = "$env:USERPROFILE\.cursor\skills"
-    "windsurf"    = "$env:USERPROFILE\.windsurf\skills"
-    "aider"       = "$env:USERPROFILE\.aider\skills"
-    "continue"    = "$env:USERPROFILE\.continue\skills"
-    "zed"         = "$env:USERPROFILE\.zed\skills"
-    "cline"       = "$env:USERPROFILE\.cline\skills"
-    "roo"         = "$env:USERPROFILE\.roo\skills"
-    "amea"        = "$env:USERPROFILE\.amea\skills"
-    "void"        = "$env:USERPROFILE\.void\skills"
-    "junie"       = "$env:USERPROFILE\.junie\skills"
-    "pearai"      = "$env:USERPROFILE\.pearai\skills"
-    "sweep"       = "$env:USERPROFILE\.sweep\skills"
-    "ai-toolkit"  = "$env:USERPROFILE\.ai-toolkit\skills"
-    "supermaven"  = "$env:USERPROFILE\.supermaven\skills"
+    "claude-code"       = "$env:USERPROFILE\.claude\skills"
+    "codex"             = "$env:USERPROFILE\.agents\skills"
+    "opencode"          = "$env:USERPROFILE\.opencode\skills"
+    "kilocode"          = "$env:USERPROFILE\.kilocode\skills"
+    "kimi-code"         = "$env:USERPROFILE\.kimi-code\skills"
+    "hermes-agent"      = "$env:USERPROFILE\.hermes\skills"
+    "aider"             = "$env:USERPROFILE\.aider\skills"
+    "gemini-cli"        = "$env:USERPROFILE\.gemini\skills"
+    "goose"             = "$env:USERPROFILE\.goose\skills"
+    "cursor"            = "$env:USERPROFILE\.cursor\skills"
+    "windsurf"          = "$env:USERPROFILE\.windsurf\skills"
+    "cline"             = "$env:USERPROFILE\.cline\skills"
+    "roo-code"          = "$env:USERPROFILE\.roo\skills"
+    "continue"          = "$env:USERPROFILE\.continue\skills"
+    "zed"               = "$env:USERPROFILE\.zed\skills"
+    "sourcegraph-cody"  = "$env:USERPROFILE\.cody\skills"
+    "github-copilot"    = "$env:USERPROFILE\.copilot\skills"
+    "jetbrains-ai"      = "$env:USERPROFILE\.jetbrains\skills"
 }
 
 # === List harnesses ===

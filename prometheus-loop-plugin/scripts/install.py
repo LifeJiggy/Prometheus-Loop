@@ -2,13 +2,13 @@
 """
 install.py — Install Prometheus Loop plugin to 18+ agentic CLI tools (cross-platform)
 
-Supports: Claude Code, Codex CLI, OpenCode, Hermes, Cursor, Windsurf,
-          Aider, Continue, Zed, Cline, Roo Code, Amea, Void, Junie,
-          PearAI, Sweep, AI Toolkit, Supermaven, and more
+Supports: Claude Code, Codex CLI, OpenCode, KiloCode, Kimi Code, Hermes,
+          Aider, Gemini CLI, Goose, Cursor, Windsurf, Cline, Roo Code,
+          Continue, Zed, Sourcegraph Cody, GitHub Copilot, JetBrains AI
 
 Usage:
     python install.py                    # Auto-detect and install to all
-    python install.py --claude           # Install to Claude Code only
+    python install.py --claude-code      # Install to Claude Code only
     python install.py --all              # Install to all detected harnesses
     python install.py --list             # List all supported harnesses
     python install.py --uninstall        # Remove from all harnesses
@@ -44,24 +44,24 @@ BANNER = """
 # === Supported harnesses ===
 # name -> skills_path (relative to home directory)
 HARNESS_CONFIG = {
-    "claude": ".claude/skills",
+    "claude-code": ".claude/skills",
     "codex": ".agents/skills",
-    "opencode": ".claude/skills",
-    "hermes": ".hermes/skills",
+    "opencode": ".opencode/skills",
+    "kilocode": ".kilocode/skills",
+    "kimi-code": ".kimi-code/skills",
+    "hermes-agent": ".hermes/skills",
+    "aider": ".aider/skills",
+    "gemini-cli": ".gemini/skills",
+    "goose": ".goose/skills",
     "cursor": ".cursor/skills",
     "windsurf": ".windsurf/skills",
-    "aider": ".aider/skills",
+    "cline": ".cline/skills",
+    "roo-code": ".roo/skills",
     "continue": ".continue/skills",
     "zed": ".zed/skills",
-    "cline": ".cline/skills",
-    "roo": ".roo/skills",
-    "amea": ".amea/skills",
-    "void": ".void/skills",
-    "junie": ".junie/skills",
-    "pearai": ".pearai/skills",
-    "sweep": ".sweep/skills",
-    "ai-toolkit": ".ai-toolkit/skills",
-    "supermaven": ".supermaven/skills",
+    "sourcegraph-cody": ".cody/skills",
+    "github-copilot": ".copilot/skills",
+    "jetbrains-ai": ".jetbrains/skills",
 }
 
 
