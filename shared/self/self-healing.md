@@ -1,5 +1,23 @@
 # Self-Healing Deep Dive
 
+> **Diagram:** [self-healing.mermaid](self-healing.mermaid)
+
+```mermaid
+flowchart TD
+    A["Error Detected"] --> B{"Classify Error"}
+    B -->|Transient| C["Retry with Backoff"]
+    B -->|Permanent| D["Find Alternative"]
+    B -->|Logic| E["LLM Diagnose"]
+    B -->|Resource| F["Free Resources"]
+    C --> G{"Verify Fix"}
+    D --> G
+    E --> G
+    F --> G
+    G -->|Success| H["Learn Pattern"]
+    G -->|Failed| I["Escalate to Human"]
+    H --> J["Update Pattern DB"]
+```
+
 ## Overview
 
 Self-healing is the agent's ability to detect failures, diagnose root causes, apply fixes, and verify recovery — all without human intervention. It goes beyond simple retry by understanding *why* something failed and choosing the *right* fix.

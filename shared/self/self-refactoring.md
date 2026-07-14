@@ -1,5 +1,22 @@
 # Self-Refactoring Deep Dive
 
+> **Diagram:** [self-refactoring.mermaid](self-refactoring.mermaid)
+
+```mermaid
+flowchart TD
+    A["Analyze Code"] --> B["Calculate Metrics"]
+    B --> C["Detect Code Smells"]
+    C --> D{"Issues Found?"}
+    D -->|No| E["Code is Clean"]
+    D -->|Yes| F["Generate Suggestions"]
+    F --> G["Apply Refactoring"]
+    G --> H["Validate Code"]
+    H -->|Valid| I["Run Tests"]
+    H -->|Invalid| J["Revert"]
+    I -->|Pass| K["Update Metrics"]
+    I -->|Fail| J
+```
+
 ## Overview
 
 Self-Refactoring is the agent's ability to improve its own code structure, reduce complexity, eliminate duplication, and maintain code quality over time — without changing external behavior.

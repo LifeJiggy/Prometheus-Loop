@@ -1,5 +1,21 @@
 # Self-Monitoring Deep Dive
 
+> **Diagram:** [self-monitoring.mermaid](self-monitoring.mermaid)
+
+```mermaid
+flowchart TD
+    A["Collect Metrics"] --> B["Check Thresholds"]
+    B --> C{"Threshold Exceeded?"}
+    C -->|No| D["Continue"]
+    C -->|Yes| E["Trigger Alert"]
+    E --> F["Notify Handlers"]
+    F --> G["Run Health Checks"]
+    G --> H{"Healthy?"}
+    H -->|Yes| I["Log Status"]
+    H -->|No| J["Escalate"]
+    I --> K["Update Dashboard"]
+```
+
 ## Overview
 
 Self-Monitoring is the agent's ability to track its own performance, health, resource usage, and behavior in real-time. It detects anomalies, triggers alerts, and provides visibility into the agent's operational state.

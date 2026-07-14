@@ -1,5 +1,24 @@
 # Self-Debugging Deep Dive
 
+> **Diagram:** [self-debugging.mermaid](self-debugging.mermaid)
+
+```mermaid
+flowchart TD
+    A["Error Occurred"] --> B["Capture Error"]
+    B --> C["Analyze Error"]
+    C --> D["Gather Code Context"]
+    D --> E{"Known Fix?"}
+    E -->|Yes| F["Apply Known Fix"]
+    E -->|No| G["LLM Diagnose"]
+    G --> H["Generate Fix"]
+    H --> I["Apply Fix"]
+    F --> I
+    I --> J["Verify Fix"]
+    J -->|Success| K["Store Solution"]
+    J -->|Failed| L["Revert Fix"]
+    L --> M["Escalate"]
+```
+
 ## Overview
 
 Self-Debugging is the agent's ability to identify, diagnose, and fix its own bugs without human intervention. It combines error analysis, code inspection, and automated repair to resolve issues autonomously.

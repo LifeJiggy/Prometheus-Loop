@@ -1,5 +1,24 @@
 # Multi-Agent Orchestration Deep Dive
 
+> **Diagram:** [multi-agent-orchestration.mermaid](multi-agent-orchestration.mermaid)
+
+```mermaid
+flowchart TD
+    A["Submit Task"] --> B["Route to Agent"]
+    B --> C{"Agent Available?"}
+    C -->|Yes| D["Assign Task"]
+    C -->|No| E["Queue Task"]
+    D --> F["Execute Task"]
+    F --> G{"Conflicts?"}
+    G -->|No| H["Collect Result"]
+    G -->|Yes| I["Resolve Conflict"]
+    I --> H
+    H --> J["Aggregate Results"]
+    J --> K["Return Final Result"]
+    E --> L["Wait for Agent"]
+    L --> B
+```
+
 ## Overview
 
 Multi-Agent Orchestration is the ability to coordinate multiple specialized agents to accomplish complex tasks that exceed any single agent's capabilities. It involves task distribution, communication, conflict resolution, and result aggregation.

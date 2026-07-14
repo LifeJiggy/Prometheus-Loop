@@ -1,5 +1,19 @@
 # Self-Adapting Deep Dive
 
+> **Diagram:** [self-adapting.mermaid](self-adapting.mermaid)
+
+```mermaid
+flowchart TD
+    A["Context Change"] --> B["Detect Change"]
+    B --> C["Select Strategy"]
+    C --> D["Adapt Configuration"]
+    D --> E["Apply Changes"]
+    E --> F["Verify Adaptation"]
+    F -->|Success| G["Record Adaptation"]
+    F -->|Failed| H["Rollback"]
+    G --> I["Update Strategy Success Rate"]
+```
+
 ## Overview
 
 Self-Adapting is the agent's ability to adjust its behavior, strategies, and configurations based on changing context, environmental conditions, and task requirements — without explicit reprogramming.

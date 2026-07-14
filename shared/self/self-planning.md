@@ -1,5 +1,26 @@
 # Self-Planning Deep Dive
 
+> **Diagram:** [self-planning.mermaid](self-planning.mermaid)
+
+```mermaid
+flowchart TD
+    A["Analyze Goal"] --> B["Classify Goal"]
+    B --> C["Assess Complexity"]
+    C --> D["Generate Plan"]
+    D --> E["Initialize Tracking"]
+    E --> F["Execute Steps"]
+    F --> G{"Step Success?"}
+    G -->|Yes| H["Update Progress"]
+    G -->|No| I{"Need Replan?"}
+    I -->|Yes| J["Replan"]
+    I -->|No| K["Retry Step"]
+    H --> L{"Plan Complete?"}
+    L -->|Yes| M["Report Success"]
+    L -->|No| F
+    J --> F
+    K --> F
+```
+
 ## Overview
 
 Self-Planning is the agent's ability to autonomously create, adapt, and execute plans for complex tasks — breaking down goals into ordered sub-tasks, selecting strategies, and adjusting plans based on outcomes.

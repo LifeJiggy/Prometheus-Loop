@@ -1,5 +1,20 @@
 # Self-Improving Deep Dive
 
+> **Diagram:** [self-improving.mermaid](self-improving.mermaid)
+
+```mermaid
+flowchart TD
+    A["Task Completed"] --> B["Record Task"]
+    B --> C["Extract Patterns"]
+    C --> D{"Enough Data?"}
+    D -->|No| E["Wait for More"]
+    D -->|Yes| F["Analyze Successes"]
+    F --> G["Analyze Failures"]
+    G --> H["Optimize Strategy"]
+    H --> I["Update Strategy Store"]
+    I --> J["Generate Report"]
+```
+
 ## Overview
 
 Self-Improvement is the agent's ability to learn from every task, identify patterns, optimize strategies, and get better over time — all without retraining the underlying model. It's about accumulating operational wisdom.

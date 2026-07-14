@@ -1,5 +1,20 @@
 # Self-Observing Deep Dive
 
+> **Diagram:** [self-observing.mermaid](self-observing.mermaid)
+
+```mermaid
+flowchart TD
+    A["Task Started"] --> B["Start Trace"]
+    B --> C["Record Decision"]
+    C --> D["Record Reasoning"]
+    D --> E["Task Completed"]
+    E --> F["End Trace"]
+    F --> G["Analyze Outcome"]
+    G --> H["Extract Lessons"]
+    H --> I["Update Confidence"]
+    I --> J["Generate Insights"]
+```
+
 ## Overview
 
 Self-Observing is the agent's ability to monitor its own reasoning process, track its decisions, and reflect on its behavior — enabling meta-cognition and continuous self-improvement.

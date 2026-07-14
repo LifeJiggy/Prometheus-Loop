@@ -1,5 +1,25 @@
 # Self-Retry Deep Dive
 
+> **Diagram:** [self-retry.mermaid](self-retry.mermaid)
+
+```mermaid
+flowchart TD
+    A["Action Failed"] --> B{"Check Circuit Breaker"}
+    B -->|Open| C["Fail Fast"]
+    B -->|Closed| D{"Is Retryable?"}
+    B -->|Half-Open| E["Limited Retries"]
+    D -->|Yes| F["Calculate Delay"]
+    D -->|No| G["Escalate"]
+    F --> H["Wait"]
+    H --> I["Retry Action"]
+    I -->|Success| J["Record Success"]
+    I -->|Failed| K{"Max Retries?"}
+    K -->|No| F
+    K -->|Yes| L["Record Failure"]
+    J --> M["Reset Circuit Breaker"]
+    L --> N["Open Circuit Breaker"]
+```
+
 ## Overview
 
 Self-Retry is the agent's ability to intelligently retry failed operations, adapting its strategy based on error type, history, and context. Unlike simple retry, it knows when to retry, when to back off, when to escalate, and when to give up.

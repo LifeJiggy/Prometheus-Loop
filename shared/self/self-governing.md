@@ -1,5 +1,23 @@
 # Self-Governing Deep Dive
 
+> **Diagram:** [self-governing.mermaid](self-governing.mermaid)
+
+```mermaid
+flowchart TD
+    A["Action Requested"] --> B["Check Policies"]
+    B --> C{"Policy Violation?"}
+    C -->|Yes| D["Deny Action"]
+    C -->|No| E{"High Risk?"}
+    E -->|Yes| F["Require Approval"]
+    E -->|No| G["Allow Action"]
+    F --> H{"Approved?"}
+    H -->|Yes| G
+    H -->|No| D
+    G --> I["Log Action"]
+    D --> I
+    I --> J["Verify Compliance"]
+```
+
 ## Overview
 
 Self-Governing is the agent's ability to enforce its own policies, rules, and ethical guidelines — ensuring it operates within defined boundaries without external oversight for every action.

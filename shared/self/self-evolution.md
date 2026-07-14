@@ -1,5 +1,23 @@
 # Self-Evolution Deep Dive
 
+> **Diagram:** [self-evolution.mermaid](self-evolution.mermaid)
+
+```mermaid
+flowchart TD
+    A["New Task"] --> B{"Capability Exists?"}
+    B -->|Yes| C["Use Existing"]
+    B -->|No| D{"Can Learn?"}
+    D -->|Yes| E["Learn Capability"]
+    D -->|No| F["Evolve Architecture"]
+    E --> G["Acquire Skill"]
+    F --> H["Adapt Components"]
+    G --> I["Test New Capability"]
+    H --> I
+    I -->|Pass| J["Register Capability"]
+    I -->|Fail| K["Rollback"]
+    J --> L["Update Fitness Score"]
+```
+
 ## Overview
 
 Self-Evolution is the agent's ability to adapt its architecture, capabilities, and strategies over time to handle new domains, challenges, and requirements — without being explicitly redesigned by humans.

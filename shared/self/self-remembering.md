@@ -1,5 +1,23 @@
 # Self-Remembering Deep Dive
 
+> **Diagram:** [self-remembering.mermaid](self-remembering.mermaid)
+
+```mermaid
+flowchart TD
+    A["New Content"] --> B{"Should Remember?"}
+    B -->|No| C["Discard"]
+    B -->|Yes| D["Score Relevance"]
+    D --> E{"Above Threshold?"}
+    E -->|No| C
+    E -->|Yes| F["Store Memory"]
+    F --> G["Update Index"]
+    G --> H{"Memory Full?"}
+    H -->|No| I["Done"]
+    H -->|Yes| J["Evict Old Memories"]
+    J --> K["Consolidate Related"]
+    K --> I
+```
+
 ## Overview
 
 Self-Remembering is the agent's ability to manage its own memory lifecycle — storing relevant information, retrieving it when needed, consolidating knowledge, and forgetting what's no longer useful — all without human curation.
