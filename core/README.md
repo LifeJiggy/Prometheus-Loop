@@ -28,13 +28,28 @@ flowchart LR
     F -.replan.-> C
 ```
 
-## Files
+## Core Files
 
-| File | Description |
-|---|---|
-| `agentic-ai-loop-guide.md` | Full guide with explanations, failure modes, examples |
-| `agentic-ai-loop.mermaid` | Full diagram with security, evaluation, testing subgraphs |
-| `agentic-ai-loop-core.mermaid` | Simplified diagram (loop only, 10 nodes) |
+| File | Description | Lines |
+|---|---|---|
+| `agentic-ai-loop-guide.md` | Full guide with explanations, failure modes, examples | 774 |
+| `agentic-ai-loop.mermaid` | Full diagram with security, evaluation, testing subgraphs | - |
+| `agentic-ai-loop-core.mermaid` | Simplified diagram (loop only, 10 nodes) | - |
+
+## Enhancements (10 files)
+
+| Enhancement | Description | Lines |
+|---|---|---|
+| `tutorial.md` | Interactive step-by-step tutorial | 150+ |
+| `playground.md` | Visual examples to run | 120+ |
+| `quiz.md` | Knowledge check with 10 questions | 100+ |
+| `cheat-sheet.md` | Quick reference card | 80+ |
+| `patterns.md` | 10 common patterns library | 200+ |
+| `anti-patterns.md` | 10 anti-patterns to avoid | 180+ |
+| `comparison.md` | Prometheus Loop vs LangChain/CrewAI/AutoGPT | 120+ |
+| `learning-path.md` | Structured learning journey | 100+ |
+| `community-examples.md` | Showcase of community contributions | 150+ |
+| `code-snippets.md` | 10 essential code snippets | 200+ |
 
 ## When to use
 
@@ -43,8 +58,6 @@ flowchart LR
 - Understanding the fundamentals before going deeper
 
 ## Shared resources for Core level
-
-These shared resources provide the knowledge base for building agents:
 
 ### Memory & Planning
 
@@ -63,15 +76,13 @@ These shared resources provide the knowledge base for building agents:
 
 ## Self-* capabilities for Core level
 
-At the Concept level, you need to understand these self-* patterns:
-
 | Capability | What you learn | Deep dive | Diagram |
 |---|---|---|---|
 | **Self-Monitoring** | Basic metrics and health checks | [self-monitoring.md](../shared/self/self-monitoring.md) | [mermaid](../shared/self/self-monitoring.mermaid) |
 | **Self-Remembering** | Simple storage and retrieval | [self-remembering.md](../shared/self/self-remembering.md) | [mermaid](../shared/self/self-remembering.mermaid) |
 | **Self-Planning** | Basic goal decomposition | [self-planning.md](../shared/self/self-planning.md) | [mermaid](../shared/self/self-planning.mermaid) |
 
-**Why these three?** They form the foundation: you need to *remember* what happened, *monitor* your performance, and *plan* your next steps. Without these, nothing else works.
+**Why these three?** They form the foundation: you need to *remember* what happened, *monitor* your performance, and *plan* your next steps.
 
 ## How it all connects
 

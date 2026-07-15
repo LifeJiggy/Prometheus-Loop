@@ -52,13 +52,28 @@ flowchart TD
     J -.next cycle.-> C
 ```
 
-## Files
+## Autonomous Files
 
-| File | Description |
-|---|---|
-| `agentic-ai-loop-v3-guide.md` | Full guide with implementation patterns |
-| `agentic-ai-loop-v3.mermaid` | Full diagram with 11 cross-cutting subgraphs |
-| `agentic-ai-loop-v3-core.mermaid` | Simplified diagram (loop + autonomy only) |
+| File | Description | Lines |
+|---|---|---|
+| `agentic-ai-loop-v3-guide.md` | Full guide with implementation patterns | 1144 |
+| `agentic-ai-loop-v3.mermaid` | Full diagram with 11 cross-cutting subgraphs | - |
+| `agentic-ai-loop-v3-core.mermaid` | Simplified diagram (loop + autonomy only) | - |
+
+## Enhancements (10 files)
+
+| Enhancement | Description | Lines |
+|---|---|---|
+| `self-healing-playbook.md` | Healing strategies and patterns | 120+ |
+| `adaptive-planning-guide.md` | Dynamic planning techniques | 150+ |
+| `multi-agent-patterns.md` | Fan-out, pipeline, competitive, consensus | 180+ |
+| `memory-management.md` | Short/long-term, vector, graph memory | 200+ |
+| `cost-optimization.md` | Model routing, caching, compression | 150+ |
+| `evaluation-framework.md` | Benchmarks, red-team testing | 180+ |
+| `red-team-testing.md` | Adversarial testing methodology | 150+ |
+| `migration-strategies.md` | Migrating from other frameworks | 120+ |
+| `advanced-troubleshooting.md` | Complex issue resolution | 150+ |
+| `future-roadmap.md` | What's coming next | 100+ |
 
 ## When to use
 
@@ -105,8 +120,6 @@ flowchart TD
 | [Cost Optimization](../shared/cost-optimization.md) | Model routing, caching, budget enforcement | [mermaid](../shared/cost-optimization.mermaid) |
 
 ## Self-* capabilities for Autonomous level
-
-Autonomous level includes all 13 self-* capabilities:
 
 ### Detection Layer
 

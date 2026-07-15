@@ -45,13 +45,28 @@ flowchart TD
     J -.next cycle.-> B
 ```
 
-## Files
+## Production Files
 
-| File | Description |
-|---|---|
-| `agentic-ai-loop-v2-guide.md` | Full guide with implementation patterns |
-| `agentic-ai-loop-v2.mermaid` | Full diagram with 9 cross-cutting subgraphs |
-| `agentic-ai-loop-v2-core.mermaid` | Simplified diagram (loop + safety only) |
+| File | Description | Lines |
+|---|---|---|
+| `agentic-ai-loop-v2-guide.md` | Full guide with implementation patterns | 908 |
+| `agentic-ai-loop-v2.mermaid` | Full diagram with 9 cross-cutting subgraphs | - |
+| `agentic-ai-loop-v2-core.mermaid` | Simplified diagram (loop + safety only) | - |
+
+## Enhancements (10 files)
+
+| Enhancement | Description | Lines |
+|---|---|---|
+| `deployment-checklist.md` | Pre/during/post deployment checklist | 80+ |
+| `monitoring-setup.md` | Prometheus/Grafana setup guide | 150+ |
+| `cost-optimization-playbook.md` | Cost reduction strategies | 120+ |
+| `incident-response.md` | P0-P3 incident response runbook | 200+ |
+| `operations-manual.md` | Day-to-day operations guide | 150+ |
+| `scaling-guide.md` | Horizontal/vertical scaling patterns | 120+ |
+| `integration-patterns.md` | API, webhook, event patterns | 150+ |
+| `performance-tuning.md` | Latency and throughput optimization | 120+ |
+| `security-hardening.md` | Security best practices | 150+ |
+| `compliance-checklist.md` | GDPR, SOC2, HIPAA checklists | 100+ |
 
 ## When to use
 
@@ -88,8 +103,6 @@ flowchart TD
 
 ## Self-* capabilities for Production level
 
-Production level adds safety and coordination capabilities:
-
 | Capability | What you learn | Deep dive | Diagram |
 |---|---|---|---|
 | **Self-Healing** | Error diagnosis and recovery | [self-healing.md](../shared/self/self-healing.md) | [mermaid](../shared/self/self-healing.mermaid) |
@@ -98,7 +111,7 @@ Production level adds safety and coordination capabilities:
 | **Self-Governing** | Policy enforcement and compliance | [self-governing.md](../shared/self/self-governing.md) | [mermaid](../shared/self/self-governing.mermaid) |
 | **Self-Monitoring** | Advanced health checks and alerting | [self-monitoring.md](../shared/self/self-monitoring.md) | [mermaid](../shared/self/self-monitoring.mermaid) |
 
-**Why these five?** Production agents need to *heal* from failures, *retry* intelligently, *debug* issues, *govern* themselves within policy, and *monitor* their health. Without these, production deployments are fragile.
+**Why these five?** Production agents need to *heal* from failures, *retry* intelligently, *debug* issues, *govern* themselves within policy, and *monitor* their health.
 
 ## How it all connects
 
