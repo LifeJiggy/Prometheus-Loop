@@ -5,11 +5,14 @@
 Prometheus Loop is a comprehensive reference for building, teaching, and reasoning about **agentic AI systems** — AI agents that can plan, act, observe, learn, and iterate autonomously.
 
 It provides:
-- **Three maturity levels** — from concept to production to autonomous operation
+- **Three maturity levels** — Concept, Production, Autonomous
+- **13 self-* capabilities** — Each with 700+ lines of implementation
+- **Plugin system** — Install to 18+ CLI/IDE tools
 - **Complete diagrams** — mermaid flowcharts that render on GitHub
 - **Deep dive guides** — memory systems, planning, safety, multi-agent, evaluation, production
 - **Code examples** — Python implementations of every major component
-- **Case studies** — how the loop applies to coding, research, and support agents
+- **Case studies** — 8 real-world use cases
+- **Documentation** — Guides, API reference, troubleshooting, FAQ
 
 ## Who is this for?
 
@@ -28,6 +31,7 @@ It provides:
 2. **Building for production?** Go to [production/README.md](production/README.md) — safety, testing, deployment
 3. **Want autonomous operation?** See [autonomous/README.md](autonomous/README.md) — self-healing, cost optimization, compliance
 4. **Need deep dives?** Check [shared/README.md](shared/README.md) — memory, reasoning, safety, multi-agent patterns
+5. **Need documentation?** See [DOCS/](DOCS/) — getting started, architecture, API reference, troubleshooting
 
 ---
 
@@ -35,25 +39,61 @@ It provides:
 
 ```
 Prometheus-Loop/
-├── core/                              # Concept level (v1)
+├── core/                              # Concept level (v1) - 13 files
 │   ├── README.md
 │   ├── agentic-ai-loop-guide.md
 │   ├── agentic-ai-loop.mermaid
-│   └── agentic-ai-loop-core.mermaid
-├── production/                        # Production level (v2)
+│   ├── agentic-ai-loop-core.mermaid
+│   ├── tutorial.md
+│   ├── playground.md
+│   ├── quiz.md
+│   ├── cheat-sheet.md
+│   ├── patterns.md
+│   ├── anti-patterns.md
+│   ├── comparison.md
+│   ├── learning-path.md
+│   ├── community-examples.md
+│   └── code-snippets.md
+├── production/                        # Production level (v2) - 13 files
 │   ├── README.md
 │   ├── agentic-ai-loop-v2-guide.md
 │   ├── agentic-ai-loop-v2.mermaid
-│   └── agentic-ai-loop-v2-core.mermaid
-├── autonomous/                        # Autonomous level (v3)
+│   ├── agentic-ai-loop-v2-core.mermaid
+│   ├── deployment-checklist.md
+│   ├── monitoring-setup.md
+│   ├── cost-optimization-playbook.md
+│   ├── incident-response.md
+│   ├── operations-manual.md
+│   ├── scaling-guide.md
+│   ├── integration-patterns.md
+│   ├── performance-tuning.md
+│   ├── security-hardening.md
+│   └── compliance-checklist.md
+├── autonomous/                        # Autonomous level (v3) - 13 files
 │   ├── README.md
 │   ├── agentic-ai-loop-v3-guide.md
 │   ├── agentic-ai-loop-v3.mermaid
-│   └── agentic-ai-loop-v3-core.mermaid
+│   ├── agentic-ai-loop-v3-core.mermaid
+│   ├── self-healing-playbook.md
+│   ├── adaptive-planning-guide.md
+│   ├── multi-agent-patterns.md
+│   ├── memory-management.md
+│   ├── cost-optimization.md
+│   ├── evaluation-framework.md
+│   ├── red-team-testing.md
+│   ├── migration-strategies.md
+│   ├── advanced-troubleshooting.md
+│   └── future-roadmap.md
 ├── core-only/                         # Simplified diagrams
+│   ├── README.md
 │   ├── agentic-ai-loop-core.mermaid
 │   ├── agentic-ai-loop-v2-core.mermaid
-│   └── agentic-ai-loop-v3-core.mermaid
+│   ├── agentic-ai-loop-v3-core.mermaid
+│   ├── self-capabilities-summary.md
+│   ├── shared-resources-summary.md
+│   ├── v1-loop-example.md
+│   ├── v2-loop-example.md
+│   └── v3-loop-example.md
 ├── shared/                            # Deep dives & common resources
 │   ├── README.md
 │   ├── memory-systems.md + .mermaid
@@ -83,7 +123,7 @@ Prometheus-Loop/
 │       ├── self-governing.md + .mermaid
 │       ├── self-remembering.md + .mermaid
 │       └── multi-agent-orchestration.md + .mermaid
-├── examples/                          # Code snippets & case studies
+├── examples/                          # Code snippets & case studies - 12 files
 │   ├── README.md
 │   ├── code-snippets.md
 │   ├── coding-agent-case-study.md
@@ -93,17 +133,57 @@ Prometheus-Loop/
 │   ├── infrastructure-agent-case-study.md
 │   ├── customer-onboarding-case-study.md
 │   ├── security-monitoring-case-study.md
-│   └── content-generation-case-study.md
-├── LICENSE                            # MIT License
+│   ├── content-generation-case-study.md
+│   ├── langchain-integration.md
+│   ├── llamaindex-integration.md
+│   └── crewai-integration.md
+├── prometheus-loop-plugin/            # Plugin for 18+ CLI/IDE tools
+│   ├── README.md
+│   ├── plugin.json
+│   ├── marketplace.json
+│   ├── scripts/
+│   │   ├── install.sh
+│   │   ├── install.ps1
+│   │   └── install.py
+│   ├── commands/
+│   │   └── loop.md
+│   └── skills/                        # 14 skill files (700+ lines each)
+├── DOCS/                              # Documentation
+│   ├── README.md
+│   ├── index.md
+│   ├── getting-started.md
+│   ├── architecture.md
+│   ├── api-reference.md
+│   ├── deployment-guide.md
+│   ├── security-guide.md
+│   ├── troubleshooting.md
+│   ├── faq.md
+│   ├── glossary.md
+│   ├── migration-guide.md
+│   └── performance-benchmarks.md
+├── .github/                           # GitHub configuration
+│   ├── ISSUE_TEMPLATE/
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   └── workflows/ci.yml
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── SECURITY.md
+├── LICENSE
+├── pyproject.toml
+├── requirements.txt
+├── .pre-commit-config.yaml
+├── .gitignore
 └── README.md                          # This file
 ```
 
 **File counts:**
-- **Core/Production/Autonomous:** 9 guide files + 6 diagrams
+- **Core/Production/Autonomous:** 9 guide files + 30 enhancement files + 9 diagrams
 - **Shared:** 12 deep dive files + 12 diagrams
-- **Self-* Capabilities:** 13 capability files + 13 diagrams
-- **Examples:** 1 code snippets + 8 case studies
-- **Total:** 70+ files, 30,000+ lines
+- **Self-* Capabilities:** 13 capability files (700+ lines each) + 13 diagrams
+- **Examples:** 12 files (code snippets, case studies, integrations)
+- **Plugin:** 14 skill files (700+ lines each) + installers
+- **Documentation:** 12 documentation files
+- **Total:** 100+ files, 50,000+ lines
 
 ## Quick Start
 
