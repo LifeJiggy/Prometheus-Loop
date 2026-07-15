@@ -5,7 +5,7 @@ description: Smart retry with backoff, circuit breakers, and adaptive strategies
 
 # Self-Retry
 
-Intelligent retry that adapts based on error type, history, and context.
+Intelligent retry that adapts based on error type, history, and context. Unlike simple retry, it knows when to retry, when to back off, when to escalate, and when to give up.
 
 ## Quick Start
 
@@ -17,37 +17,731 @@ When the user asks about retrying failed operations:
 4. **Retry** — execute with smart backoff
 5. **Record** — track outcomes for learning
 
-## Circuit Breaker States
+---
 
-| State | Behavior | Transition |
-|---|---|---|
-| **Closed** | Normal operation, count failures | Failure threshold → Open |
-| **Open** | Fail fast, don't retry | Timeout → Half-Open |
-| **Half-Open** | Limited retries to test recovery | Success → Closed |
+## Architecture
+
+```
+Action Failed → Check Circuit Breaker → Is Retryable? → Calculate Delay → Wait → Retry
+                        ↓                                      ↓
+                    Fail Fast                            Max Retries? → Escalate
+```
+
+---
+
+## Retryable Error Detection
+
+```python
+class RetryableDetector:
+    """Determines if an error is retryable."""
+    
+    RETRYABLE_ERRORS = {
+        "ConnectionError": {"retryable": True, "category": "network"},
+        "ConnectionRefusedError": {"retryable": True, "category": "network"},
+        "TimeoutError": {"retryable": True, "category": "network"},
+        "RateLimitError": {"retryable": True, "category": "rate_limit"},
+        "TooManyRequests": {"retryable": True, "category": "rate_limit"},
+        "InternalServerError": {"retryable": True, "category": "server"},
+        "BadGateway": {"retryable": True, "category": "server"},
+        "GatewayTimeout": {"retryable": True, "category": "server"},
+    }
+    
+    NON_RETRYABLE_ERRORS = {
+        "PermissionError": {"retryable": False, "escalate": True},
+        "AuthenticationError": {"retryable": False, "escalate": True},
+        "FileNotFoundError": {"retryable": False, "escalate": False},
+        "KeyError": {"retryable": False, "escalate": False},
+        "ValueError": {"retryable": False, "escalate": False},
+        "MemoryError": {"retryable": False, "escalate": True},
+    }
+    
+    RETRYABLE_STATUS_CODES = [408, 429, 500, 502, 503, 504]
+    
+    def is_retryable(self, error: Exception, context: dict = None) -> dict:
+        """Determine if error is retryable."""
+        
+        error_type = type(error).__name__
+        error_msg = str(error)
+        
+        # Check explicit retryable errors
+        if error_type in self.RETRYABLE_ERRORS:
+            return {
+                "retryable": True,
+                "category": self.RETRYABLE_ERRORS[error_type]["category"],
+                "reason": f"Known retryable error: {error_type}"
+            }
+        
+        # Check explicit non-retryable errors
+        if error_type in self.NON_RETRYABLE_ERRORS:
+            info = self.NON_RETRYABLE_ERRORS[error_type]
+            return {
+                "retryable": False,
+                "escalate": info.get("escalate", False),
+                "reason": f"Known non-retryable error: {error_type}"
+            }
+        
+        # Check status codes
+        status_code = getattr(error, 'status_code', None)
+        if status_code in self.RETRYABLE_STATUS_CODES:
+            return {
+                "retryable": True,
+                "category": "http",
+                "reason": f"Retryable HTTP status: {status_code}"
+            }
+        
+        # Check error message patterns
+        retryable_patterns = [
+            "timeout", "timed out", "connection", "refused",
+            "temporary", "try again", "retry", "rate limit",
+            "too many requests", "service unavailable"
+        ]
+        
+        for pattern in retryable_patterns:
+            if pattern in error_msg.lower():
+                return {
+                    "retryable": True,
+                    "category": "pattern_match",
+                    "reason": f"Error message matches: {pattern}"
+                }
+        
+        return {
+            "retryable": False,
+            "reason": "Unknown error type, defaulting to non-retryable"
+        }
+```
+
+---
 
 ## Backoff Strategies
 
-| Strategy | Formula | Best for |
-|---|---|---|
-| **Fixed** | delay = constant | Predictable services |
-| **Linear** | delay = base × attempt | Gradual backoff |
-| **Exponential** | delay = base × 2^attempt | Most scenarios |
-| **Jitter** | delay = random(base, max) | Prevent thundering herd |
+```python
+class BackoffStrategy:
+    """Implements various backoff strategies."""
+    
+    def __init__(self, strategy: str = "exponential"):
+        self.strategy = strategy
+    
+    def get_delay(self, attempt: int, config: dict = None) -> float:
+        """Calculate delay for given attempt."""
+        
+        config = config or {}
+        
+        if self.strategy == "fixed":
+            return config.get("delay", 1.0)
+        elif self.strategy == "linear":
+            return config.get("base_delay", 1.0) * (attempt + 1)
+        elif self.strategy == "exponential":
+            base = config.get("base_delay", 1.0)
+            max_delay = config.get("max_delay", 60.0)
+            multiplier = config.get("multiplier", 2.0)
+            return min(base * (multiplier ** attempt), max_delay)
+        elif self.strategy == "exponential_with_jitter":
+            import random
+            base = config.get("base_delay", 1.0)
+            max_delay = config.get("max_delay", 60.0)
+            multiplier = config.get("multiplier", 2.0)
+            delay = base * (multiplier ** attempt)
+            jitter = random.uniform(0, delay * 0.5)
+            return min(delay + jitter, max_delay)
+        elif self.strategy == "fibonacci":
+            base = config.get("base_delay", 1.0)
+            max_delay = config.get("max_delay", 60.0)
+            fib = self.fibonacci(attempt + 1)
+            return min(base * fib, max_delay)
+        
+        return 1.0
+    
+    def fibonacci(self, n: int) -> int:
+        """Calculate fibonacci number."""
+        if n <= 1:
+            return n
+        a, b = 0, 1
+        for _ in range(2, n + 1):
+            a, b = b, a + b
+        return b
+```
 
-## Usage
+---
+
+## Circuit Breaker
 
 ```python
-retry = SmartRetrySystem({
-    "max_attempts": 3,
-    "backoff_strategy": "exponential",
-    "base_delay": 1.0,
-    "max_delay": 60.0
-})
-
-result = retry.execute_with_retry(api_call, {"service": "payment-api"})
+class CircuitBreaker:
+    """Prevents repeated calls to failing services."""
+    
+    def __init__(self, failure_threshold: int = 5, recovery_timeout: int = 60):
+        self.failure_threshold = failure_threshold
+        self.recovery_timeout = recovery_timeout
+        self.state = "closed"
+        self.failure_count = 0
+        self.success_count = 0
+        self.last_failure_time = None
+        self.half_open_max = 3
+        self.state_history = []
+    
+    def record_success(self):
+        """Record a successful call."""
+        
+        if self.state == "half-open":
+            self.success_count += 1
+            if self.success_count >= self.half_open_max:
+                self.transition_to("closed")
+        elif self.state == "closed":
+            self.failure_count = max(0, self.failure_count - 1)
+    
+    def record_failure(self):
+        """Record a failed call."""
+        
+        self.failure_count += 1
+        self.last_failure_time = time.time()
+        
+        if self.failure_count >= self.failure_threshold:
+            self.transition_to("open")
+    
+    def transition_to(self, new_state: str):
+        """Transition to new state."""
+        
+        old_state = self.state
+        self.state = new_state
+        
+        self.state_history.append({
+            "from": old_state,
+            "to": new_state,
+            "timestamp": datetime.now().isoformat()
+        })
+        
+        if new_state == "closed":
+            self.failure_count = 0
+            self.success_count = 0
+        elif new_state == "half-open":
+            self.success_count = 0
+    
+    def can_execute(self) -> dict:
+        """Check if execution is allowed."""
+        
+        if self.state == "closed":
+            return {"allowed": True, "state": "closed"}
+        
+        elif self.state == "open":
+            if self.last_failure_time:
+                elapsed = time.time() - self.last_failure_time
+                if elapsed >= self.recovery_timeout:
+                    self.transition_to("half-open")
+                    return {"allowed": True, "state": "half-open"}
+            
+            return {
+                "allowed": False,
+                "state": "open",
+                "retry_after": self.recovery_timeout - elapsed if self.last_failure_time else 0
+            }
+        
+        elif self.state == "half-open":
+            return {"allowed": True, "state": "half-open", "limit": self.half_open_max}
+        
+        return {"allowed": False, "state": "unknown"}
+    
+    def reset(self):
+        """Reset circuit breaker."""
+        
+        self.state = "closed"
+        self.failure_count = 0
+        self.success_count = 0
+        self.last_failure_time = None
+    
+    def get_stats(self) -> dict:
+        """Get circuit breaker statistics."""
+        
+        return {
+            "state": self.state,
+            "failure_count": self.failure_count,
+            "success_count": self.success_count,
+            "state_changes": len(self.state_history)
+        }
 ```
+
+---
+
+## Smart Retry System
+
+```python
+class SmartRetrySystem:
+    """Main retry system with smart strategies."""
+    
+    def __init__(self, config: dict = None):
+        self.config = config or self.get_default_config()
+        self.detector = RetryableDetector()
+        self.circuit_breakers = {}
+        self.retry_history = []
+        self.metrics = defaultdict(int)
+    
+    def execute_with_retry(self, action: callable, context: dict = None) -> dict:
+        """Execute an action with smart retry logic."""
+        
+        context = context or {}
+        service = context.get("service", "default")
+        
+        # Check circuit breaker
+        cb = self.get_circuit_breaker(service)
+        cb_status = cb.can_execute()
+        
+        if not cb_status["allowed"]:
+            return {
+                "success": False,
+                "reason": f"Circuit breaker is {cb_status['state']}",
+                "retry_after": cb_status.get("retry_after", 0)
+            }
+        
+        max_attempts = self.config.get("max_attempts", 3)
+        backoff = BackoffStrategy(self.config.get("backoff_strategy", "exponential"))
+        
+        attempts = []
+        last_error = None
+        
+        for attempt in range(max_attempts):
+            try:
+                start_time = time.time()
+                result = action()
+                duration = time.time() - start_time
+                
+                cb.record_success()
+                self.metrics["success"] += 1
+                
+                attempt_info = {
+                    "attempt": attempt + 1,
+                    "success": True,
+                    "duration": duration,
+                    "timestamp": datetime.now().isoformat()
+                }
+                attempts.append(attempt_info)
+                
+                return {
+                    "success": True,
+                    "result": result,
+                    "attempts": attempts,
+                    "total_attempts": attempt + 1
+                }
+                
+            except Exception as e:
+                last_error = e
+                self.metrics["failure"] += 1
+                
+                retryable_info = self.detector.is_retryable(e, context)
+                
+                attempt_info = {
+                    "attempt": attempt + 1,
+                    "success": False,
+                    "error": str(e),
+                    "error_type": type(e).__name__,
+                    "retryable": retryable_info["retryable"],
+                    "timestamp": datetime.now().isoformat()
+                }
+                attempts.append(attempt_info)
+                
+                if not retryable_info["retryable"]:
+                    cb.record_failure()
+                    
+                    return {
+                        "success": False,
+                        "error": str(e),
+                        "attempts": attempts,
+                        "reason": retryable_info["reason"],
+                        "escalate": retryable_info.get("escalate", False)
+                    }
+                
+                if self.detector.should_escalate(e):
+                    return {
+                        "success": False,
+                        "error": str(e),
+                        "attempts": attempts,
+                        "reason": "Error requires escalation",
+                        "escalate": True
+                    }
+                
+                if attempt < max_attempts - 1:
+                    delay = backoff.get_delay(attempt, self.config)
+                    time.sleep(delay)
+                    attempt_info["delay"] = delay
+        
+        cb.record_failure()
+        
+        return {
+            "success": False,
+            "error": str(last_error),
+            "attempts": attempts,
+            "reason": f"Max attempts ({max_attempts}) exceeded"
+        }
+    
+    def get_circuit_breaker(self, service: str) -> CircuitBreaker:
+        """Get or create circuit breaker for service."""
+        
+        if service not in self.circuit_breakers:
+            self.circuit_breakers[service] = CircuitBreaker(
+                failure_threshold=self.config.get("circuit_breaker_threshold", 5),
+                recovery_timeout=self.config.get("circuit_breaker_timeout", 60)
+            )
+        
+        return self.circuit_breakers[service]
+    
+    def get_default_config(self) -> dict:
+        """Get default retry configuration."""
+        
+        return {
+            "max_attempts": 3,
+            "backoff_strategy": "exponential",
+            "base_delay": 1.0,
+            "max_delay": 60.0,
+            "multiplier": 2.0,
+            "circuit_breaker_threshold": 5,
+            "circuit_breaker_timeout": 60
+        }
+    
+    def get_metrics(self) -> dict:
+        """Get retry metrics."""
+        
+        return {
+            "total_calls": self.metrics["success"] + self.metrics["failure"],
+            "successful": self.metrics["success"],
+            "failed": self.metrics["failure"],
+            "success_rate": self.metrics["success"] / max(1, self.metrics["success"] + self.metrics["failure"]),
+            "circuit_breakers": {
+                name: cb.get_stats()
+                for name, cb in self.circuit_breakers.items()
+            }
+        }
+```
+
+---
+
+## Adaptive Retry Strategy
+
+```python
+class AdaptiveRetryStrategy:
+    """Dynamically adjusts retry strategy based on performance."""
+    
+    def __init__(self):
+        self.strategies = {}
+        self.performance_history = defaultdict(list)
+    
+    def select_strategy(self, operation: str, error: Exception) -> dict:
+        """Select best retry strategy for operation."""
+        
+        history = self.performance_history.get(operation, [])
+        
+        if len(history) < 5:
+            return self.get_default_strategy()
+        
+        strategy_performance = defaultdict(list)
+        for record in history:
+            strategy_performance[record["strategy"]].append(record["success"])
+        
+        best_strategy = None
+        best_rate = 0
+        
+        for strategy, successes in strategy_performance.items():
+            rate = sum(successes) / len(successes) if successes else 0
+            if rate > best_rate:
+                best_rate = rate
+                best_strategy = strategy
+        
+        if best_strategy and best_rate > 0.5:
+            return self.get_strategy(best_strategy)
+        
+        return self.get_default_strategy()
+    
+    def get_default_strategy(self) -> dict:
+        return {"max_retries": 3, "backoff": "exponential", "base_delay": 1.0, "max_delay": 60.0}
+    
+    def get_strategy(self, name: str) -> dict:
+        strategies = {
+            "aggressive": {"max_retries": 5, "backoff": "linear", "base_delay": 0.5},
+            "conservative": {"max_retries": 2, "backoff": "exponential", "base_delay": 2.0},
+            "balanced": {"max_retries": 3, "backoff": "exponential", "base_delay": 1.0}
+        }
+        return strategies.get(name, self.get_default_strategy())
+    
+    def record_outcome(self, operation: str, strategy: str, success: bool):
+        """Record retry outcome."""
+        
+        self.performance_history[operation].append({
+            "strategy": strategy,
+            "success": success,
+            "timestamp": datetime.now().isoformat()
+        })
+```
+
+---
+
+## Usage Examples
+
+### Basic Retry
+
+```python
+retry = SmartRetrySystem({"max_attempts": 3, "backoff_strategy": "exponential"})
+
+def unreliable_api_call():
+    import random
+    if random.random() < 0.7:
+        raise ConnectionError("Connection refused")
+    return {"status": "success"}
+
+result = retry.execute_with_retry(unreliable_api_call)
+print(f"Success: {result['success']}, Attempts: {result['total_attempts']}")
+```
+
+### Service-Specific Retry
+
+```python
+retry = SmartRetrySystem()
+
+api_config = {"max_attempts": 5, "backoff_strategy": "exponential_with_jitter"}
+db_config = {"max_attempts": 3, "backoff_strategy": "fixed", "delay": 2.0}
+
+api_result = retry.execute_with_retry(call_api, {"service": "api", **api_config})
+db_result = retry.execute_with_retry(query_db, {"service": "database", **db_config})
+```
+
+### With Circuit Breaker
+
+```python
+retry = SmartRetrySystem({"circuit_breaker_threshold": 3})
+
+def flaky_service():
+    import random
+    if random.random() < 0.8:
+        raise ConnectionError("Service down")
+    return "ok"
+
+for i in range(10):
+    result = retry.execute_with_retry(flaky_service, {"service": "flaky"})
+    print(f"Call {i+1}: {result['success']}")
+```
+
+---
+
+## Configuration Reference
+
+```python
+RETRY_CONFIGS = {
+    "conservative": {
+        "max_attempts": 2,
+        "backoff_strategy": "exponential",
+        "base_delay": 5.0,
+        "max_delay": 120.0,
+        "circuit_breaker_threshold": 3
+    },
+    "aggressive": {
+        "max_attempts": 5,
+        "backoff_strategy": "exponential_with_jitter",
+        "base_delay": 0.5,
+        "max_delay": 30.0,
+        "circuit_breaker_threshold": 10
+    },
+    "api": {
+        "max_attempts": 3,
+        "backoff_strategy": "exponential",
+        "base_delay": 1.0,
+        "max_delay": 60.0,
+        "circuit_breaker_threshold": 5,
+        "circuit_breaker_timeout": 120
+    },
+    "database": {
+        "max_attempts": 3,
+        "backoff_strategy": "fixed",
+        "delay": 1.0,
+        "circuit_breaker_threshold": 5
+    }
+}
+```
+
+---
+
+## Best Practices
+
+1. **Always use circuit breakers** — prevent cascade failures
+2. **Differentiate error types** — not all errors are retryable
+3. **Add jitter** — prevent thundering herd on recovery
+4. **Set reasonable limits** — cap retries to prevent infinite loops
+5. **Monitor metrics** — track success rates and circuit breaker states
+6. **Log everything** — you need to debug retry behavior
+7. **Test retry paths** — inject errors to verify retry works
+8. **Consider idempotency** — ensure retries don't cause duplicate side effects
+
+---
+
+## Integration
+
+| Capability | How it integrates |
+|---|---|
+| **Self-Healing** | Self-healing uses retry as a fix strategy |
+| **Self-Monitoring** | Monitoring tracks retry metrics and circuit breaker states |
+| **Self-Governing** | Governance limits retry attempts and backoff parameters |
+| **Self-Improving** | Learning from retry patterns optimizes future retry behavior |
+
+---
+
+## Advanced Retry Patterns
+
+### Retry with Fallback
+
+```python
+class RetryWithFallback:
+    """Retry with fallback strategies."""
+    
+    def __init__(self):
+        self.fallbacks = {}
+        self.fallback_history = []
+    
+    def register_fallback(self, operation: str, fallback_fn: callable):
+        """Register a fallback function for an operation."""
+        self.fallbacks[operation] = fallback_fn
+    
+    def execute_with_fallback(self, operation: str, primary_fn: callable, 
+                             *args, **kwargs) -> dict:
+        """Execute with fallback on failure."""
+        
+        try:
+            result = primary_fn(*args, **kwargs)
+            return {"success": True, "result": result, "source": "primary"}
+        except Exception as e:
+            if operation in self.fallbacks:
+                try:
+                    result = self.fallbacks[operation](*args, **kwargs)
+                    
+                    self.fallback_history.append({
+                        "operation": operation,
+                        "primary_error": str(e),
+                        "fallback_used": True,
+                        "timestamp": datetime.now().isoformat()
+                    })
+                    
+                    return {"success": True, "result": result, "source": "fallback"}
+                except Exception as fallback_error:
+                    return {
+                        "success": False,
+                        "primary_error": str(e),
+                        "fallback_error": str(fallback_error),
+                        "source": "both_failed"
+                    }
+            
+            return {"success": False, "error": str(e), "source": "primary_only"}
+```
+
+### Retry Monitoring
+
+```python
+class RetryMonitor:
+    """Monitors retry behavior and performance."""
+    
+    def __init__(self):
+        self.retry_history = []
+        self.metrics = defaultdict(list)
+    
+    def record_retry(self, operation: str, attempt: int, success: bool, 
+                    duration: float):
+        """Record a retry attempt."""
+        
+        record = {
+            "operation": operation,
+            "attempt": attempt,
+            "success": success,
+            "duration": duration,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        self.retry_history.append(record)
+        
+        self.metrics[f"{operation}_attempts"].append(attempt)
+        self.metrics[f"{operation}_duration"].append(duration)
+    
+    def get_operation_stats(self, operation: str) -> dict:
+        """Get statistics for an operation."""
+        
+        records = [r for r in self.retry_history if r["operation"] == operation]
+        
+        if not records:
+            return {"total": 0}
+        
+        successful = sum(1 for r in records if r["success"])
+        
+        return {
+            "total": len(records),
+            "successful": successful,
+            "success_rate": successful / len(records),
+            "avg_attempts": sum(r["attempt"] for r in records) / len(records),
+            "avg_duration": sum(r["duration"] for r in records) / len(records)
+        }
+    
+    def detect_patterns(self) -> dict:
+        """Detect patterns in retry behavior."""
+        
+        patterns = {}
+        
+        by_operation = defaultdict(list)
+        for record in self.retry_history:
+            by_operation[record["operation"]].append(record)
+        
+        for operation, records in by_operation.items():
+            if len(records) >= 3:
+                recent = records[-3:]
+                older = records[:-3] if len(records) > 3 else records
+                
+                recent_success_rate = sum(1 for r in recent if r["success"]) / len(recent)
+                older_success_rate = sum(1 for r in older if r["success"]) / len(older) if older else 0.5
+                
+                if recent_success_rate > older_success_rate:
+                    pattern = "improving"
+                elif recent_success_rate < older_success_rate:
+                    pattern = "degrading"
+                else:
+                    pattern = "stable"
+                
+                patterns[operation] = {
+                    "pattern": pattern,
+                    "recent_success_rate": recent_success_rate,
+                    "older_success_rate": older_success_rate
+                }
+        
+        return patterns
+```
+
+### Retry Safety Rules
+
+1. **Always use circuit breakers** — prevent cascade failures
+2. **Set maximum retries** — cap at 5 attempts
+3. **Add jitter** — prevent thundering herd
+4. **Differentiate errors** — not all errors are retryable
+5. **Track retry metrics** — monitor success rates
+6. **Log retry attempts** — enable debugging
+7. **Consider idempotency** — retries shouldn't cause duplicate side effects
+8. **Test retry paths** — inject errors to verify retry works
+
+### Retry Metrics
+
+| Metric | Description | Target |
+|---|---|---|
+| Retry success rate | % retries that succeed | > 70% |
+| Average retry attempts | Attempts per retry | < 3 |
+| Retry overhead | Extra time due to retries | < 2x original |
+| Circuit breaker trips | Times circuit opened | < 5 per day |
+| Fallback usage | % times fallback used | < 20% |
+
+### Common Retry Pitfalls
+
+| Pitfall | Description | Prevention |
+|---|---|---|
+| Infinite retry | Never giving up | Set maximum attempts |
+| Thundering herd | Many retries at once | Add jitter |
+| Non-idempotent retries | Retries cause duplicates | Ensure idempotency |
+| Ignoring error type | Retrying non-retryable errors | Check error type first |
+| No circuit breaker | Cascade failures | Always use circuit breakers |
+| Excessive logging | Log spam from retries | Log at appropriate level |
+
+---
 
 ## Further Reading
 
-- [Full implementation](../shared/self/self-retry.md) — Circuit breakers, adaptive strategies
-- [Self-Healing](self-healing.md) — Complementary error diagnosis
+- **Self-Healing** — Complementary error diagnosis and recovery
+- **Self-Monitoring** — Track retry metrics and circuit breaker states
+- **Production Concerns** — Retry patterns for production systems
+- **Self-Governing** — Retry policies and limits
+- **Self-Improving** — Learning from retry patterns
