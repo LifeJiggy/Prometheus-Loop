@@ -2,6 +2,21 @@
 
 Thank you for your interest in contributing! This document provides guidelines and information for contributors.
 
+## Project Structure
+
+```
+Prometheus-Loop/
+├── core/                    # Concept level (v1)
+├── production/              # Production level (v2)
+├── autonomous/              # Autonomous level (v3)
+├── shared/                  # Deep dives & common resources
+│   └── self/               # 13 self-* capabilities (700+ lines each)
+├── examples/                # Code snippets & case studies
+├── prometheus-loop-plugin/  # Plugin for 18+ CLI/IDE tools
+├── DOCS/                    # Documentation
+└── .github/                 # CI/CD, templates
+```
+
 ## How to Contribute
 
 ### 1. Fork the Repository
@@ -24,6 +39,7 @@ git checkout -b feature/your-feature-name
 - Follow the coding standards below
 - Add tests for new functionality
 - Update documentation as needed
+- Ensure mermaid diagrams render correctly
 
 ### 4. Commit Changes
 
@@ -38,6 +54,35 @@ git push origin feature/your-feature-name
 ```
 
 Then create a Pull Request on GitHub.
+
+## What to Contribute
+
+### Documentation
+- Improve existing guides
+- Add new tutorials or examples
+- Fix typos or unclear explanations
+- Add translations
+
+### Code
+- Fix bugs
+- Add new features
+- Improve performance
+- Add tests
+
+### Self-* Capabilities
+- Enhance existing capabilities
+- Add new capabilities
+- Improve implementations
+
+### Plugin System
+- Add support for new CLI/IDE tools
+- Improve existing integrations
+- Add new skills
+
+### Examples
+- Add new case studies
+- Create integration examples
+- Improve existing examples
 
 ## Commit Messages
 
@@ -56,6 +101,7 @@ Examples:
 - `fix: resolve mermaid rendering issue`
 - `docs: update API reference`
 - `test: add unit tests for retry system`
+- `feat(plugin): add support for Windsurf`
 
 ## Coding Standards
 
@@ -73,6 +119,14 @@ Examples:
 - Include code examples where appropriate
 - Keep paragraphs concise
 - Use tables for structured data
+- Ensure mermaid diagrams render correctly
+
+### Skill Files
+
+- Each skill should be 700+ lines
+- Include: overview, architecture, implementation, examples, best practices
+- Add mermaid diagram at the top
+- Cross-reference related skills
 
 ## Pull Request Guidelines
 
@@ -81,6 +135,7 @@ Examples:
 - [ ] Code follows style guidelines
 - [ ] Tests pass
 - [ ] Documentation is updated
+- [ ] Mermaid diagrams render correctly
 - [ ] Commit messages follow conventions
 - [ ] No merge conflicts
 
@@ -95,17 +150,20 @@ Brief description of changes
 - [ ] New feature
 - [ ] Documentation
 - [ ] Refactoring
+- [ ] Plugin enhancement
 
 ## Testing
 - [ ] Unit tests added/updated
 - [ ] Integration tests pass
 - [ ] Manual testing completed
+- [ ] Mermaid diagrams verified
 
 ## Checklist
 - [ ] Code follows style guidelines
 - [ ] Documentation updated
 - [ ] Tests added
 - [ ] No breaking changes
+- [ ] Skill files are 700+ lines (if applicable)
 ```
 
 ## Reporting Issues
