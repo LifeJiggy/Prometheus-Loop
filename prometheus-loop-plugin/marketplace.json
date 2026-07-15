@@ -1,0 +1,65 @@
+{
+  "name": "prometheus-loop",
+  "version": "1.0.0",
+  "description": "Agentic AI Loop guide and self-* capabilities for CLI and IDE tools",
+  "author": "LifeJiggy",
+  "license": "MIT",
+  "homepage": "https://github.com/LifeJiggy/Prometheus-Loop",
+  "repository": "https://github.com/LifeJiggy/Prometheus-Loop",
+  "keywords": [
+    "agentic-ai",
+    "agent",
+    "llm",
+    "ai",
+    "automation",
+    "self-healing",
+    "self-improving",
+    "multi-agent"
+  ],
+  "categories": [
+    "ai",
+    "developer-tools",
+    "productivity"
+  ],
+  "harnesses": {
+    "claude-code": { "skills_path": "skills/" },
+    "codex": { "skills_path": "skills/" },
+    "opencode": { "skills_path": "skills/" },
+    "kilocode": { "skills_path": "skills/" },
+    "kimi-code": { "skills_path": "skills/" },
+    "hermes-agent": { "skills_path": "skills/" },
+    "aider": { "skills_path": "skills/" },
+    "gemini-cli": { "skills_path": "skills/" },
+    "goose": { "skills_path": "skills/" },
+    "cursor": { "skills_path": "skills/" },
+    "windsurf": { "skills_path": "skills/" },
+    "cline": { "skills_path": "skills/" },
+    "roo-code": { "skills_path": "skills/" },
+    "continue": { "skills_path": "skills/" },
+    "zed": { "skills_path": "skills/" },
+    "sourcegraph-cody": { "skills_path": "skills/" },
+    "github-copilot": { "skills_path": "skills/" },
+    "jetbrains-ai": { "skills_path": "skills/" }
+  },
+  "skills": [
+    "prometheus-loop-guide",
+    "self-healing",
+    "self-retry",
+    "self-improving",
+    "self-monitoring",
+    "self-debugging",
+    "self-refactoring",
+    "self-evolution",
+    "self-observing",
+    "self-planning",
+    "self-adapting",
+    "self-governing",
+    "self-remembering",
+    "multi-agent-orchestration"
+  ],
+  "commands": [
+    "loop"
+  ],
+  "changelog": "https://github.com/LifeJiggy/Prometheus-Loop/blob/main/CHANGELOG.md",
+  "documentation": "https://github.com/LifeJiggy/Prometheus-Loop/tree/main/DOCS"
+}

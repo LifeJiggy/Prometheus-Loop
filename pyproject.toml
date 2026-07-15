@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "prometheus-loop"
+version = "1.0.0"
+description = "Agentic AI Loop guide and self-* capabilities for CLI and IDE tools"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "LifeJiggy"}
+]
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries",
+]
+
+[project.urls]
+Homepage = "https://github.com/LifeJiggy/Prometheus-Loop"
+Documentation = "https://github.com/LifeJiggy/Prometheus-Loop/tree/main/DOCS"
+Repository = "https://github.com/LifeJiggy/Prometheus-Loop"
+Issues = "https://github.com/LifeJiggy/Prometheus-Loop/issues"
+
+[tool.black]
+line-length = 88
+target-version = ['py37']
+
+[tool.mypy]
+python_version = "3.7"
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
