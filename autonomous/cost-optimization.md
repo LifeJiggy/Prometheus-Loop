@@ -1,4 +1,4 @@
-# Cost Optimization Strategies
+#  Cost Optimization Strategies
 
 ## Model Selection
 
